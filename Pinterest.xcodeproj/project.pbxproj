@@ -9,11 +9,6 @@
 /* Begin PBXBuildFile section */
 		E447DB801DE53FAD009B49F0 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447DB6E1DE53FAD009B49F0 /* Extension.swift */; };
 		E447DB861DE53FAD009B49F0 /* PhotoBrowsingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447DB771DE53FAD009B49F0 /* PhotoBrowsingController.swift */; };
-		E447DB871DE53FAD009B49F0 /* swap_left.gif in Resources */ = {isa = PBXBuildFile; fileRef = E447DB791DE53FAD009B49F0 /* swap_left.gif */; };
-		E447DB881DE53FAD009B49F0 /* swap_right.gif in Resources */ = {isa = PBXBuildFile; fileRef = E447DB7A1DE53FAD009B49F0 /* swap_right.gif */; };
-		E447DB891DE53FAD009B49F0 /* TipPage.xib in Resources */ = {isa = PBXBuildFile; fileRef = E447DB7B1DE53FAD009B49F0 /* TipPage.xib */; };
-		E447DB8A1DE53FAD009B49F0 /* TipPageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447DB7C1DE53FAD009B49F0 /* TipPageGenerator.swift */; };
-		E447DB8B1DE53FAD009B49F0 /* ZWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = E447DB7F1DE53FAD009B49F0 /* ZWActionSheet.m */; };
 		E44F93391DE3D498007E0805 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F93381DE3D498007E0805 /* AppDelegate.swift */; };
 		E44F933B1DE3D498007E0805 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F933A1DE3D498007E0805 /* ViewController.swift */; };
 		E44F933E1DE3D498007E0805 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E44F933C1DE3D498007E0805 /* Main.storyboard */; };
@@ -32,7 +27,6 @@
 		E44F939F1DE3D76B007E0805 /* LifeNativeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F936B1DE3D76B007E0805 /* LifeNativeViewController.swift */; };
 		E44F93A21DE3D76B007E0805 /* lifeViews.xib in Resources */ = {isa = PBXBuildFile; fileRef = E44F936E1DE3D76B007E0805 /* lifeViews.xib */; };
 		E44F93A41DE3D76B007E0805 /* WaterFlowViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F93701DE3D76B007E0805 /* WaterFlowViewLayout.swift */; };
-		E44F93A91DE3D76B007E0805 /* LifeSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F93761DE3D76B007E0805 /* LifeSearchViewController.swift */; };
 		E44F93AA1DE3D76B007E0805 /* LifeWaterFlowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F93771DE3D76B007E0805 /* LifeWaterFlowViewController.swift */; };
 		E44F93AB1DE3D76B007E0805 /* ManyCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F93781DE3D76B007E0805 /* ManyCells.swift */; };
 		E44F93AC1DE3D76B007E0805 /* MonthViewCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F93791DE3D76B007E0805 /* MonthViewCollectionViewLayout.swift */; };
@@ -51,12 +45,6 @@
 /* Begin PBXFileReference section */
 		E447DB6E1DE53FAD009B49F0 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		E447DB771DE53FAD009B49F0 /* PhotoBrowsingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoBrowsingController.swift; sourceTree = "<group>"; };
-		E447DB791DE53FAD009B49F0 /* swap_left.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = swap_left.gif; sourceTree = "<group>"; };
-		E447DB7A1DE53FAD009B49F0 /* swap_right.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = swap_right.gif; sourceTree = "<group>"; };
-		E447DB7B1DE53FAD009B49F0 /* TipPage.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TipPage.xib; sourceTree = "<group>"; };
-		E447DB7C1DE53FAD009B49F0 /* TipPageGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TipPageGenerator.swift; sourceTree = "<group>"; };
-		E447DB7E1DE53FAD009B49F0 /* ZWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWActionSheet.h; sourceTree = "<group>"; };
-		E447DB7F1DE53FAD009B49F0 /* ZWActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZWActionSheet.m; sourceTree = "<group>"; };
 		E44F93351DE3D498007E0805 /* Pinterest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pinterest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E44F93381DE3D498007E0805 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E44F933A1DE3D498007E0805 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -79,7 +67,6 @@
 		E44F936B1DE3D76B007E0805 /* LifeNativeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LifeNativeViewController.swift; sourceTree = "<group>"; };
 		E44F936E1DE3D76B007E0805 /* lifeViews.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = lifeViews.xib; sourceTree = "<group>"; };
 		E44F93701DE3D76B007E0805 /* WaterFlowViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterFlowViewLayout.swift; sourceTree = "<group>"; };
-		E44F93761DE3D76B007E0805 /* LifeSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LifeSearchViewController.swift; sourceTree = "<group>"; };
 		E44F93771DE3D76B007E0805 /* LifeWaterFlowViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LifeWaterFlowViewController.swift; sourceTree = "<group>"; };
 		E44F93781DE3D76B007E0805 /* ManyCells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManyCells.swift; sourceTree = "<group>"; };
 		E44F93791DE3D76B007E0805 /* MonthViewCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonthViewCollectionViewLayout.swift; sourceTree = "<group>"; };
@@ -118,8 +105,6 @@
 			isa = PBXGroup;
 			children = (
 				E447DB751DE53FAD009B49F0 /* PhotoBrowsing */,
-				E447DB781DE53FAD009B49F0 /* TipPage */,
-				E447DB7D1DE53FAD009B49F0 /* ZWActionSheet */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -130,26 +115,6 @@
 				E447DB771DE53FAD009B49F0 /* PhotoBrowsingController.swift */,
 			);
 			path = PhotoBrowsing;
-			sourceTree = "<group>";
-		};
-		E447DB781DE53FAD009B49F0 /* TipPage */ = {
-			isa = PBXGroup;
-			children = (
-				E447DB791DE53FAD009B49F0 /* swap_left.gif */,
-				E447DB7A1DE53FAD009B49F0 /* swap_right.gif */,
-				E447DB7B1DE53FAD009B49F0 /* TipPage.xib */,
-				E447DB7C1DE53FAD009B49F0 /* TipPageGenerator.swift */,
-			);
-			path = TipPage;
-			sourceTree = "<group>";
-		};
-		E447DB7D1DE53FAD009B49F0 /* ZWActionSheet */ = {
-			isa = PBXGroup;
-			children = (
-				E447DB7E1DE53FAD009B49F0 /* ZWActionSheet.h */,
-				E447DB7F1DE53FAD009B49F0 /* ZWActionSheet.m */,
-			);
-			path = ZWActionSheet;
 			sourceTree = "<group>";
 		};
 		E44F932C1DE3D498007E0805 = {
@@ -189,7 +154,6 @@
 				E447DB6F1DE53FAD009B49F0 /* Custom */,
 				E44F935A1DE3D76B007E0805 /* LifeComment */,
 				E44F935F1DE3D76B007E0805 /* LifeNative */,
-				E44F93761DE3D76B007E0805 /* LifeSearchViewController.swift */,
 				E44F93771DE3D76B007E0805 /* LifeWaterFlowViewController.swift */,
 				E44F93781DE3D76B007E0805 /* ManyCells.swift */,
 				E44F93791DE3D76B007E0805 /* MonthViewCollectionViewLayout.swift */,
@@ -312,10 +276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E447DB881DE53FAD009B49F0 /* swap_right.gif in Resources */,
 				E44F93431DE3D498007E0805 /* LaunchScreen.storyboard in Resources */,
-				E447DB871DE53FAD009B49F0 /* swap_left.gif in Resources */,
-				E447DB891DE53FAD009B49F0 /* TipPage.xib in Resources */,
 				E44F93A21DE3D76B007E0805 /* lifeViews.xib in Resources */,
 				E44F93401DE3D498007E0805 /* Assets.xcassets in Resources */,
 				E44F933E1DE3D498007E0805 /* Main.storyboard in Resources */,
@@ -336,9 +297,7 @@
 				E44F93971DE3D76B007E0805 /* LifeCollectionViewCell.swift in Sources */,
 				E44F93AA1DE3D76B007E0805 /* LifeWaterFlowViewController.swift in Sources */,
 				E44F93951DE3D76B007E0805 /* InnerTagControlller.swift in Sources */,
-				E447DB8B1DE53FAD009B49F0 /* ZWActionSheet.m in Sources */,
 				E44F93B21DE3D76B007E0805 /* AnswerViewController.swift in Sources */,
-				E44F93A91DE3D76B007E0805 /* LifeSearchViewController.swift in Sources */,
 				E44F93AB1DE3D76B007E0805 /* ManyCells.swift in Sources */,
 				E44F933B1DE3D498007E0805 /* ViewController.swift in Sources */,
 				E44F93B51DE3D76B007E0805 /* QuestionCell.swift in Sources */,
@@ -356,7 +315,6 @@
 				E44F939A1DE3D76B007E0805 /* LifeInnerCell.swift in Sources */,
 				E447DB861DE53FAD009B49F0 /* PhotoBrowsingController.swift in Sources */,
 				E44F939B1DE3D76B007E0805 /* LifeInnerController.swift in Sources */,
-				E447DB8A1DE53FAD009B49F0 /* TipPageGenerator.swift in Sources */,
 				E44F93AF1DE3D76B007E0805 /* RewardView.swift in Sources */,
 				E44F93B01DE3D76B007E0805 /* AnswerBtnCell.swift in Sources */,
 				E447DB801DE53FAD009B49F0 /* Extension.swift in Sources */,
