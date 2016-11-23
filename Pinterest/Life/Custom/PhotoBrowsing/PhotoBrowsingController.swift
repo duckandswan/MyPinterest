@@ -30,21 +30,31 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
         
         self.automaticallyAdjustsScrollViewInsets = false
         
-        let naviBarView = UIView(frame: CGRect(x:0, y:STATUS_H, width:SCREEN_W, height:35))
-        naviBarView.backgroundColor = UIColor.black
+//        setNeedsStatusBarAppearanceUpdate()
         
-        let b = UIButton(frame: CGRect(x:0, y:0, width:44, height:44))
+        view.addSubview(statusBarView)
         
-        b.setImage(UIImage(named: "btn_back"), for: UIControlState.normal)
-        b.setImage(UIImage(named: "btn_back"), for: UIControlState.selected)
-        b.addTarget(self,action: #selector(PhotoBrowsingController.back), for: .touchUpInside)
+
         
-        l = UILabel(frame: CGRect(x:0, y:0, width:50, height:35))
+       
+        
+        let naviBarView = UIView(frame: CGRectMake(0, STATUS_H, SCREEN_W, 35))
+        naviBarView.backgroundColor = UIColor.blackColor()
+        
+        let b = UIButton(frame: CGRectMake(0, 0, 44, 44))
+        
+        b.setImage(UIImage(named: "btn_back"), forState: UIControlState.Normal)
+        b.setImage(UIImage(named: "btn_back"), forState: UIControlState.Selected)
+        b.addTarget(self,action: #selector(PhotoBrowsingController.back), forControlEvents: .TouchUpInside)
+        
+        l = UILabel(frame: CGRectMake(0, 0, 50, 35))
         l.center.x = naviBarView.center.x
-        l.textColor = UIColor.white
-        l.textAlignment = .center
+        l.textColor = UIColor.whiteColor()
         
         
+        
+        
+//        naviBarView.addSubview(b)
         naviBarView.addSubview(l)
         
         view.addSubview(naviBarView)
@@ -53,29 +63,40 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
         
         flowLayout.minimumInteritemSpacing = 0
         flowLayout.minimumLineSpacing = 0
-        flowLayout.itemSize = CGSize(width:SCREEN_W, height:SCREEN_H - 55)
-        flowLayout.scrollDirection = .horizontal
+        flowLayout.itemSize = CGSizeMake(SCREEN_W, SCREEN_H - 55)
+        flowLayout.scrollDirection = .Horizontal
         
         collectionView = UICollectionView(frame: PhotoBrowsingController.photoFrame, collectionViewLayout: flowLayout)
         collectionView.alwaysBounceHorizontal = true
-        collectionView.isPagingEnabled = true
+        collectionView.pagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
+        collectionView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         view.addSubview(collectionView)
         
-        collectionView.scrollToItem(at: IndexPath(row: startPage, section: 0), at: .left, animated: false)
+        collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: startPage, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Left, animated: false)
         
         setLable()
+        
+        
+        
+        // Uncomment the following line to preserve selection between presentations
+        // self.clearsSelectionOnViewWillAppear = false
+        
+        // Register cell classes
+        //        self.collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        
+        // Do any additional setup after loading the view.
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        
     }
     
 
@@ -97,7 +118,7 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
     
     // MARK: UICollectionViewDataSource
     
-    private func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         
         return 1
     }
@@ -122,26 +143,26 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
         
         let imageView = PhotoBrowsingImageView(frame: cell.contentView.bounds)
         imageView.tag = 100
-        imageView.isUserInteractionEnabled = true
-        imageView.contentMode = .scaleAspectFit
+        imageView.userInteractionEnabled = true
+        imageView.contentMode = UIViewContentMode.ScaleAspectFit
         imageView.clipsToBounds = true
         
         let pinchGestureRecognizer =  UIPinchGestureRecognizer(target: self,
-            action: #selector(self.handlePinches))
+            action: #selector(PhotoBrowsingController.handlePinches(_:)))
         imageView.addGestureRecognizer(pinchGestureRecognizer)
         
         let twoTapGestureRecognizer = UITapGestureRecognizer(target: self,
-            action: #selector(self.handleTaps))
+            action: #selector(PhotoBrowsingController.handleTaps(_:)))
         twoTapGestureRecognizer.numberOfTapsRequired = 2
         imageView.addGestureRecognizer(twoTapGestureRecognizer)
         
         let oneTapGestureRecognizer = UITapGestureRecognizer(target: self,
-            action: #selector(self.handleTap))
+            action: #selector(PhotoBrowsingController.handleTap(_:)))
         oneTapGestureRecognizer.numberOfTapsRequired = 1
         imageView.addGestureRecognizer(oneTapGestureRecognizer)
-        oneTapGestureRecognizer.require(toFail: twoTapGestureRecognizer)
+        oneTapGestureRecognizer.requireGestureRecognizerToFail(twoTapGestureRecognizer)
         
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPressGestures))
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(PhotoBrowsingController.handleLongPressGestures(_:)))
         
         longPressGestureRecognizer.numberOfTouchesRequired = 1
         
@@ -155,82 +176,97 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
         imageView.addGestureRecognizer(longPressGestureRecognizer)
         
         let panGestureRecognizer = UIPanGestureRecognizer(target: self,
-            action: #selector(self.handleImagePanGesture))
+            action: #selector(PhotoBrowsingController.handleImagePanGesture(_:)))
         panGestureRecognizer.minimumNumberOfTouches = 1
         panGestureRecognizer.maximumNumberOfTouches = 1
         imageView.addGestureRecognizer(panGestureRecognizer)
         imageView.panGestureRecognizer = panGestureRecognizer
-        imageView.panGestureRecognizer.isEnabled = false
+        imageView.panGestureRecognizer.enabled = false
         
         imageView.cell = cell
         
         cell.contentView.addSubview(imageView)
 
-        let imageUrl = images[indexPath.row]
+        let imageUrl = images[indexPath.row].changeImageUrlToUsIp()
         print("imageUrl: \(imageUrl)")
-        imageView.setImageForURLString(str: imageUrl)
+        imageView.sd_setImageWithURL(NSURL(string: imageUrl))
 
         return cell
     }
     
     
     func handleLongPressGestures(sender: UILongPressGestureRecognizer){
-        let controller = UIAlertController(title: nil,message: nil,preferredStyle: .actionSheet)
-        let action = UIAlertAction(title: "保存图片", style: UIAlertActionStyle.default, handler: {(paramAction:UIAlertAction!) in
+        let controller = UIAlertController(title: nil,message: nil,preferredStyle: .ActionSheet)
+        let action = UIAlertAction(title: "保存图片", style: UIAlertActionStyle.Default, handler: {(paramAction:UIAlertAction!) in
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+                    let imgData = UIImageJPEGRepresentation((sender.view! as! UIImageView).image!, 1)
+                    let img = UIImage(data: imgData!)!
+                    PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                        _ = PHAssetChangeRequest.creationRequestForAssetFromImage(img)
+                        
+                        },
+                        completionHandler: { success, error in
+                            if success == true{
+                                MessagePrompter.prompt("保存成功", vc: self)
+                            }
+                        }
+                    )
+                    
+                }
             })
         controller.addAction(action)
         
-        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: {(paramAction:UIAlertAction!) in
+        let cancelAction = UIAlertAction(title: "取消", style: UIAlertActionStyle.Cancel, handler: {(paramAction:UIAlertAction!) in
                 })
         controller.addAction(cancelAction)
         
-        self.present(controller, animated: true, completion: nil)
+        self.presentViewController(controller, animated: true, completion: nil)
         
     }
     
     func handlePinches(sender: UIPinchGestureRecognizer){
         let imageView = (sender.view! as! UIImageView)
         
-        if sender.state != .ended && sender.state != .failed{
+        if sender.state != .Ended && sender.state != .Failed{
             
-            imageView.transform = (imageView as! PhotoBrowsingImageView).lastTransform.scaledBy(x: sender.scale, y: sender.scale)
+            imageView.transform = CGAffineTransformScale((imageView as! PhotoBrowsingImageView).lastTransform , sender.scale, sender.scale)
             
             if imageView.transform.a < 0.5 {
-                imageView.transform = CGAffineTransform.identity.scaledBy(x: 0.5, y: 0.5)
+                imageView.transform = CGAffineTransformScale(CGAffineTransformIdentity , 0.5, 0.5)
             }
 
             
             
             if imageView.transform.a >= 3 {
-                imageView.transform = CGAffineTransform.identity.scaledBy(x: 3, y: 3)
+                imageView.transform = CGAffineTransformScale(CGAffineTransformIdentity , 3, 3)
             }
         }else{
            
             
-            if imageView.transform.a < CGAffineTransform.identity.a || imageView.frame.origin.y > SCREEN_H - minOutLenght || imageView.frame.maxY < minOutLenght
-            || imageView.frame.origin.x > 0 || imageView.frame.maxX < SCREEN_W{
+            if imageView.transform.a < CGAffineTransformIdentity.a || imageView.frame.origin.y > h - minOutLenght || imageView.frame.maxY < minOutLenght
+            || imageView.frame.origin.x > 0 || imageView.frame.maxX < w{
                 
-                UIView.animate(withDuration: 0.5, animations: { () -> Void in
-                    imageView.transform = CGAffineTransform.identity
+                UIView.animateWithDuration(0.5, animations: { () -> Void in
+                    imageView.transform = CGAffineTransformIdentity
                     imageView.center = imageView.superview!.center
                     
                 })
                 movingState = .Still
             }else if imageView.transform.a > 2.5 {
-                UIView.animate(withDuration: 0.5, animations: { () -> Void in
-                    imageView.transform = CGAffineTransform.identity.scaledBy(x: 2.5, y: 2.5)
+                UIView.animateWithDuration(0.5, animations: { () -> Void in
+                    imageView.transform = CGAffineTransformScale(CGAffineTransformIdentity , 2.5, 2.5)
                 })
             }
             
              (imageView as! PhotoBrowsingImageView).lastTransform = imageView.transform
             
-            if !imageView.transform.isIdentity{
-                (imageView as! PhotoBrowsingImageView).panGestureRecognizer.isEnabled = true
+            if !CGAffineTransformIsIdentity(imageView.transform){
+                (imageView as! PhotoBrowsingImageView).panGestureRecognizer.enabled = true
                 (imageView as! PhotoBrowsingImageView).panGestureRecognizer.delegate = self
                 
                 movingState = .Moving
                 
-                indexP = collectionView.indexPath(for: (imageView as! PhotoBrowsingImageView).cell)!
+                indexP = collectionView.indexPathForCell((imageView as! PhotoBrowsingImageView).cell)!
             }
             
             
@@ -238,7 +274,7 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
         }
     }
     
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if otherGestureRecognizer == collectionView.panGestureRecognizer{
             return true
         }else{
@@ -246,13 +282,14 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
         }
     }
     
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
 //        print("shouldReceiveTouch")
         return true
     }
     
     func dismiss(){
-        self.dismiss(animated: true, completion: nil)
+//        print("\nbutton click")
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func handleTap(sender: UITapGestureRecognizer){
@@ -264,21 +301,21 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
     
     func handleTaps(sender: UITapGestureRecognizer){
         let imageView = (sender.view! as! UIImageView)
-        if imageView.transform.isIdentity{
-        UIView.animate(withDuration: 0.5, animations: { () -> Void in
-            imageView.transform = CGAffineTransform.identity.scaledBy(x: 2, y: 2)
+        if CGAffineTransformIsIdentity(imageView.transform){
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            imageView.transform = CGAffineTransformScale(CGAffineTransformIdentity , 2, 2)
             })
         
-        (imageView as! PhotoBrowsingImageView).panGestureRecognizer.isEnabled = true
+        (imageView as! PhotoBrowsingImageView).panGestureRecognizer.enabled = true
         (imageView as! PhotoBrowsingImageView).panGestureRecognizer.delegate = self
         
         movingState = .Moving
         
         
-        indexP = collectionView.indexPath(for: (imageView as! PhotoBrowsingImageView).cell)!
+        indexP = collectionView.indexPathForCell((imageView as! PhotoBrowsingImageView).cell)!
     }else{
-        UIView.animate(withDuration: 0.5, animations: { () -> Void in
-            imageView.transform = CGAffineTransform.identity
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            imageView.transform = CGAffineTransformIdentity
             imageView.center = imageView.superview!.center
             })
         
@@ -297,11 +334,11 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
     
     
     func handleImagePanGesture(sender: UIPanGestureRecognizer){
-        if sender.state != .ended && sender.state != .failed{
+        if sender.state != .Ended && sender.state != .Failed{
             
 //            print("handleImagePanGesture")
         
-        let translation = sender.translation(in: sender.view!.superview!)
+        let translation = sender.translationInView(sender.view!.superview!)
         
         
         
@@ -316,8 +353,8 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
             
             sender.view!.center = center
             
-            if sender.view!.frame.origin.y > SCREEN_H - minOutLenght {
-                sender.view!.frame.origin.y = SCREEN_H - minOutLenght
+            if sender.view!.frame.origin.y > h - minOutLenght {
+                sender.view!.frame.origin.y = h - minOutLenght
             }
             
             if sender.view!.frame.origin.y < minOutLenght - sender.view!.frame.size.height  {
@@ -327,7 +364,7 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
         }
         
         
-        sender.setTranslation(CGPoint.zero, in: sender.view!.superview!)
+        sender.setTranslation(CGPointZero, inView: sender.view!.superview!)
         
         if sender.view!.frame.origin.x > 0 {
             sender.view!.frame.origin.x = 0
@@ -335,8 +372,8 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
             
         }
         
-        if sender.view!.frame.origin.x < SCREEN_W - sender.view!.frame.size.width {
-                sender.view!.frame.origin.x = SCREEN_W - sender.view!.frame.size.width
+        if sender.view!.frame.origin.x < w - sender.view!.frame.size.width {
+                sender.view!.frame.origin.x = w - sender.view!.frame.size.width
                 movingState = .Right
                 
         }
@@ -362,35 +399,35 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
     }
     
 
-    var indexP = IndexPath(row: 3, section: 0)
+    var indexP = NSIndexPath(forRow: 3, inSection: 0)
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
         
 //                print("scrollViewDidScroll")
         
         setLable()
         
-        if collectionView.contentOffset.x >= CGFloat(indexP.row + 1) * SCREEN_W || collectionView.contentOffset.x <= CGFloat(indexP.row - 1) * SCREEN_W{
+        if collectionView.contentOffset.x >= CGFloat(indexP.row + 1) * w || collectionView.contentOffset.x <= CGFloat(indexP.row - 1) * w{
             movingState = .Still
         }
         
         if movingState == .Moving {
-            collectionView.scrollToItem(at: indexP, at: UICollectionViewScrollPosition.left, animated: false)
+            collectionView.scrollToItemAtIndexPath(indexP, atScrollPosition: UICollectionViewScrollPosition.Left, animated: false)
         }
         
-        if collectionView.contentOffset.x >= CGFloat(indexP.row) * SCREEN_W && movingState == .Left{
-            collectionView.scrollToItem(at: indexP, at: UICollectionViewScrollPosition.left, animated: false)
+        if collectionView.contentOffset.x >= CGFloat(indexP.row) * w && movingState == .Left{
+            collectionView.scrollToItemAtIndexPath(indexP, atScrollPosition: UICollectionViewScrollPosition.Left, animated: false)
             movingState = .Moving
         }
         
-        if collectionView.contentOffset.x <= CGFloat(indexP.row) * SCREEN_W && movingState == .Right{
-                collectionView.scrollToItem(at: indexP, at: UICollectionViewScrollPosition.left, animated: false)
+        if collectionView.contentOffset.x <= CGFloat(indexP.row) * w && movingState == .Right{
+                collectionView.scrollToItemAtIndexPath(indexP, atScrollPosition: UICollectionViewScrollPosition.Left, animated: false)
                 movingState = .Moving
         }
         
     }
     
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
             //        print("scrollViewWillBeginDragging")
     }
     
@@ -401,9 +438,9 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
     var navigationOperation: UINavigationControllerOperation?
     
     // UINavigationControllerDelegate
-    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         navigationOperation = operation
-        if operation == .push{
+        if operation == .Push{
             if toVC is PhotoBrowsingController{
                 if transView != nil {
                     return self
@@ -414,7 +451,7 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
             }else{
                 return nil
             }
-        }else if operation == .pop {
+        }else if operation == .Pop {
             if fromVC is PhotoBrowsingController{
                 if transView != nil {
                     return self
@@ -431,41 +468,53 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
     }
     
     //UIViewControllerTransitioningDelegate
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
         return 0.25
     }
     
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        let containerView = transitionContext.containerView
-        let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!
-        let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!
+    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
+        let containerView = transitionContext.containerView()
+        let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)!
+        let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)!
         
-        if navigationOperation == UINavigationControllerOperation.push {
+        
+        
+        
+        //        var detailVC: DetailViewController!
+        //        var fromView: UIView!
+        //        var alpha: CGFloat = 1.0
+        //        var destTransform: CGAffineTransform!
+        //
+        //        var snapshotImageView: UIView!
+        
+        
+        
+        if navigationOperation == UINavigationControllerOperation.Push {
             
             containerView.addSubview(fromViewController.view!)
             containerView.addSubview(toViewController.view!)
             toViewController.view.alpha = 0
             containerView.addSubview(transView!)
-            UIView.animate(withDuration: 0.25, animations: {() -> Void in
+            UIView.animateWithDuration(0.25, animations: {() -> Void in
                 self.transView!.frame = self.desFrame
                 }, completion: {(finished: Bool) -> Void in
                     toViewController.view.alpha = 1
                     self.transView!.removeFromSuperview()
-                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
             })
             
-        } else if navigationOperation == UINavigationControllerOperation.pop {
+        } else if navigationOperation == UINavigationControllerOperation.Pop {
             //            containerView.addSubview(fromViewController.view!)
             containerView.addSubview(toViewController.view!)
             
             containerView.addSubview(transView!)
-            UIView.animate(withDuration: 0.25, animations: {() -> Void in
+            UIView.animateWithDuration(0.25, animations: {() -> Void in
                 self.transView!.frame = self.desFrame
                 //            fromViewController.view!.alpha = 0
                 
                 }, completion: {(finished: Bool) -> Void in
                     self.transView!.removeFromSuperview()
-                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
             })
             
         }
@@ -473,17 +522,22 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
     
     func back() {
         if navigationController != nil {
-            let cell = collectionView.visibleCells.first!
+            let cell = collectionView.visibleCells().first!
             if let image = (cell.contentView.viewWithTag(100) as? UIImageView)?.image{
                 let frame = LifeUtils.aspectFitFrameForFrame(PhotoBrowsingController.photoFrame, size: image.size)
                 let iv = UIImageView(frame: frame)
-                iv.contentMode = .scaleAspectFill
+                iv.contentMode = .ScaleAspectFill
                 iv.image = image
                 iv.clipsToBounds = true
-                let index = collectionView.indexPath(for: cell)
+                let index = collectionView.indexPathForCell(cell)
                 let imageView = imageViews[index!.row].value
-                let window = UIApplication.shared.keyWindow
-                desFrame = imageView?.convert((imageView?.bounds)!, to: window)
+                let window = UIApplication.sharedApplication().keyWindow
+                desFrame = imageView.convertRect(imageView.bounds, toView: window)
+//                if desFrame.maxY - 64 > 0 && desFrame.origin.y < SCREEN_H{
+//                   transView = iv
+//                }else{
+//                    transView = nil
+//                }
                 transView = iv
                 if desFrame.maxY - 64 > 0 && desFrame.origin.y < SCREEN_H{
                     
@@ -494,9 +548,10 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
                 transView = nil
             }
             
-            _ = navigationController?.popViewController(animated: true)
+            navigationController?.popViewControllerAnimated(true)
         }else{
-            dismiss(animated: false, completion: nil)
+            dismissViewControllerAnimated(false, completion: nil)
+            
         }
     }
     
@@ -535,9 +590,10 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
 }
 
 class PhotoBrowsingImageView:UIImageView{
-        var lastTransform:CGAffineTransform = CGAffineTransform.identity
+        var lastTransform:CGAffineTransform = CGAffineTransformIdentity
         var panGestureRecognizer:UIPanGestureRecognizer!
         var cell:UICollectionViewCell!
+
 }
 
 class PhotoBrowsingCell{

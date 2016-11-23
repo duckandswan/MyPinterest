@@ -34,7 +34,6 @@ class LifeModel:NSObject{
     var replySize = 0
     var sequence_num = 0
     var sizes:[NSDictionary] = []
-    //    var sizes = ""
     var slogon = ""
     var source = ""
     var storyCollectionId = 0
@@ -69,19 +68,14 @@ class LifeModel:NSObject{
     
     var contentList:[NSDictionary] = []
     
-    //    var videoModel:VideoModel = LifeConstant.testVideoModel
-    
     //是否加载了内页数据
     var isSet = false
-    //是否是广告
-    var isDaren = false
     var masterId = 0
     var masterName = ""
     var masterPhotos = ""
     var masterRemark = ""
     var masterUrl = ""
     var seqNum = 0
-//    var darenSize:NSDictionary = ["width":NSNumber(integer: 500),"height":NSNumber(integer: 500)]
     var darenratio:CGFloat = 1
     var goodsId = 0
     var goodsPrice = 0.0
@@ -94,76 +88,31 @@ class LifeModel:NSObject{
     var groupbuyStatus = 0
     
     
-    func setValueForDarenDic(_ dic:NSDictionary){
-        isDaren  = true
-        masterId = dic.intForKey("id")
-        masterName = dic.stringForKey("masterName")
-        masterPhotos = dic.stringForKey("masterPhotos")
-        masterRemark = dic.stringForKey("masterRemark")
-        masterUrl = dic.stringForKey("masterUrl")
-        seqNum = dic.intForKey("seqNum")
-        position = dic.intForKey("position")
-        darenratio = darenRatioForJsonString(dic)
-        setDarenH()
-    }
+
     
     func setValueForDic(_ dic:NSDictionary){
-        videoUrl = dic.stringForKey("videoUrl")
         
-        avatar = dic.stringForKey("avatar")
-        collectionImgArr = dic.stringArrForKey("collectionImgArr")
-        content = dic.stringForKey("content")
-        likeSize = dic.intForKey("likeSize")
-        replySize = dic.intForKey("replySize")
-        collectionName = dic.stringForKey("collectionName")
-        collectionUrl = dic.stringForKey("collectionUrl")
-        isJoined = dic.intForKey("isJoined")
-        isfans = dic.intForKey("isfans")
-        islike = dic.intForKey("islike")
-        iscollect = dic.intForKey("collection")
-        //        release_time = (dic["release_time"] ?? "") as! String
-        releaseTime = dic.stringForKey("releaseTime")
-        //        replySize = dic["replySize"]as! Int
-        sequence_num = dic.intForKey("sequence_num")
+        avatar = dic.stringFor(key: "avatar")
+        collectionImgArr = dic.stringArrFor(key: "collectionImgArr")
+        content = dic.stringFor(key: "content")
+        likeSize = dic.intFor(key: "likeSize")
+        replySize = dic.intFor(key: "replySize")
+        collectionName = dic.stringFor(key: "collectionName")
+        collectionUrl = dic.stringFor(key: "collectionUrl")
+        sequence_num = dic.intFor(key: "sequence_num")
         sizes = sizeArrForJsonString(dic)
-        //        sizes = dic["sizes"]! as! String
-        slogon = dic.stringForKey("slogon")
-        source = dic.stringForKey("source")
-//        storyCollectionId = dic["storyCollectionId"]as! Int
-        storyCollectionId = dic.intForKey("id") != 0 ? dic.intForKey("id") : dic.intForKey("storyCollectionId")
-        type = dic.intForKey("type")
-        userId = dic.intForKey("userId")
-        user_type = dic.intForKey("user_type")
-        userNick = dic.stringForKey("userNick")
-//        reference_price = (dic["reference_price"] ?? 0.0)as! Double
-        reference_price = dic.doubleForKey("reference_price")
-        location = dic.stringForKey("location")
-//        tagId = (dic["tagId"] ?? []) as! [String]
-//        tagName = (dic["tagName"] ?? []) as! [String]
-        tagId = dic.stringArrForKey("tagId")
-        tagName = dic.stringArrForKey("tagName")
-        
-        //团购
-        goodsId = dic.intForKey("groupbuyGoodsId")
-        
-        isTuanGou = ( goodsId > 0 )
-        
-//        rewardPoints = (dic["rewardPoints"] ?? 0)as! Int
-        
-        remarks = dic.stringForKey("remarks")
-        if remarks != ""{
-            userNick = LifeUtils.truncatedString(userNick)
-            remarks = LifeUtils.truncatedString(remarks)
-        }
-        
-        
-        position = dic.intForKey("position")
+        slogon = dic.stringFor(key: "slogon")
+        source = dic.stringFor(key: "source")
+        storyCollectionId = dic.intFor(key: "storyCollectionId")
+        userId = dic.intFor(key: "userId")
+        userNick = dic.stringFor(key: "userNick")
+        reference_price = dic.doubleFor(key: "reference_price")
+        tagId = dic.stringArrFor(key: "tagId")
+        tagName = dic.stringArrFor(key: "tagName")
+
         //设置高度
         setH()
-        
     }
-    
-    //    var contentHeights:[CGFloat] = []
     
     //内页
     func setValueForDicInSecondStep(_ dic:NSDictionary){
@@ -171,83 +120,27 @@ class LifeModel:NSObject{
             return
         }
         
-        iscollect = dic.intForKey("collection")
-        wantNum = dic.intForKey("wantNum")
-        wantType = dic.intForKey("wantType")
-        article_url = dic.stringForKey("article_url")
-        sponsored_url_type = dic.intForKey("sponsored_url_type")
-        sponsored_url = dic.stringForKey("sponsored_url")
-        goods_title = dic.stringForKey("goods_title")
-        readFlag = dic.intForKey("readFlag")
+        iscollect = dic.intFor(key: "collection")
+        article_url = dic.stringFor(key: "article_url")
+        sponsored_url_type = dic.intFor(key: "sponsored_url_type")
+        sponsored_url = dic.stringFor(key: "sponsored_url")
+        goods_title = dic.stringFor(key: "goods_title")
+        readFlag = dic.intFor(key: "readFlag")
         
         
         if let storyCollection = dic["storyCollection"] as? NSDictionary {
-            
-            isfans = storyCollection.intForKey("isfans")
-            islike = storyCollection.intForKey("islike")
-            tagList = storyCollection.dicArrForKey("tagList")
-            videoType = storyCollection.intForKey("videoType")
-            mayaskList = storyCollection.dicArrForKey("mayaskList")
-            
-            contentList = storyCollection.dicArrForKey("contentList")
-            if contentList.count > 0 {
-                reviseH()
-            }
-            
-            let goods = storyCollection.dicForKey("groupbuyGoods")
-            goodsPrice = goods.doubleForKey("price")
-            goodsBoughtNum = goods.intForKey("boughtNum")
-            groupbuyStatus = goods.intForKey("groupbuyStatus")
-            remainNum = goods.intForKey("remainNum")
-            paidNum = goods.intForKey("paidNum")
-            userWanted = goods.intForKey("userWanted")
+            isfans = storyCollection.intFor(key: "isfans")
+            islike = storyCollection.intFor(key: "islike")
+            tagList = storyCollection.dicArrFor(key: "tagList")
         }
-        
-//        if wantType == 5 {
-//            addWantHeight()
-//        }
-        
         
         isSet = true
-    }
-    
-//    func setAskForDic(dic:NSDictionary){
-//        if let storyCollection = dic["storyCollection"] as? NSDictionary {
-//            mayaskList = storyCollection.dicArrForKey("mayaskList")
-//        }
-//    }
-    
-    //
-    func setValueForDicInPersonPage(_ dic:NSDictionary){
-        
-        if let userDic = dic["user"] as? NSDictionary {
-            avatar = userDic.stringForKey("avatar")
-            slogon = userDic.stringForKey("slogon")
-            userNick = userDic.stringForKey("userNick")
-        }
-        
-        releaseTime = dic.stringForKey("createTime")
-        user_type = dic.intForKey("userType")
-    }
-    
-    func darenRatioForJsonString(_ dic:NSDictionary)->CGFloat{
-        
-        let str = (dic["sizes"] ?? "[]") as! NSString
-        
-        let data = str.data(using: String.Encoding.utf8)
-        let arr = try? JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments) as! [NSDictionary]
-        if let item = arr?.first{
-            return CGFloat(item.doubleForKey("height",df: 500) / item.doubleForKey("width",df: 500))
-        }else{
-            return 1
-        }
-        
     }
     
     func sizeArrForJsonString(_ dic:NSDictionary)->[NSDictionary]{
         let str = (dic["sizes"] ?? "[]") as! NSString
         
-        let data = str.data(using: String.Encoding.utf8)
+        let data = str.data(using: String.Encoding.utf8.rawValue)
         var arr = ((try? JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)) ?? [NSDictionary]()) as! [NSDictionary]
         if arr.count < collectionImgArr.count{
             for _ in arr.count..<collectionImgArr.count {
@@ -260,16 +153,11 @@ class LifeModel:NSObject{
             collectionImgArr = [collectionImgArr[0]]
         }
         
-        
         return arr
-        
-        
     }
     
     var height:CGFloat = 0
     var bigHeight:CGFloat = 0
-    //    var bigHeight1:CGFloat = 0
-    //    var bigHeight2:CGFloat = 0
     var imagesH:CGFloat = 0
     var bigImagesH:CGFloat = 0
     var titleH:CGFloat = 0
@@ -284,7 +172,7 @@ class LifeModel:NSObject{
     
     func getImagesHeight(_ width:CGFloat)->CGFloat{
         var hg:CGFloat = 0
-        //        print("sizes:\(sizes)")
+
         if sizes.count <= 4 {
             for size in sizes{
                 hg += (size["height"] as! CGFloat)/(size["width"] as! CGFloat)*width
@@ -382,39 +270,14 @@ class LifeModel:NSObject{
     
 }
 
-class LifeHotModel:NSObject{
-    var coverImg = ""
-    var createTime = ""
-    var hotContent = ""
-    var hotImg = ""
-    var hotName = ""
-    var hotUrl = ""
-    var id = 0
-    var recordId = 0
-    var type = 0
-    
-    func setValueForDic(_ dic:NSDictionary){
-        coverImg = dic.stringForKey("coverImg")
-        createTime = dic.stringForKey("createTime")
-        hotContent = dic.stringForKey("hotContent")
-        hotImg = dic.stringForKey("hotImg")
-        hotName = dic.stringForKey("hotName")
-        hotUrl = dic.stringForKey("hotUrl")
-        id = dic.intForKey("id")
-        recordId = dic.intForKey("recordId")
-        type = dic.intForKey("type")
-    }
-    
-}
-
 class LifeCategoryModel:NSObject{
     
     var categoryId = 0
     var categoryName = ""
     
     func setValueForDic(_ dic:NSDictionary){
-        categoryId    = dic.intForKey("categoryId")
-        categoryName  = dic.stringForKey("categoryName")
+        categoryId    = dic.intFor(key: "categoryId")
+        categoryName  = dic.stringFor(key: "categoryName")
     }
 }
 
@@ -426,27 +289,25 @@ class LifeConstant{
     static let darenContentFont = UIFont.boldSystemFont(ofSize: 11.5)
     
     static let width = WaterFlowViewLayout.columnWidth
-    static let margin:CGFloat = 10
-    static let innerWidth:CGFloat = width - margin
+    static let margin:CGFloat = 5
+    static let innerWidth:CGFloat = width - margin * 5
     
     static let titleHeight:CGFloat = 45
     static let contentHeight:CGFloat = 55
     
     static let darenContentHeight:CGFloat = 75
     
-    static let bigTitleHeight:CGFloat = CGFloat.max
-    static let bigContentHeight:CGFloat = CGFloat.max
+    static let bigTitleHeight:CGFloat = CGFloat.greatestFiniteMagnitude
+    static let bigContentHeight:CGFloat = CGFloat.greatestFiniteMagnitude
     
     static let bigWidth = UIScreen.main.bounds.size.width
-    static let bigMargin:CGFloat = 20
-    static let bigInnerWidth:CGFloat = bigWidth - bigMargin
+    static let bigMargin:CGFloat = 10
+    static let bigInnerWidth:CGFloat = bigWidth - bigMargin * 10
     
     static let articleMargin:CGFloat = margin
     
     static let bigTitleFont = UIFont.boldSystemFont(ofSize: 16)
     static let bigContentFont = UIFont.systemFont(ofSize: 14)
-    
-    static let bigAddressH:CGFloat = 20
     
     static let mainBackgroundColor = UIColor(red: 237/255.0, green: 236/255.0, blue: 245/255.0, alpha: 1)
     
@@ -455,79 +316,97 @@ class LifeConstant{
     static let BOTTOM_HEIGHT:CGFloat = 50
     
     static let BIG_HEAD_HEIGHT:CGFloat = 70
-    static let BIG_ADDRESS_HEIGHT:CGFloat = 25
     static let BIG_TAG_HEIGHT:CGFloat = 25
     static let BIG_LIKE_HEIGHT:CGFloat = 30
     static let BIG_READ_HEIGHT:CGFloat = 20
     
-    
-    static var player:HTPlayer?
-    
     static var contentAttributesDic:[String : AnyObject] = {
-        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        style.lineSpacing = 5
-        let dic = [NSFontAttributeName : LifeConstant.contentFont, NSParagraphStyleAttributeName:style]
-        return dic
+//        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
+//        style.lineSpacing = 5
+//        let dic = [NSFontAttributeName : LifeConstant.contentFont, NSParagraphStyleAttributeName:style] as [String : AnyObject]
+//        return dic
+        attributesDicFor(font: LifeConstant.contentFont, lineSpacing: 5)
     }()
     
     static var titleAttributesDic:[String : AnyObject] = {
-        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        style.lineSpacing = 5
-        let dic = [NSFontAttributeName : LifeConstant.titleFont, NSParagraphStyleAttributeName:style]
-        return dic
+//        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
+//        style.lineSpacing = 5
+//        let dic = [NSFontAttributeName : LifeConstant.titleFont, NSParagraphStyleAttributeName:style]
+//        return dic
+        attributesDicFor(font: LifeConstant.titleFont, lineSpacing: 5)
     }()
     
     static var bigContentAttributesDic:[String : AnyObject] = {
-        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        style.lineSpacing = 7
-        let dic = [NSFontAttributeName : LifeConstant.bigContentFont, NSParagraphStyleAttributeName:style]
-        return dic
+//        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
+//        style.lineSpacing = 7
+//        let dic = [NSFontAttributeName : LifeConstant.bigContentFont, NSParagraphStyleAttributeName:style]
+//        return dic
+        attributesDicFor(font: LifeConstant.bigContentFont, lineSpacing: 7)
     }()
     
     static var bigTitleAttributesDic:[String : AnyObject] = {
-        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        style.lineSpacing = 7
-        let dic = [NSFontAttributeName : LifeConstant.bigTitleFont, NSParagraphStyleAttributeName:style]
-        return dic
+//        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
+//        style.lineSpacing = 7
+//        let dic = [NSFontAttributeName : LifeConstant.bigTitleFont, NSParagraphStyleAttributeName:style]
+//        return dic
+        attributesDicFor(font: LifeConstant.bigTitleFont, lineSpacing: 7)
     }()
     
-    static var darenContentAttributesDic:[String : AnyObject] = {
-        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        style.lineSpacing = 5
-        let dic = [NSFontAttributeName : LifeConstant.darenContentFont, NSParagraphStyleAttributeName:style]
+    static func attributesDicFor(font:UIFont, lineSpacing :CGFloat)->[String : AnyObject]{
+        let style: NSMutableParagraphStyle = NSMutableParagraphStyle()
+        style.lineSpacing = lineSpacing
+        let dic = [NSFontAttributeName : font, NSParagraphStyleAttributeName:style]
         return dic
-    }()
+    }
 }
 
 class LifeUtils{
     
-    static func useCache(_ url:String,pamams:[String : AnyObject]?, successClosure: ((body:AnyObject) -> Void)?){
-        let userDefaults = UserDefaults.standard
-        let key = url + (pamams?.description ?? "")
-        if let v = userDefaults.value(forKey: key){
-            successClosure?(body: v)
-            print("\(url) 使用缓存的数据: \(key)")
-        }
+    static func request(url:String,pamams:[String : AnyObject]?, successClosure: ((_ body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
+//        LifeConstant.manager.request(.POST, url, parameters:pamams).responseJSON {
+//            (r) -> Void in
+//            let result = r.result
+//            print("req: \(r.request)")
+//            print("pamams: \(pamams)")
+//            print("request?.HTTPBody:\(r.request?.HTTPBody)")
+//            if result.isSuccess{
+//                print("访问服务器成功")
+//                print("result.value: \(result.value)")
+//                let codeString = String((result.value)!.valueFor("code")!)
+//                if codeString == "100" {
+//                    print("code 100")
+//                    let body = (result.value as! NSDictionary).valueFor("body")!
+//                    successClosure?(body: body)
+//                }else if codeString == "103" {
+//                    print("code 103")
+//                    nullClosure?()
+//                    failureClosure?()
+//                }else{
+//                    print("code \(codeString)")
+//                    failureClosure?()
+//                }
+//            }else{
+//                print("访问服务器失败")
+//                failureClosure?()
+//            }
+//        }
+        
+        
     }
     
-    static func requestAndCache(_ url:String,pamams:[String : AnyObject]?, successClosure: ((body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
+    static func requestAndCache(_ url:String,pamams:[String : AnyObject]?, successClosure: ((_ body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
         
         let userDefaults = UserDefaults.standard
         let key = url + (pamams?.description ?? "")
         
-        NetKit.sharedInstance.doPostRequest(url, params:pamams!, successClosure:
+        LifeUtils.request(url: url, pamams:pamams!, successClosure:
             { (bodyData) in
                 
-                userDefaults.setObject(bodyData as! AnyObject, forKey: key)
-                successClosure?(body: bodyData as! AnyObject)
+                userDefaults.set(bodyData , forKey: key)
+                successClosure?(bodyData)
                 
-            }, failClosure: failureClosure!,noDataClosure:nullClosure!)
+        }, failureClosure: failureClosure!,nullClosure:nullClosure!)
         
-    }
-    
-    static func requestWithCache(_ url:String,pamams:[String : AnyObject]?, successClosure: ((body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
-        useCache(url, pamams: pamams, successClosure: successClosure)
-        requestAndCache(url, pamams: pamams, successClosure: successClosure, failureClosure: failureClosure, nullClosure: nullClosure)
     }
     
     static func arrForJsonString(_ str:NSString)->[NSDictionary]{

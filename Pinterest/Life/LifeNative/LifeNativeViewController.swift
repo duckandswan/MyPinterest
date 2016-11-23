@@ -10,36 +10,6 @@ import UIKit
 
 class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource, UICollectionViewDelegate, WaterFlowViewLayoutDelegate , UISearchBarDelegate, UICollectionViewDelegateFlowLayout{
     
-    //    var lifeCollectionView:UICollectionView!
-    
-    //    var count = 20
-    
-    
-    var hotModel:LifeHotModel = LifeHotModel()
-    
-    var adModel:LifeAdModel = LifeAdModel()
-    
-    var lifeAdArr:[NSDictionary] = []
-    
-    let waterfallLayout = WaterFlowViewLayout()
-    
-//    var iWantBtn:UIButton!
-    
-//    var isDragging:Bool = false //是否在手指拖动状态
-//    var isDraggingUp:Bool = false//是否是向上拖动
-    
-//    var firstTouchOffsetY:CGFloat = 0.0//手指拖动之前的触摸点
-//    let changeGap:CGFloat = 50.0//更换图片的距离
-//    let iWantBtnWidth:CGFloat = 70
-    var rewardTipSet = false
-    
-    var barrageView:BarrageView!
-    var barrageTimer:Timer!
-    var barrageArr:[BarrageModel] = []
-    
-    var maxId = 0
-    var type = 0
-    
     var lifeCategoryArr:[LifeCategoryModel] = []
     
     var categoryView:CategoryCollectionView!
@@ -69,49 +39,12 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     
     //MARK: - 即将消失
     override func viewWillDisappear(_ animated: Bool) {
-        //结束百度统计
-        BaiduMobStat.defaultStat().pageviewEndWithName("看生活")
-        MobClick.endLogPageView("看生活")
-        
         //切换页面时，关闭弹幕
         closeBarrage()
     }
     
-    //
-//    func initMyGuessTip(){
-//        if let tipIV = TipView(frame: UIScreen.mainScreen().bounds, key: TipView.MyGuessTipKey) {
-//            let iv = UIImageView(frame: CGRect(x: 200, y: iWantBtn.frame.maxY - 200, width: 250, height: 200))
-//            iv.image = UIImage(named: "G1")
-//            iv.center.x = SCREEN_W / 2
-//            tipIV.addSubview(iv)
-//            tipIV.b.frame = CGRect(x: 200, y: iv.frame.maxY, width: 150, height: 75)
-//            tipIV.b.center.x = SCREEN_W / 2
-//            //            let window = UIApplication.sharedApplication().keyWindow
-//            rootController.view.addSubview(tipIV)
-//        }
-//    }
-    
-    func initMyLifeRewardTip(){
-        if let tipIV = TipView(frame: UIScreen.mainScreen().bounds, key: TipView.MyLifeRewardKey) {
-            
-            let iv = UIImageView(frame: UIScreen.main.bounds)
-            iv.image = UIImage(named: "悬赏提示ios")
-            tipIV.addSubview(iv)
-            tipIV.b.frame = CGRect(x: SCREEN_W - 150, y: SCREEN_H * 0.5, width: 150, height: 75)
-//            tipIV.b.addTarget(self, action: #selector(LifeNativeViewController.clickTip), forControlEvents: UIControlEvents.TouchUpInside)
-            //            let window = UIApplication.sharedApplication().keyWindow
-            rootController.view.addSubview(tipIV)
-        }
-    }
     //MARK:初始化分类
     func initCategoryView(){
-        
-//        let m1 = LifeCategoryModel()
-//        m1.categoryName = "推荐"
-//        let m2 = LifeCategoryModel()
-//        m2.categoryName = "活动"
-//        self.lifeCategoryArr = [m1]
-        
         let flowLayout = UICollectionViewFlowLayout()
         
         flowLayout.minimumInteritemSpacing = 0
@@ -162,29 +95,6 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         view.addSubview(mainCollectionView)
     }
 
-    //MARK:- 我想
-//    func initIWantBtn(){
-//        
-//        iWantBtn = UIButton.init(type: .Custom)
-//        iWantBtn.frame = CGRectMake((Width-iWantBtnWidth)/2, Height - 50 - iWantBtnWidth - 70, iWantBtnWidth, iWantBtnWidth)
-//        iWantBtn.setImage(UIImage.init(named: "iwant_bubble"), forState: .Normal)
-//        iWantBtn.backgroundColor = UIColor.clearColor()
-//        iWantBtn.alpha = 0.9
-//        iWantBtn.addTarget(self, action: #selector(LifeNativeViewController.goIWantList), forControlEvents: .TouchUpInside)
-//        self.view.addSubview(iWantBtn)
-//    }
-    //MARK:- 我想
-    func goIWantList() {
-        self.navigationController?.pushViewController(IWantTagListViewController(), animated: true)
-    }
-    
-    //MARK:- 弹幕
-    func initBarrageView() {
-        
-        barrageView = BarrageView.init(frame: CGRect(x: 50, y: 75, width: Width - 50*2, height: 32))
-        barrageView.backgroundColor = UIColor.init(rgb: 0x000000).colorWithAlphaComponent(0.8)
-    }
-    
     func getBarrageData() {
         
         let params:[String:AnyObject] = ["pageNo":"1","pageSize":"20"]
