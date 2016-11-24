@@ -208,12 +208,6 @@ class LifeModel:NSObject{
         //喜欢
         bigHeight += LifeConstant.BIG_LIKE_HEIGHT
         
-        //猜你想
-//        bigHeight += LifeConstant.BIG_GUESS_HEIGHT
-        
-        //我想要
-//        bigHeight += LifeConstant.BIG_WANT_HEIGHT
-        
         //底部相关内容
         bigHeight += 40
         

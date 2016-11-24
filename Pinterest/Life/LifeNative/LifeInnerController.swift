@@ -126,7 +126,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         }
         
         var params:[String:Any] = ["pageNo":lifeData.pageNo,"pageSize":lifeData.pageSize,"storyCollectionId":lifeData.storyId]
-        let url = "api/storycollection/related"
+        let url = "http://api.finding.com/api/storycollection/related"
         if let maxId  = lifeData.lifeModels.last?.storyCollectionId {
             params["maxId"] = maxId
         }
@@ -305,7 +305,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
                 cell.setButtonsEnable(false)
                 print("model.storyCollectionId: \(model.storyCollectionId)")
                 
-                let url = ""
+                let url = "http://api.finding.com/api/storycollection/getStoryDetail"
                 let params:[String : Any] = ["userId":0,"storyCollectionId":model.storyCollectionId]
                 
                 let successClosure: ((_ body:AnyObject) -> Void) = {
@@ -438,7 +438,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
     var currentWaterfallLayout:WaterFlowViewLayout!
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.section == 1 {
-            let index = collectionView.tag
+//            let index = collectionView.tag
 //            let lifeData = lifeDatas[index]
             mainLifeData = lifeDatas[collectionView.tag]
             lifeCollectionView = collectionView
