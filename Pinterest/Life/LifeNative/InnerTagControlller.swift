@@ -46,17 +46,12 @@ class InnerTagController: LifeWaterFlowViewController {
     var tagId:Int?
     
     func initUrlAndParameter(){
-        lifeUrlString = RequestURL.REQUEST_LIFE
+        lifeUrlString = ""
         
         if let id = tagId{
-            params["tagId"] = id
+            params["tagId"] = id as AnyObject?
         }
-        
-        if let id = sceneId {
-            params["sceneId"] = id
-        }
-        
-        lifeCollectionView.gifHeader.beginRefreshing()
+
     }
     
 }

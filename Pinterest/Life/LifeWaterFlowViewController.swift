@@ -13,50 +13,23 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
     //    var lifeCollectionView:UICollectionView!
     
     let waterfallLayout = WaterFlowViewLayout()
+    var isRefreshing = true
+    var params:[String:Any] = [:]
+    var lifeUrlString:String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        params = ["userId":Constants.CURRENT_USER_ID,"pageNo":mainLifeData.pageNo,"pageSize":mainLifeData.pageSize]
+        params = ["userId":"0","pageNo":mainLifeData.pageNo,"pageSize":mainLifeData.pageSize]
         //
         initCollectionView()
-        
-        initRefresh()
         
         self.automaticallyAdjustsScrollViewInsets = false
         
         
         //                headerRefreshData()
         //        lifeCollectionView.gifHeader.beginRefreshing()
-    }
-    
-    //MARK: - 初始化头部
-    func initHeadBar(_ name:String) {
-        
-        let headBgView = UIView(frame: CGRect(x: 0, y: 0, width: SCREEN_W, height: 64))
-        headBgView.backgroundColor = UIColor.whiteColor()
-        
-        
-        let headTitle = UILabel(frame: CGRect(x: 0, y: 0, width: SCREEN_W - 128, height: 30))
-        headTitle.text = name
-        headTitle.textColor = UIColor.blackColor()
-        headTitle.font = UIFont.boldSystemFontOfSize(18)
-        headTitle.textAlignment = .Center
-        headTitle.center.y = (headBgView.frame.size.height) * CGFloat(0.5) + 10
-        headTitle.center.x = headBgView.center.x
-        
-        let leftBtn = UIButton(frame: CGRect(x: 0, y: 20, width: 44, height: 44))
-        leftBtn.setImage(UIImage(named: "btn_back"), for: UIControlState())
-        leftBtn.addTarget(self, action: #selector(LifeWaterFlowViewController.back), for: UIControlEvents.touchUpInside)
-        
-        headBgView.addSubview(leftBtn)
-        headBgView.addSubview(headTitle)
-        self.view.addSubview(headBgView)
-        
-        lifeCollectionView.frame = CGRect(x: 0, y: 64, width: view.frame.width, height: SCREEN_H - 64)
-        
-        
     }
     
     func initCollectionView(){
@@ -75,35 +48,8 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
         view.addSubview(lifeCollectionView)
     }
     
-    //MARK: -下拉刷新
-    func initRefresh() {
-        let img = UIImage(named: "img_loading")!
-        
-        lifeCollectionView.addGifHeaderWithRefreshingTarget(self, refreshingAction: #selector(LifeWaterFlowViewController.headerRefreshData))
-        lifeCollectionView.gifHeader.setRefreshingmages([img])
-        lifeCollectionView.gifHeader.setIdleImsages([img])
-        lifeCollectionView.gifHeader.stateHidden = true
-        lifeCollectionView.gifHeader.updatedTimeHidden = true
-        
-    }
-    
-    func addFooterRefresh() {
-        if lifeCollectionView.gifFooter == nil {
-            lifeCollectionView.addGifFooterWithRefreshingTarget(self, refreshingAction: #selector(LifeWaterFlowViewController.footerRefreshData))
-            lifeCollectionView.gifFooter.refreshingImages = [UIImage(named: "img_loading")!]
-            lifeCollectionView.gifFooter.stateHidden = true
-        }
-    }
-    
     var canRequest = true
     func headerRefreshData(){
-        //        self.lifeCollectionView.addNoDataDefaultImageView(false)
-        
-//        if canRequest == false{
-//            return
-//        }
-//        canRequest = false
-        
         isRefreshing = true
         mainLifeData.pageNo = 1
         mainLifeData.isEnd = false
@@ -112,19 +58,14 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
     
     
     override func footerRefreshData(){
-//        if canRequest == false{
-//            return
-//        }
-//        canRequest = false
-        
         isRefreshing = false
         getDataFromServer()
     }
     
     func endRefresh(){
         //        self.lifeCollectionView.header.endRefreshing()
-        self.lifeCollectionView.gifHeader?.endRefreshing()
-        self.lifeCollectionView.gifFooter?.endRefreshing()
+//        self.lifeCollectionView.gifHeader?.endRefreshing()
+//        self.lifeCollectionView.gifFooter?.endRefreshing()
 //        canRequest = true
         mainLifeData.canRequest = true
     }
@@ -133,12 +74,7 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
     //        lifeCollectionView.gifFooter?.beginRefreshing()
     //    }
     
-    var isRefreshing = true
-    
-    //    var lifeDatas:[LifeData] = []
-    
-    var params:[String:AnyObject] = [:]
-    var lifeUrlString:String = ""
+
     
     func getDataFromServer(){
         if mainLifeData.isEnd == true {
@@ -159,27 +95,52 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
         
         params["pageNo"] = mainLifeData.pageNo
         
-        NetKit.sharedInstance.doPostRequest(lifeUrlString, params:params, successClosure:
-            { (bodyData) in
+        let successClosure: ((_ body:AnyObject) -> Void) = {
+            (bodyData) in
+            self.endRefresh()
+            if let arr = self.arrFromBody(bodyData){
+                print("arr.count: \(arr.count)")
                 
-                self.endRefresh()
-                if let arr = self.arrFromBody(bodyData){
-                    print("arr.count: \(arr.count)")
-                    
-                    if self.isRefreshing == true && arr.count == 0{
-                        self.lifeCollectionView.addNoDataDefaultImageView(true)
-                    }
-                    self.parseDataFromArr(arr)
-                    
+                if self.isRefreshing == true && arr.count == 0{
+                    self.lifeCollectionView.addNoDataDefaultImageView(isadd: true)
                 }
-            }, failClosure: {
-                self.endRefresh()
-            },noDataClosure:{
-                if self.isRefreshing == true{
-                    self.lifeCollectionView.addNoDataDefaultImageView(true)
-                }
-                self.endRefresh()
-        })
+                self.parseDataFromArr(arr as NSArray)
+                
+            }
+        }
+        let failureClosure: (() -> Void) = {
+            self.endRefresh()
+        }
+        let nullClosure: (() -> Void) = {
+            if self.isRefreshing == true{
+                self.lifeCollectionView.addNoDataDefaultImageView(isadd: true)
+            }
+            self.endRefresh()
+        }
+        
+        LifeUtils.request(url: lifeUrlString, pamams: params, successClosure: successClosure, failureClosure: failureClosure, nullClosure: nullClosure)
+        
+//        NetKit.sharedInstance.doPostRequest(lifeUrlString, params:params, successClosure:
+//            { (bodyData) in
+//                
+//                self.endRefresh()
+//                if let arr = self.arrFromBody(bodyData){
+//                    print("arr.count: \(arr.count)")
+//                    
+//                    if self.isRefreshing == true && arr.count == 0{
+//                        self.lifeCollectionView.addNoDataDefaultImageView(true)
+//                    }
+//                    self.parseDataFromArr(arr)
+//                    
+//                }
+//            }, failClosure: {
+//                self.endRefresh()
+//            },noDataClosure:{
+//                if self.isRefreshing == true{
+//                    self.lifeCollectionView.addNoDataDefaultImageView(true)
+//                }
+//                self.endRefresh()
+//        })
     }
     
     
@@ -189,7 +150,7 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
     }
     
     func arrForJsonString(_ str:NSString)->[NSDictionary]{
-        let data = str.data(using: String.Encoding.utf8)
+        let data = str.data(using: String.Encoding.utf8.rawValue)
         let obj = try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
         return (obj as! [NSDictionary])
     }
@@ -197,12 +158,9 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
     func parseDataFromArr(_ arr:NSArray){
         
         if arr.count < mainLifeData.pageSize {
-            self.lifeCollectionView.gifFooter?.hidden = true
             mainLifeData.isEnd = true
         }else{
             mainLifeData.pageNo += 1
-            self.lifeCollectionView.gifFooter?.hidden = false
-            self.addFooterRefresh()
         }
         
         if isRefreshing == true{
@@ -237,10 +195,10 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
                 lifeInner?.mainCollectionView.reloadData()
             }
         }else{
-            lifeCollectionView.insertItemsToSection(1)
+            lifeCollectionView.insertItemsTo(section: 1)
             
             if lifeInner?.isViewLoaded == true {
-                lifeInner?.mainCollectionView.insertItemsToSection(0)
+                lifeInner?.mainCollectionView.insertItemsTo(section: 0)
             }
         }
         
@@ -290,20 +248,11 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
         
     }
     
-    //    var lifeInner:LifeInnerController!
-    
-    //    var canInsert = false
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if indexPath.section == 0 {
             
         }else{
-            
-            //            if canClick == false{
-            //                return
-            //            }
-            //            canClick = false
             
             let cell = collectionView.cellForItem(at: indexPath) as! LifeCollectionViewCell
             let index = indexPath.row
@@ -314,33 +263,9 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
         
     }
     
-//    override func frameForIndex( index:Int)->CGRect{
-//        
-//        let iH = mainLifeData.lifeModels[index].imagesH
-//        
-//        let indexPath = NSIndexPath(forRow: index, inSection: 1)
-//        
-////        let layoutAttributes = self.waterfallLayout.layoutAttributes[index]
-//        
-//        return frameForCollectionView(indexPath, iH: iH)
-//        
-//    }
-    
     func back(){
         self.dismiss(animated: true, completion: nil)
     }
-    
-    //    var lastY:CGFloat = 0
-    //    func scrollViewDidScroll(scrollView: UIScrollView) {
-    //        let compareY = scrollView.contentSize.height - 2*scrollView.frame.size.height
-    //        let currentY = scrollView.contentOffset.y
-    //        if lastY <= compareY && currentY > compareY{
-    //            footerRefreshData()
-    //        }
-    //        lastY = currentY
-    //    }
-    
-    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

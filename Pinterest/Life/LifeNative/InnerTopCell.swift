@@ -19,7 +19,7 @@ class InnerTopCell:CommonCollectionViewCell{
     var imageViews:[UIImageView] = []
     let titleLabel = UILabel()
 //    let sourceLabel = UILabel()
-    let addressView:InnerAddressView!
+//    let addressView:InnerAddressView!
 //    let iView:UIView!
     let contentLabel = UILabel()
     var contentListView:UIView!
@@ -52,56 +52,24 @@ class InnerTopCell:CommonCollectionViewCell{
         margin = LifeConstant.bigMargin
         cWidth = LifeConstant.bigInnerWidth
         
-        headView = NSBundle.mainBundle().loadNibNamed("lifeViews", owner: nil, options: nil)![1] as! InnerHeadView
+        headView = Bundle.main.loadNibNamed("lifeViews", owner: nil, options: nil)![1] as! InnerHeadView
         headView.frame.size.width = cWidth
-        headView.frame.origin.x = margin/2
+        headView.frame.origin.x = margin
         headView.frame.size.height = LifeConstant.BIG_HEAD_HEIGHT
-        
-//        sourceLabel.frame = CGRectMake(margin/2, 0, cWidth, 25)
-//        sourceLabel.textColor = UIColor.grayColor()
-//        sourceLabel.font = UIFont.systemFontOfSize(13)
-        
-        addressView = NSBundle.mainBundle().loadNibNamed("lifeViews", owner: nil, options: nil)![2] as! InnerAddressView
-        addressView.frame.size.width = cWidth
-        addressView.frame.size.height = LifeConstant.BIG_ADDRESS_HEIGHT
-        addressView.frame.origin.x = margin/2
-        
-//        iView = UIView(frame:CGRectMake(margin/2, 0, cWidth, 50))
-        
-        contentListView = UIView(frame:CGRectMake(0, 0, SCREEN_W, 0))
-        
-        
-        infoView = UIView(frame:CGRectMake(margin/2, 0, cWidth, LifeConstant.BIG_LIKE_HEIGHT))
-        
-//        guessView = NSBundle.mainBundle().loadNibNamed("lifeViews", owner: nil, options: nil)[3] as! GuessView
-//        guessView.frame.size.width = cWidth
-//        guessView.frame.origin.x = margin/2
-//        guessView.frame.size.height = LifeConstant.BIG_GUESS_HEIGHT
-//        guessView.tLable.text = nil
-//        guessView.aLabel1.text = nil
-//        guessView.aLabel2.text = nil
 
-        //我想要
-//        wantView.frame.size.width = cWidth
-//        wantView.frame.origin.x = margin/2
-//        wantView.frame.size.height = LifeConstant.BIG_WANT_HEIGHT
         
-//        iwantBtn.frame.size = CGSize(width: cWidth/3, height: 40)
-//        iwantBtn.center = CGPoint(x: wantView.frame.size.width / 2, y: wantView.frame.size.height / 2)
-//        iwantBtn.layer.cornerRadius = 5
-//        iwantBtn.backgroundColor = LifeConstant.redFontColor
-//        iwantBtn.setTitle("我想要", forState: .Normal)
-//        iwantBtn.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-//        wantView.addSubview(iwantBtn)
-//        wantView.hidden = true
+        contentListView = UIView(frame:CGRect(x:0,y: 0,width: SCREEN_W,height: 0))
         
-        relatedView =  UIView(frame: CGRectMake(0, 0, LifeConstant.bigWidth, 40))
+        
+        infoView = UIView(frame:CGRect(x:margin,y: 0,width: cWidth,height: LifeConstant.BIG_LIKE_HEIGHT))
+        
+        relatedView =  UIView(frame: CGRect(x:0,y: 0,width: LifeConstant.bigWidth,height: 40))
         
         super.init(frame: frame)
         self.layer.cornerRadius = 5
         self.layer.masksToBounds = true
-        self.contentView.backgroundColor = UIColor.whiteColor()
-        iView.frame = CGRectMake(margin/2, 0, cWidth, 50)
+        self.contentView.backgroundColor = UIColor.white
+        iView.frame = CGRect(x:margin,y: 0,width: cWidth,height: 50)
         for _ in 0..<9{
             let imageView = UIImageView()
             imageViews.append(imageView)
@@ -109,8 +77,6 @@ class InnerTopCell:CommonCollectionViewCell{
         }
         self.contentView.addSubview(headView)
         self.contentView.addSubview(titleLabel)
-//        self.contentView.addSubview(sourceLabel)
-        self.contentView.addSubview(addressView)
         self.contentView.addSubview(iView)
         self.contentView.addSubview(contentLabel)
         self.contentView.addSubview(contentListView) //
@@ -123,35 +89,31 @@ class InnerTopCell:CommonCollectionViewCell{
         
         headView.headImageView.layer.cornerRadius = headView.headImageView.frame.size.width / 2
         headView.headImageView.layer.masksToBounds = true
-        headView.headImageView.userInteractionEnabled = true
+        headView.headImageView.isUserInteractionEnabled = true
         
-        readView.frame = CGRectMake(margin/2, 0, cWidth, 20)
-        readButton.frame = CGRectMake(readView.frame.size.width - 50, 0, 50, LifeConstant.BIG_READ_HEIGHT)
-        readButton.setTitle("阅读全文", forState: UIControlState.Normal)
-        readButton.titleLabel?.textAlignment = .Right
-        readButton.setTitleColor(UIColor.redColor(), forState: UIControlState.Normal)
-        readButton.titleLabel?.font = UIFont.systemFontOfSize(12)
-        readButton.hidden = true
+        readView.frame = CGRect(x:margin,y: 0,width: cWidth,height: 20)
+        readButton.frame = CGRect(x:readView.frame.size.width - 50,y: 0,width: 50,height: LifeConstant.BIG_READ_HEIGHT)
+        readButton.setTitle("阅读全文", for: UIControlState.normal)
+        readButton.titleLabel?.textAlignment = .right
+        readButton.setTitleColor(UIColor.red, for: UIControlState.normal)
+        readButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        readButton.isHidden = true
         readView.addSubview(readButton)
         
-        infoView.backgroundColor = UIColor.whiteColor()
+        infoView.backgroundColor = UIColor.white
         initButton(likeButton,image:"img_like3")
         initButton(replyButton,image:"img_comment3")
         
         relatedView.backgroundColor = LifeConstant.mainBackgroundColor
         
-        bottomLabel.frame = CGRectMake(0, 10, LifeConstant.bigWidth, 30)
+        bottomLabel.frame = CGRect(x:0,y: 10,width: LifeConstant.bigWidth,height: 30)
         bottomLabel.backgroundColor = LifeConstant.mainBackgroundColor
-        bottomLabel.textColor = UIColor.darkGrayColor()
+        bottomLabel.textColor = UIColor.darkGray
         bottomLabel.text = "相关内容"
-        bottomLabel.textAlignment = .Center
-        bottomLabel.font = UIFont.systemFontOfSize(17)
+        bottomLabel.textAlignment = .center
+        bottomLabel.font = UIFont.systemFont(ofSize: 17)
         
         relatedView.addSubview(bottomLabel)
-        
-        playBtn.setImage(UIImage(named:"video_play_btn_bg@2x"), forState: UIControlState.Normal)
-        iView.addSubview(self.playBtn)
-        playBtn.hidden = true
         
     }
     
@@ -169,7 +131,7 @@ class InnerTopCell:CommonCollectionViewCell{
     
     func setImageViewFrameAndUrl(_ imageView:UIImageView,frame:CGRect,url:String){
         imageView.frame = frame
-        LifeUtils.setImageViewForUrl(imageView, url: url)
+        imageView.setImageForURLString(str: url)
         imageView.isHidden = false
         contentImageViewsAndUrls.append((imageView,url))
     }
@@ -178,7 +140,7 @@ class InnerTopCell:CommonCollectionViewCell{
         
         let height =  LifeUtils.calculateHeightForBigContentStr(text)
         
-        label.frame = CGRect(x: margin/2, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
+        label.frame = CGRect(x: margin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
         label.numberOfLines = 0
         label.attributedText = NSAttributedString(string: text, attributes: LifeConstant.bigContentAttributesDic)
         label.textColor = UIColor.black
@@ -186,16 +148,16 @@ class InnerTopCell:CommonCollectionViewCell{
         maxY += height + LifeConstant.articleMargin
     }
     
-    func setimageView(_ iv:UIImageView,image:String, height:CGFloat, maxY:inout CGFloat){
-        iv.frame = CGRect(x: margin/2, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth, height: height)
-        LifeUtils.setImageViewForUrl(iv, url: image)
-        maxY += height + LifeConstant.articleMargin
-        contentImageViewsAndUrls.append((iv,image))
-    }
+//    func setimageView(_ iv:UIImageView,image:String, height:CGFloat, maxY:inout CGFloat){
+//        iv.frame = CGRect(x: margin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth, height: height)
+//        iv.setImageForURLString(str: image)
+//        maxY += height + LifeConstant.articleMargin
+//        contentImageViewsAndUrls.append((iv,image))
+//    }
     
     func setTitleLabel(_ label:UILabel,text:String,maxY:inout CGFloat){
         let height =  LifeUtils.calculateHeightForBigTitleStr(text)
-        label.frame = CGRect(x: margin/2, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
+        label.frame = CGRect(x: margin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
         label.numberOfLines = 0
         label.attributedText = NSAttributedString(string: text, attributes: LifeConstant.bigTitleAttributesDic)
         label.textColor = UIColor.black
@@ -248,7 +210,7 @@ class InnerTopCell:CommonCollectionViewCell{
         setPositionForButton(replyButton, size: model.replySize, maxX: &maxX)
     }
     
-    func setPositionForButton(_ button:UIButton,size:NSNumber,maxX:inout CGFloat){
+    func setPositionForButton(_ button:UIButton,size:Int,maxX:inout CGFloat){
         if size != 0{
             button.isHidden = false
             button.frame.origin.x = maxX
@@ -265,36 +227,14 @@ class InnerTopCell:CommonCollectionViewCell{
         iView.frame.origin.y = maxY
         
         var iY:CGFloat = 0
-        if sizes.count <= 4 {
-            for i in 0..<urls.count {
-                let imageheight = (sizes[i]["height"] as! CGFloat)/(sizes[i]["width"] as! CGFloat) * cWidth
-                setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x: 0, y: iY, width: cWidth, height: imageheight), url: urls[i])
-                iY += imageheight
-                
-            }
-        }else if sizes.count % 2 == 0{
-            for i in 0..<urls.count {
-                
-                setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x: CGFloat(i%2) * cWidth/2, y: iY, width: cWidth/2, height: cWidth/2), url: urls[i])
-                if i%2 == 1{
-                    iY += cWidth/2
-                }
-            }
-        }else{
-            let imageheight = (sizes[0]["height"] as! CGFloat)/(sizes[0]["width"] as! CGFloat) * cWidth
-            setImageViewFrameAndUrl(imageViews[0], frame: CGRect(x: 0, y: iY, width: cWidth, height: imageheight), url: urls[0])
+        for i in 0..<urls.count {
+            let imageheight = (sizes[i]["height"] as! CGFloat)/(sizes[i]["width"] as! CGFloat) * cWidth
+            setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x: 0, y: iY, width: cWidth, height: imageheight), url: urls[i])
             iY += imageheight
             
-            for i in 1..<urls.count {
-                
-                setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x: CGFloat((i-1)%2) * cWidth/2, y: iY , width: cWidth/2, height: cWidth/2), url: urls[i])
-                if i%2 == 0{
-                    iY += cWidth/2
-                }
-            }
         }
         
-        for i in urls.count..<9{
+        for i in urls.count..<4{
             imageViews[i].image = nil
             imageViews[i].isHidden = true
         }
@@ -304,37 +244,27 @@ class InnerTopCell:CommonCollectionViewCell{
         maxY += iY
     }
     
+    func setDate(index:Int,model:LifeModel,vc:LifeInnerController){
+        self.index = index
+        self.model = model
+        self.vc = vc
+        setData()
+    }
+    
     //MARK:设置数据
     func setData(){
         contentImageViewsAndUrls = []
         maxY = 0
         
         headView.frame.origin.y = maxY
-//        headView.headImageView.sd_setImageWithURL(NSURL(string: model.avatar.changeImageUrlToUsIp()))
-        headView.headImageView.setHeadImage(model.avatar, type: model.user_type)
+        headView.headImageView.setImageForURLString(str: model.avatar)
         headView.nickLabel.text = model.userNick
         headView.timeLabel.text = model.releaseTime
         
         print("headView.headImageView.frame: \(headView.headImageView.frame)")
         print("headView.nickLabel.frame.size.width: \(headView.nickLabel.frame.size.width)")
         
-        if String(model.userId) == Constants.CURRENT_USER_ID{
-            headView.followBtn.isHidden = true
-        }else{
-            headView.followBtn.isHidden = false
-        }
-        
-        if model.user_type  == 0{
-            headView.darenLabel.isHidden = true
-        }else{
-            headView.darenLabel.isHidden = false
-            headView.darenLabel.text = model.remarks
-            if model.user_type  == 1{
-                headView.darenLabel.textColor = UIColor(red: 252/255.0, green: 189/255.0, blue: 0, alpha: 1)
-            }else if model.user_type  == 2{
-                headView.darenLabel.textColor = UIColor.red
-            }
-        }
+        headView.followBtn.isHidden = true
         
         maxY += headView.frame.size.height
         
@@ -344,57 +274,23 @@ class InnerTopCell:CommonCollectionViewCell{
             setTitleLabel(titleLabel, text: model.collectionName, maxY: &maxY)
         }
         
-//        if model.source != "" {
-//            sourceLabel.hidden = false
-//            sourceLabel.frame.origin.y = maxY
-//            sourceLabel.text = "来源："+model.source
-//            maxY += sourceLabel.frame.size.height
-//        }else{
-//            sourceLabel.hidden = true
-//        }
-        
-        //地址
-        if model.location != "" {
-            addressView.isHidden = false
-            addressView.frame.origin.y = maxY
-            addressView.addressLabel.text = model.location
-            maxY += addressView.frame.size.height
-            maxY += LifeConstant.margin/2
-        }else{
-            addressView.isHidden = true
-        }
-        
         maxY += LifeConstant.articleMargin
         
         urls = model.collectionImgArr
         sizes = model.sizes
         setIView()
         
-//        maxY += LifeConstant.margin/2
-//        setContentLabel(contentLabel, height: model.bigContentH, text: model.content, font: LifeConstant.bigContentFont, textColor: UIColor.blackColor())
-        
-        if model.contentList.count == 0 {
-            contentLabel.isHidden = false
-            setContentLabel(contentLabel, text: model.content, maxY: &maxY)
-        }else{
-            contentLabel.isHidden = true
-        }
-        
         contentListView.frame.origin.y = maxY
         contentListView.frame.size.height = model.contentListH
-        setContentList()
         maxY += model.contentListH
         
         //阅读
         readView.frame.origin.y = maxY
         maxY += readView.frame.size.height
-
-        
-//        maxY += LifeConstant.margin/2
         
         //tags
         tagView.removeFromSuperview()
-        tagView = UIView(frame:CGRect(x: margin/2, y: maxY, width: cWidth, height: LifeConstant.BIG_TAG_HEIGHT))
+        tagView = UIView(frame:CGRect(x: margin, y: maxY, width: cWidth, height: LifeConstant.BIG_TAG_HEIGHT))
         tagView.backgroundColor = UIColor.white
         contentView.addSubview(tagView)
     
@@ -404,34 +300,9 @@ class InnerTopCell:CommonCollectionViewCell{
         infoView.isHidden = false
         maxY += infoView.frame.size.height
         
-         configInfoView()
-        
-//        guessView.frame.origin.y = maxY
-//        maxY += guessView.frame.size.height
-        
-        //我想要
-//        if model.wantType == 5{
-//            wantView.hidden = false
-//            wantView.frame.origin.y = maxY
-//            maxY += wantView.frame.size.height
-//        }else{
-//            wantView.hidden = true
-//        }
-        
-        if model.isTuanGou == true {
-            bottomLabel.text = "滑动查看商品详情"
-            bottomLabel.font = UIFont.systemFont(ofSize: 14)
-            bottomLabel.textColor = UIColor.lightGray
-        }else{
-            bottomLabel.text = "相关内容"
-            bottomLabel.font = UIFont.systemFont(ofSize: 17)
-            bottomLabel.textColor = UIColor.darkGray
-        }
+        configInfoView()
         
         relatedView.frame.origin.y = maxY
-        
-        //播放视频
-        setVideoControl()
         
         //点击图片手势
         setImageViewsGesture()
@@ -442,43 +313,6 @@ class InnerTopCell:CommonCollectionViewCell{
             setControlsInSecondStep()
         }
         
-        addHeadViewsGesture()
-        
-    }
-    
-    //MARK: 长文章
-    func setContentList(){
-        var y:CGFloat = 0
-        for v in self.contentListView.subviews{
-            v.removeFromSuperview()
-        }
-        
-        for dic in model.contentList{
-            let type = dic.intForKey("type")
-            let content = dic.stringForKey("content")
-            switch type {
-            case 0:
-                let iv = UIImageView()
-                let size = dic.stringForKey("size")
-                let ratio = LifeUtils.calculateHWRatioFromString(size)
-                let h = LifeConstant.bigInnerWidth * ratio
-                setimageView(iv, image: content, height: h, maxY: &y)
-                self.contentListView.addSubview(iv)
-//                setImageViewsGesture(iv, image: content)
-                imageViews.append(iv)
-            case 1:
-                let cLabel = UILabel()
-                setContentLabel(cLabel, text: content, maxY: &y)
-                self.contentListView.addSubview(cLabel)
-//            case 5:
-//                let tLabel = UILabel()
-//                setTitleLabel(tLabel, text: content, maxY: &y)
-//                self.contentListView.addSubview(tLabel)
-            default:
-                break
-            }
-        }
-       
     }
     
     //MARK:按钮是否可点击
@@ -487,13 +321,6 @@ class InnerTopCell:CommonCollectionViewCell{
         likeButton.isEnabled = isTrue
         replyButton.isEnabled = isTrue
         readButton.isEnabled = isTrue
-        
-//        guessView.wholeButton.enabled =  isTrue
-//        if isTrue == false{
-//            guessView.tLable.text = nil
-//            guessView.aLabel1.text = nil
-//            guessView.aLabel2.text = nil
-//        }
     }
     
     //MARK:内页
@@ -503,7 +330,6 @@ class InnerTopCell:CommonCollectionViewCell{
         if model.readFlag == 1{
             readButton.isHidden = false
             readButton.tag = index
-            readButton.addTarget(vc, action: #selector(LifeInnerController.read(_:)), for: UIControlEvents.touchUpInside)
         }else{
             readButton.isHidden = true
         }
@@ -511,10 +337,9 @@ class InnerTopCell:CommonCollectionViewCell{
         configTagView(model.tagList)
         
         likeButton.tag = index
-        likeButton.addTarget(vc, action: #selector(LifeInnerController.toLikeList(_:)), for: UIControlEvents.touchUpInside)
+
         
         replyButton.tag = index
-        replyButton.addTarget(vc, action: #selector(LifeInnerController.comment(_:)), for: UIControlEvents.touchUpInside)
         
         for b in tagButtons{
             b.addTarget(vc, action: #selector(LifeInnerController.leap(_:)), for: UIControlEvents.touchUpInside)
@@ -526,24 +351,9 @@ class InnerTopCell:CommonCollectionViewCell{
             headView.followBtn.isSelected = true
         }
         headView.followBtn.tag = index
-        headView.followBtn.addTarget(vc, action: #selector(LifeInnerController.follow(_:)), for: UIControlEvents.touchUpInside)
-        
-//        iwantBtn.tag = index
-//        iwantBtn.addTarget(vc, action: #selector(LifeInnerController.want(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        
-//        setGuessViewContent()
-//        guessView.wholeButton.tag = index
-//        guessView.wholeButton.addTarget(vc, action: #selector(LifeInnerController.guess(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        
+
     }
-    
-//    func setGuessViewContent(){
-//        guessView.tLable.text = model.mayaskList.first?["askQuestion"] as? String
-//        if let answerArr = model.mayaskList.first?["likes"] as? [NSDictionary]{
-//            guessView.aLabel1.text = answerArr.count >= 1 ? answerArr[0]["content"] as? String:nil
-//            guessView.aLabel2.text = answerArr.count >= 2 ? answerArr[1]["content"] as? String:nil
-//        }
-//    }
+
     
     func setImageViewsGesture(){
         setButtonsEnable(true)
@@ -573,24 +383,6 @@ class InnerTopCell:CommonCollectionViewCell{
             imageView.addGestureRecognizer(tapGestureRecognizer)
         }
         
-    }
-    
-    func setVideoControl(){
-        if model.videoUrl != "" {
-            self.playBtn.isHidden = false
-            self.playBtn.frame = iView.bounds
-            self.playBtn.tag = index
-            self.playBtn.addTarget(vc, action: #selector(LifeInnerController.play(_:)), for: UIControlEvents.touchUpInside)
-        }else{
-            self.playBtn.isHidden = true
-        }
-    }
-    
-    func addHeadViewsGesture(){
-        let tapGestureRecognizer = UserIdTapGestureRecognizer(target: vc,action: #selector(LifeInnerController.headTap(_:)))
-        tapGestureRecognizer.numberOfTapsRequired = 1
-        tapGestureRecognizer.userId = model.userId
-        headView.headImageView.addGestureRecognizer(tapGestureRecognizer)
     }
     
     func hideRelatedView(){

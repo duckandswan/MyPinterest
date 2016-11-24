@@ -26,13 +26,13 @@ class LifeCommonController:UIViewController, UIViewControllerAnimatedTransitioni
     }
     
     func frameForCollectionView(_ indexPath:IndexPath,iH:CGFloat)->CGRect{
-        //        let window = UIApplication.sharedApplication().keyWindow
+        let window = UIApplication.shared.keyWindow!
         let layoutAttributes = lifeCollectionView.layoutAttributesForItem(at: indexPath)!
-        var newFrame = lifeCollectionView.convertRect(layoutAttributes.frame, toView: rootController.view)
+        var newFrame = lifeCollectionView.convert(layoutAttributes.frame, to: window)
         
-        if newFrame.origin.y + iH < 64 || newFrame.origin.y > UIScreen.mainScreen().bounds.size.height - 70{
+        if newFrame.origin.y + iH < 64 || newFrame.origin.y > UIScreen.main.bounds.size.height - 70{
             lifeCollectionView.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.top, animated: false)
-            newFrame = lifeCollectionView.convertRect(layoutAttributes.frame, toView: rootController.view)
+            newFrame = lifeCollectionView.convert(layoutAttributes.frame, to: window)
         }
         
         newFrame.size.height = iH
@@ -52,9 +52,9 @@ class LifeCommonController:UIViewController, UIViewControllerAnimatedTransitioni
 
         let window = UIApplication.shared.keyWindow
         
-        let frame = cell.contentView.convertRect(cell.iView.frame, toView: window)
+        let frame = cell.contentView.convert(cell.iView.frame, to: window)
         
-        transView = cell.iView.snapshotViewAfterScreenUpdates(true)
+        transView = cell.iView.snapshotView(afterScreenUpdates: true)
         transView!.frame = frame
         
         let imagesY = lifeModel.bigImageY
@@ -79,24 +79,16 @@ class LifeCommonController:UIViewController, UIViewControllerAnimatedTransitioni
         navigationOperation = operation
         if operation == .push{
             if toVC is LifeInnerController{
-                if toVC is LifePersonalPageController {
-                    return nil
-                }else{
-                    return self
-                }
+                return self
             }else{
                 return nil
             }
         }else if operation == .pop {
             if fromVC is LifeInnerController{
-                if fromVC is LifePersonalPageController {
-                    return nil
+                if transView != nil {
+                    return self
                 }else{
-                    if transView != nil {
-                        return self
-                    }else{
-                        return nil
-                    }
+                    return nil
                 }
             }else{
                 return nil
@@ -114,21 +106,18 @@ class LifeCommonController:UIViewController, UIViewControllerAnimatedTransitioni
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
-        let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!
-        let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!
         let toView = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!.view!
         let fromView = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!.view!
         
         
         if navigationOperation == UINavigationControllerOperation.push {
-            containerView.addSubview(fromViewController.view!)
-            containerView.addSubview(toViewController.view!)
-            toViewController.view!.alpha = 0.0
+            containerView.addSubview(fromView)
+            containerView.addSubview(toView)
+            toView.alpha = 0.0
             containerView.addSubview(transView!)
             UIView.animate(withDuration: 0.35, animations: {() -> Void in
                 self.transView!.frame = self.desFrame
-                toViewController.view!.alpha = 1
-                //            fromViewController.view!.alpha = 0
+                toView.alpha = 1
                 
                 }, completion: {(finished: Bool) -> Void in
                     self.transView!.removeFromSuperview()
@@ -136,14 +125,11 @@ class LifeCommonController:UIViewController, UIViewControllerAnimatedTransitioni
             })
             
         } else if navigationOperation == UINavigationControllerOperation.pop {
-//            containerView.addSubview(fromViewController.view!)
-            containerView.addSubview(toViewController.view!)
+            containerView.addSubview(toView)
             
             containerView.addSubview(transView!)
             UIView.animate(withDuration: 0.35, animations: {() -> Void in
                 self.transView!.frame = self.desFrame
-                //            fromViewController.view!.alpha = 0
-//                self.transView!.frame  = self.frameForIndex(self.backIndex)
                 }, completion: {(finished: Bool) -> Void in
                     self.transView!.removeFromSuperview()
                     transitionContext.completeTransition(!transitionContext.transitionWasCancelled)

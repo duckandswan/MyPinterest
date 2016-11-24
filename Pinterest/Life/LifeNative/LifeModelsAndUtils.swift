@@ -46,6 +46,7 @@ class LifeModel:NSObject{
     var goods_title = ""
     var tagList:[NSDictionary] = []
     var readFlag = 0
+    var remarks = ""
     
     //是否加载了内页数据
     var isSet = false
@@ -66,9 +67,7 @@ class LifeModel:NSObject{
         storyCollectionId = dic.int(forKey: "storyCollectionId")
         userId = dic.int(forKey: "userId")
         userNick = dic.string(forKey: "userNick")
-        tagId = dic.stringArr(forKey: "tagId")
-        tagName = dic.stringArr(forKey: "tagName")
-
+        remarks = dic.string(forKey: "remarks")
         //设置高度
         setH()
     }

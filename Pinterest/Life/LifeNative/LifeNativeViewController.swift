@@ -384,33 +384,23 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
 
                 cell.setRelatedCollectionView()
                 
-                cell.relatedCollectionView.gifHeader?.endRefreshing()
- 
-                cell.relatedCollectionView.addHeaderRefresh({ 
+                cell.relatedCollectionView.addHeaderRefresh(block: { 
                     [weak self,weak cv = cell.relatedCollectionView] in
                     self?.getDataFromServer(cv, isrefresh: true)
                 })
                 
-                cell.relatedCollectionView.addFooterRefresh({
+                cell.relatedCollectionView.addFooterRefresh(block: {
                     [weak self,weak cv = cell.relatedCollectionView] in
                     self?.getDataFromServer(cv)
                 })
                 
                 if lifeData.isEnd == true{
-                    cell.relatedCollectionView.gifFooter.noticeNoMoreData()
                 }
                 
                 //没数据时刷新
-                if lifeCategoryArr[index].categoryName == "活动"{
-                    if lifeData.activityModels.count == 0 && lifeData.isEnd == false{
-                        print("活动 tag:\(cell.relatedCollectionView?.tag)")
-                        cell.relatedCollectionView.gifHeader?.beginRefreshing()
-                    }
-                }else{
-                    if lifeData.lifeModels.count == 0 && lifeData.isEnd == false{
-                        print("beginRefreshing tag:\(cell.relatedCollectionView?.tag)")
-                        cell.relatedCollectionView.gifHeader?.beginRefreshing()
-                    }
+                if lifeData.lifeModels.count == 0 && lifeData.isEnd == false{
+                    print("beginRefreshing tag:\(cell.relatedCollectionView?.tag)")
+                    self.getDataFromServer(cell.relatedCollectionView)
                 }
                 
                 cell.relatedCollectionView.contentOffset.y = lifeData.yOffset
@@ -420,72 +410,54 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 if indexPath.section == 1 {
                     
                     let index = collectionView.tag
+                    let lifeModel = lifeDatas[index].lifeModels[indexPath.row]
+                    if indexPath.row - 1 == lifeDatas[index].lifeModels.count - 7{
+                        getDataFromServer(collectionView)
+                    }
                     
-                    if index == 0{
-                        if indexPath.row == 0{
-                            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Zhi", for: indexPath) as! ZhiCell
-                            LifeUtils.setImageViewForUrl(cell.iv, url: hotModel.hotImg)
-                            return cell
-                        }else{
-                            let lifeModel = lifeDatas[index].lifeModels[indexPath.row - 1]
-                            if indexPath.row - 1 == lifeDatas[index].lifeModels.count - 7{
-                                getDataFromServer(collectionView)
-                            }
-                            
-                            if lifeModel.isDaren {
-                                let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenCell", forIndexPath: indexPath) as! DarenCollectionViewCell
-                                cell.setData(lifeModel)
-                                return cell
-                            }else{
-                                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
-                                cell.setData(lifeModel)
-                                return cell
-                            }
-                        }
-                        
-                    }else{
-                        let lifeModel = lifeDatas[index].lifeModels[indexPath.row]
-                        if indexPath.row == lifeDatas[index].lifeModels.count - 7{
-                            getDataFromServer(collectionView)
-                        }
-                        
-                        if lifeModel.isDaren {
-                            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenCell", forIndexPath: indexPath) as! DarenCollectionViewCell
-                            cell.setData(lifeModel)
-                            return cell
-                        }else{
-                            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
-                            cell.setData(lifeModel)
-                            return cell
-                        }
-                    }
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
+                    cell.setData(lifeModel)
+                    return cell
+//                    if index == 0{
+//                        if indexPath.row == 0{
+//                            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Zhi", for: indexPath) as! ZhiCell
+//                            LifeUtils.setImageViewForUrl(cell.iv, url: hotModel.hotImg)
+//                            return cell
+//                        }else{
+//                            let lifeModel = lifeDatas[index].lifeModels[indexPath.row - 1]
+//                            if indexPath.row - 1 == lifeDatas[index].lifeModels.count - 7{
+//                                getDataFromServer(collectionView)
+//                            }
+//                            
+//                            if lifeModel.isDaren {
+//                                let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenCell", forIndexPath: indexPath) as! DarenCollectionViewCell
+//                                cell.setData(lifeModel)
+//                                return cell
+//                            }else{
+//                                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
+//                                cell.setData(lifeModel)
+//                                return cell
+//                            }
+//                        }
+//                        
+//                    }else{
+//                        let lifeModel = lifeDatas[index].lifeModels[indexPath.row]
+//                        if indexPath.row == lifeDatas[index].lifeModels.count - 7{
+//                            getDataFromServer(collectionView)
+//                        }
+//                        
+//                        if lifeModel.isDaren {
+//                            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenCell", forIndexPath: indexPath) as! DarenCollectionViewCell
+//                            cell.setData(lifeModel)
+//                            return cell
+//                        }else{
+//                            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
+//                            cell.setData(lifeModel)
+//                            return cell
+//                        }
+//                    }
                 }else if indexPath.section == 0{
-                    let index = collectionView.tag
-                    if index == 0 {
-                        //推荐
-                        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Ad", for: indexPath) as! AdCell
-                        cell.b.addTarget(self, action: #selector(LifeNativeViewController.removeAd(_:)), for: UIControlEvents.touchUpInside)
-//                        LifeUtils.setImageViewForUrl(cell.iv, url: adModel.advertImg)
-                        cell.iv.sd_setImageWithURL(URL(string: adModel.advertImg.changeImageUrlToUsIp())!, completed: { (img, _, _, _) in
-                            if self.adSizeChanged == false{
-                                self.adSizeChanged = true
-                                self.adHeigth = SCREEN_W * img.size.height / img.size.width
-                                if  let cell = self.mainCollectionView.cellForItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? LifeNativeCollectionViewCell{
-                                    cell.relatedCollectionView.reloadAllSections()
-                                }
-                            }
-                        })
-
-                        return cell
-                    }else if lifeCategoryArr[index].categoryName == "活动"{
-                        //活动
-                        let model = lifeDatas[index].activityModels[indexPath.row]
-                        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Activity", forIndexPath: indexPath) as! LifeActivityCell
-                        cell.setData(model)
-                        return cell
-                    }else{
-                        return UICollectionViewCell()
-                    }
+                    return UICollectionViewCell()
                 }else{
                     return UICollectionViewCell()
                 }
@@ -526,98 +498,17 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 
             }else{
                 if indexPath.section == 1 {
-                    let index = collectionView.tag
-                    if index == 0{
-                        if indexPath.row == 0{
-                            if hotModel.hotUrl != "" {
-                                let args = ["title":"Finding·志", "url":(Constants.FINDING_ZHI_H5 + "?userId=" + Constants.CURRENT_USER_ID), "action":"", "rightType" : "", "right":""]
-                                MyScriptHandler.navigate(self, args: args)
-                            }
-                            return
-                        }else{
-                            mainLifeData = lifeDatas[collectionView.tag]
-                            lifeCollectionView = collectionView
-                            let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CommonCollectionViewCell
-                            presentLifeInner(cell, index: indexPath.row - 1)
-                        }
-                    }else{
-                        mainLifeData = lifeDatas[collectionView.tag]
-                        lifeCollectionView = collectionView
-                        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CommonCollectionViewCell
-                        presentLifeInner(cell, index: indexPath.row)
-                    }
+                    mainLifeData = lifeDatas[collectionView.tag]
+                    lifeCollectionView = collectionView
+                    let cell = collectionView.cellForItem(at: indexPath) as! CommonCollectionViewCell
+                    presentLifeInner(cell, index: indexPath.row)
                 }else{
-                    let index = collectionView.tag
-                    if index == 0{
-                        let args = ["title":adModel.advertTitle, "url":adModel.advertUrl, "action":adModel.action, "rightType" : adModel.rightType, "right":adModel.right]
-        
-                        MyScriptHandler.navigate(self, args: args)
-                        Constants.isLifeAdClick = true
-                    }else if lifeCategoryArr[index].categoryName == "活动"{
-                        let model = lifeDatas[index].activityModels[indexPath.row]
-                        let args = ["title":model.activityName, "url":model.activityUrl, "action":"", "rightType" : "", "right":""]
-                        MyScriptHandler.navigate(self, args: args)
-                    }
                     
                 }
             }
         }
         
     }
-    
-//    override func frameForIndex(index:Int)->CGRect{
-////        let iH = mainLifeData.lifeModels[index].imagesH
-////        
-////        let indexPath = NSIndexPath(forRow: index + 1, inSection: 1)
-////        
-////        var idx = index + 1
-////        if hasAd == true{
-////            idx += 1
-////        }
-////        
-////        let layoutAttributes = self.waterfallLayout.layoutAttributes[idx]
-////        
-////        return frameForCollectionView(self.lifeCollectionView,indexPath: indexPath, iH: iH, layoutAttributes: layoutAttributes)
-//        
-//        let indexPath = NSIndexPath(forRow: index, inSection: 1)
-//        let iH = mainLifeData.lifeModels[index].imagesH
-////        let currentWaterfallLayout = lifeCollectionView.layoutAttributesForItemAtIndexPath(indexPath)
-////        let layoutAttributes = currentWaterfallLayout.layoutAttributes[index]
-////        let layoutAttributes = currentWaterfallLayout.layoutAttributesForItemAtIndexPath(indexPath)!
-////        let layoutAttributes = lifeCollectionView.layoutAttributesForItemAtIndexPath(indexPath)!
-////        return frameForCollectionView(self.lifeCollectionView,indexPath: indexPath, iH: iH, layoutAttributes: layoutAttributes)
-//        return frameForCollectionView(indexPath, iH: iH)
-////        return CGRect.zero
-//    }
-    
-//    override func frameForIndex(index:Int)->CGRect{
-//        let indexPath = NSIndexPath(forRow: index, inSection: 1)
-////        let iH = mainLifeData.lifeModels[index].imagesH
-//        let cell = lifeCollectionView.cellForItemAtIndexPath(indexPath) as! CommonCollectionViewCell
-//        
-//        let rect = cell.contentView.convertRect(cell.iView.frame, toView: rootController.view)
-//        return rect
-//        
-////        let layoutAttributes = currentWaterfallLayout.layoutAttributes[index]
-////                let layoutAttributes = currentWaterfallLayout.layoutAttributesForItemAtIndexPath(indexPath)!
-////        return frameForCollectionView(self.lifeCollectionView,indexPath: indexPath, iH: iH, layoutAttributes: layoutAttributes)
-//        //        return CGRect.zero
-//    }
-    
-//    override func frameForCollectionView(collectionView:UICollectionView,indexPath:NSIndexPath,iH:CGFloat,layoutAttributes:UICollectionViewLayoutAttributes)->CGRect{
-//        //        let window = UIApplication.sharedApplication().keyWindow
-//        
-//        var newFrame = collectionView.convertRect(layoutAttributes.frame, toView: rootController.view)
-//        
-//        if newFrame.origin.y + iH < 64 || newFrame.origin.y > UIScreen.mainScreen().bounds.size.height - 70{
-//            collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
-//            newFrame = collectionView.convertRect(layoutAttributes.frame, toView: rootController.view)
-//        }
-//        
-//        newFrame.size.height = iH
-//        print("newFrame: \(newFrame)")
-//        return newFrame
-//    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == mainCollectionView {
@@ -628,34 +519,16 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         }
     }
     
-//    var space:CGFloat = 0
     
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat{
-//        if collectionView == mainCollectionView {
-//            return 0
+//    override func frameForIndex(_ index:Int)->CGRect{
+//        if lifeCollectionView.tag == 0{
+//            let iH = mainLifeData.lifeModels[index].imagesH
+//            let indexPath = IndexPath(row: index + 1, section: 1)
+//            return frameForCollectionView(indexPath, iH: iH)
 //        }else{
-//            return space
+//            return super.frameForIndex(index)
 //        }
 //    }
-//    
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
-//        if collectionView == mainCollectionView {
-//            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//        }else{
-//            return UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
-//        }
-//    }
-    
-    
-    override func frameForIndex(_ index:Int)->CGRect{
-        if lifeCollectionView.tag == 0{
-            let iH = mainLifeData.lifeModels[index].imagesH
-            let indexPath = IndexPath(row: index + 1, section: 1)
-            return frameForCollectionView(indexPath, iH: iH)
-        }else{
-            return super.frameForIndex(index)
-        }
-    }
     
     let plistCommentKey = "CommentKey"
     
@@ -664,166 +537,32 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         
         let index = waterFlowViewLayout.index
         if indextPath.section == 1{
-            if index == 0 {
-                if indextPath.row == 0{
-                    return WaterFlowViewLayout.columnWidth * 16 / 9 + 55.aduJustHeight()
-                }else{
-                    return lifeDatas[index].lifeModels[indextPath.row - 1].height
-                }
-            }else{
-                return lifeDatas[index].lifeModels[indextPath.row].height
-            }
-            
+//            if index == 0 {
+//                if indextPath.row == 0{
+//                    return WaterFlowViewLayout.columnWidth * 16 / 9 + 55.aduJustHeight()
+//                }else{
+//                    return lifeDatas[index].lifeModels[indextPath.row - 1].height
+//                }
+//            }else{
+//                return lifeDatas[index].lifeModels[indextPath.row].height
+//            }
+            return lifeDatas[index].lifeModels[indextPath.row].height
         }else{
-            if lifeCategoryArr[index].categoryName == "活动" {
-                return lifeDatas[index].activityModels[indextPath.row].height
-            }else if index == 0 {
-                return adHeigth
-            }else{
-                return 0
-            }
-            
+//            if lifeCategoryArr[index].categoryName == "活动" {
+//                return lifeDatas[index].activityModels[indextPath.row].height
+//            }else if index == 0 {
+//                return adHeigth
+//            }else{
+//                return 0
+//            }
+            return 0
         }
-    }
-    
-    //MARK: -是否需要评分
-    func getIsComment(){
-
-        
-        let defaults = UserDefaults.standard
-        let num = defaults.object(forKey: plistCommentKey) as? Bool
-        if num == nil{
-            let defaults = UserDefaults.standard
-            defaults.set(true, forKey: plistCommentKey)
-            return
-        }
-        
-        NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_IS_COMMENT_URL, params:["key":"AppStoreComment"], successClosure:
-            { (bodyData) in
-                
-                if (bodyData as? String) == "1"{
-                    // 需要提示评分时候
-                    if(DocumentUtil.queryScoreMessage() == Constants.scoreNo || DocumentUtil.queryScoreMessage() == Constants.scoreDone){
-                        return
-                    }
-                    
-                    if DocumentUtil.queryScoreMessage() == ""{
-                        self.goAction()
-                    }else {
-                        let formatter:NSDateFormatter = NSDateFormatter()
-                        formatter.dateFormat = "yyyyMMddHHmmss"
-                        let rejectDate:NSDate = formatter.dateFromString(DocumentUtil.queryScoreMessage())!
-                        let nowDate:NSDate = NSDate()
-                        
-                        let seconds = nowDate.timeIntervalSinceDate(rejectDate)
-                        let day = seconds/(60*60*24)
-                        if day > 3{       //残忍拒绝3天后， 再次提示
-                            self.goAction()
-                        }
-                    }
-                }
-                
-            }, failClosure: {
-                
-            },noDataClosure:{
-                
-        })
-        
-    }
-    
-    //MARK： - 去应用市场评分
-    func goAction(){
-        let goHandler = {(action:UIAlertAction!) -> Void in
-            print("马上就去", terminator: "")
-            
-            let url = URL(string: Constants.itunesLink)!
-            if UIApplication.sharedApplication().canOpenURL(url){
-                UIApplication.sharedApplication().openURL(url)
-                DocumentUtil.saveScoreMessage(Constants.scoreDone)
-            }else{
-                print("can not open", terminator: "")
-            }
-        }
-        let noOneHandler = {(action:UIAlertAction!) -> Void in
-            print("残忍拒绝", terminator: "")
-            // 暂时拒绝记录当前时间，  x天后 再次提醒
-            let date:Date = Date()
-            let formatter:DateFormatter = DateFormatter()
-            formatter.dateFormat = "yyyyMMddHHmmss"
-            let dateString = formatter.string(from: date)
-            print(dateString, terminator: "")
-            DocumentUtil.saveScoreMessage(dateString)
-        }
-        let noMoreHandler = {(action:UIAlertAction!) -> Void in
-            print("不再显示", terminator: "")
-            DocumentUtil.saveScoreMessage(Constants.scoreNo)
-        }
-        
-        let alertController = UIAlertController(title: "", message: "去应用市场评分", preferredStyle: UIAlertControllerStyle.alert)
-        
-        let goAction = UIAlertAction(title: "马上就去", style: UIAlertActionStyle.default, handler: goHandler)
-        let noOneAction = UIAlertAction(title: "残忍拒绝", style: UIAlertActionStyle.default, handler: noOneHandler)
-        let noMoreAction = UIAlertAction(title: "不再显示", style: UIAlertActionStyle.default, handler: noMoreHandler)
-        alertController.addAction(goAction)
-        alertController.addAction(noOneAction)
-        alertController.addAction(noMoreAction)
-        
-        self.present(alertController, animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {
         print("内存爆了")
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-}
-
-//Finding.志
-class ZhiCell:UICollectionViewCell{
-    let iv:UIImageView!
-    let iv2:UIImageView!
-    override init(frame: CGRect) {
-        iv = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height - 55.aduJustHeight()))
-        let v = UIView(frame: CGRect(x: 0, y: iv.frame.maxY + 1, width: frame.size.width, height: 55.aduJustHeight()))
-        v.backgroundColor = UIColor(red: 226/225.0, green: 74/225.0, blue: 46/225.0, alpha: 1)
-        let img = UIImage(named: "FindingZhi")
-        iv2 = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width - 40, height: (frame.size.width - 40) * img!.size.height/img!.size.width))
-        //        iv2 = UIImageView(frame: CGRectMake(0, 0, frame.size.width - 40, 20))
-        iv2.image = img
-        super.init(frame: frame)
-        contentView.addSubview(iv)
-        contentView.addSubview(v)
-        v.addSubview(iv2)
-        iv2.center = CGPoint(x: v.frame.size.width/2, y: v.frame.size.height/2)
-        self.layer.cornerRadius = 5
-        self.layer.masksToBounds = true
-        self.contentView.backgroundColor = UIColor.white
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-//广告
-class AdCell:UICollectionViewCell{
-    let iv:UIImageView!
-    let b:UIButton!
-    override init(frame: CGRect) {
-        iv = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
-        iv.autoresizingMask = .flexibleHeight
-        let l:CGFloat = 30
-        b = UIButton(frame: CGRect(x: frame.size.width - l - 5 , y: 5, width: l, height: l))
-        b.setBackgroundImage(UIImage(named: "btn_cancel"), for: UIControlState())
-        super.init(frame: frame)
-        contentView.addSubview(iv)
-        contentView.addSubview(b)
-        self.contentView.backgroundColor = UIColor.white
-
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -906,10 +645,6 @@ class CategoryCollectionView:UICollectionView{
         lineV.backgroundColor = UIColor.red
         self.addSubview(lineV)
 
-//        if let cell = self.cellForItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? CategoryCell {
-//            self.lineV.frame.size.width = cell.frame.size.width
-//            self.lineV.center.x = cell.center.x
-//        }
         if let la = self.layoutAttributesForItem(at: IndexPath(row: 0, section: 0)) {
             self.lineV.frame.size.width = la.frame.size.width
             self.lineV.center.x = la.center.x

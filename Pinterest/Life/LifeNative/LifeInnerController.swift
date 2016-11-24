@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UICollectionViewDelegate, WaterFlowViewLayoutDelegate, RewardViewDelegate{
+class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UICollectionViewDelegate, WaterFlowViewLayoutDelegate{
     
     var delegate:LifeCommonController!
     
@@ -21,16 +21,11 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
     func addLifeDatas(_ model:LifeModel){
         let lifeData = LifeData()
         lifeData.storyId = model.storyCollectionId
-        if model.isDaren{
-            lifeData.isDaren = true
-            lifeData.masterId = model.masterId
-        }
         lifeDatas.append(lifeData)
     }
     
     
     deinit{
-        removeObserver()
         print("life inner has been removed!")
     }
     
@@ -40,52 +35,15 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         initMainCollectionView()
         
         for m in delegate.mainLifeData.lifeModels {
-//            let lifeData = LifeData()
-//            lifeData.storyId = m.storyCollectionId
-//            lifeDatas.append(lifeData)
             addLifeDatas(m)
         }
-        
-        addObserver()
-        
-        // Do any additional setup after loading the view.
-    }
-    
-    func initTip(_ key:String,imageName:String){
-        if let tipIV = TipView(frame: UIScreen.mainScreen().bounds, key: key) {
-            let imageViewWidth = SCREEN_W - 60
-            let iv = UIImageView(frame: CGRect(x: 200, y: SCREEN_H / 2 + 40 - imageViewWidth/1.5, width: imageViewWidth, height: imageViewWidth/1.5))
-            iv.image = UIImage(named: imageName)
-            iv.center.x = SCREEN_W / 2 + 30
-            tipIV.addSubview(iv)
-            tipIV.b.frame = CGRect(x: 200, y: iv.frame.maxY, width: 150, height: 75)
-            tipIV.b.center.x = SCREEN_W / 2
-            //            let window = UIApplication.sharedApplication().keyWindow
-            self.view.addSubview(tipIV)
-        }
-    }
-    
-    func initBountyTip(){
-        initTip(TipView.MyBountyTipKey, imageName: "G5")
-    }
-    
-    func initBuyTip(){
-        initTip(TipView.MyBuyTipKey, imageName: "G4")
     }
     
     func initMainCollectionView(){
-//        let statusBarckView = UIView(frame: CGRect(x: 0, y: -1 * UIApplication.sharedApplication().statusBarFrame.size.height, width: UIScreen.mainScreen().bounds.size.width, height: UIApplication.sharedApplication().statusBarFrame.size.height))
-//        statusBarckView.backgroundColor = Constants.naviBgColor
-        
-//        view.addSubview(statusBarckView)
-        
         let flowLayout = UICollectionViewFlowLayout()
-        
         flowLayout.minimumLineSpacing = 0
         flowLayout.minimumInteritemSpacing = 0
         flowLayout.scrollDirection = .horizontal
-        
-        
         
         mainCollectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height), collectionViewLayout: flowLayout)
         
@@ -103,25 +61,10 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        hideNavigationBar()
-        hideTabBar()
-        
-        BaiduMobStat.defaultStat().pageviewEndWithName("看生活内页")
-        MobClick.endLogPageView("看生活内页")
-        
-        
-        resumePlayer()
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        BaiduMobStat.defaultStat().pageviewEndWithName("看生活内页")
-        MobClick.endLogPageView("看生活内页")
-        
-        pausePlayer()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -143,21 +86,9 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         let lifeData = lifeDatas[index]
         
         if arr.count < lifeData.pageSize {
-            collectionView?.gifFooter?.noticeNoMoreData()
             lifeData.isEnd = true
         }else{
             lifeData.pageNo += 1
-        }
-        
-        if lifeData.isDaren{
-            for item in arr{
-                let model = DarenMasterModel()
-                model.setValueForDic(item as! NSDictionary)
-                lifeData.darenModels.append(model)
-            }
-            
-            collectionView?.insertItemsToSection(1)
-            return
         }
         
         for item in arr{
@@ -168,18 +99,19 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
             lifeData.lifeModels.append(model)
         }
         
-        collectionView?.insertItemsToSection(1)
+        collectionView?.insertItemsTo(section: 1)
     
         if lifeInner?.isViewLoaded == true {
-            lifeInner?.mainCollectionView.insertItemsToSection(0)
+            lifeInner?.mainCollectionView.insertItemsTo(section: 0)
         }
-        
-
         
     }
     
     //MARK:获取数据
-    func getDataFromServer(_ collectionView:UICollectionView?,index:Int){
+    func getDataFromServer(_ collectionView:UICollectionView?){
+        guard let index = collectionView?.tag else{
+            return
+        }
         
         let lifeData = lifeDatas[index]
         
@@ -190,64 +122,68 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         }
         
         if lifeData.isEnd == true {
-            collectionView?.gifFooter?.noticeNoMoreData()
             return
         }
         
-        var params:[String:AnyObject] = ["pageNo":lifeData.pageNo,"pageSize":lifeData.pageSize,"storyCollectionId":lifeData.storyId]
-        var url = RequestURL.REQUEST_LIFE_RELATED
+        var params:[String:Any] = ["pageNo":lifeData.pageNo,"pageSize":lifeData.pageSize,"storyCollectionId":lifeData.storyId]
+        let url = "api/storycollection/related"
         if let maxId  = lifeData.lifeModels.last?.storyCollectionId {
             params["maxId"] = maxId
         }
         
-        if lifeData.isDaren {
-            url = RequestURL.REQUEST_MASTER_INFO
-            params = ["pageNo":lifeData.pageNo,"pageSize":lifeData.pageSize,"masterId":lifeData.masterId,"userId":Constants.CURRENT_USER_ID]
-            
-            if lifeData.pageNo > 1{
-                if let minId = lifeData.darenModels.last?.id {
-                    params["minId"] = minId
-                }
+        let successClosure: ((_ body:AnyObject) -> Void) = {
+            (bodyData) in
+            self.endRefresh(collectionView,index: index)
+            if let arr = bodyData as? [NSDictionary] {
+                self.parseDataFromArr(arr as NSArray,collectionView:collectionView,index:index)
             }
         }
+        let failureClosure: (() -> Void) = {
+            self.endRefresh(collectionView,index: index)
+        }
+        let nullClosure: (() -> Void) = {
+            self.endRefresh(collectionView,index: index)
+            lifeData.isEnd = true
+        }
+        
+        LifeUtils.request(url: url, pamams: params, successClosure: successClosure, failureClosure: failureClosure, nullClosure: nullClosure)
 
-        NetKit.sharedInstance.doPostRequest(url, params:params, successClosure:
-            { (bodyData) in
-                
-                if lifeData.isDaren {
-                    if let arr = (bodyData as? NSDictionary)?.dicArrForKey("caseList") {
-                        self.parseDataFromArr(arr,collectionView:collectionView,index:index)
-                    }
-                }else{
-                    if let arr = bodyData as? [NSDictionary] {
-                        self.parseDataFromArr(arr,collectionView:collectionView,index:index)
-                    }
-                }
-                
-                self.endRefresh(collectionView,index: index)
-                
-            }, failClosure: {
-                self.endRefresh(collectionView,index: index)
-            },noDataClosure:{
-                
-        })
+//        NetKit.sharedInstance.doPostRequest(url, params:params, successClosure:
+//            { (bodyData) in
+//                
+//                if lifeData.isDaren {
+//                    if let arr = (bodyData as? NSDictionary)?.dicArrForKey("caseList") {
+//                        self.parseDataFromArr(arr,collectionView:collectionView,index:index)
+//                    }
+//                }else{
+//                    if let arr = bodyData as? [NSDictionary] {
+//                        self.parseDataFromArr(arr,collectionView:collectionView,index:index)
+//                    }
+//                }
+//                
+//                self.endRefresh(collectionView,index: index)
+//                
+//            }, failClosure: {
+//                self.endRefresh(collectionView,index: index)
+//            },noDataClosure:{
+//                
+//        })
         
     }
     
     func endRefresh(_ collectionView:UICollectionView?,index:Int){
         if collectionView?.tag == index{
-            collectionView?.footer?.endRefreshing()
         }
         let lifeData = lifeDatas[index]
         lifeData.canRequest = true
     }
     
     override func footerRefreshData(){
-        getDataFromServer(lifeCollectionView,index: currentIndex)
+        getDataFromServer(lifeCollectionView)
     }
     
     func arrForJsonString(_ str:NSString)->[NSDictionary]{
-        let data = str.data(using: String.Encoding.utf8)
+        let data = str.data(using: String.Encoding.utf8.rawValue)
         let obj = try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
         return (obj as! [NSDictionary])
     }
@@ -269,11 +205,12 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
             if section == 1 {
                 let index = collectionView.tag
                 let lifeData = lifeDatas[index]
-                if lifeData.isDaren {
-                    return lifeData.darenModels.count
-                }else{
-                    return lifeData.lifeModels.count
-                }
+//                if lifeData.isDaren {
+//                    return lifeData.darenModels.count
+//                }else{
+//                    return lifeData.lifeModels.count
+//                }
+                return lifeData.lifeModels.count
             }else{
                 return 1
             }
@@ -295,61 +232,134 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
             
             let lifeData = lifeDatas[index]
             
-            if model.isTuanGou == true && model.isDaren == false{
-                cell.relatedCollectionView.removeFooter()
-            }else{
-                cell.relatedCollectionView.addFooterRefresh({
-                    [weak self,weak cv = cell.relatedCollectionView] in
-                    self?.getDataFromServer(cv, index: cell.relatedCollectionView.tag)
-                    })
-                
-                if lifeData.isEnd == true{
-                    cell.relatedCollectionView.gifFooter.noticeNoMoreData()
-                }
-                
-                if lifeData.lifeModels.count == 0 && lifeData.isEnd == false{
-                    getDataFromServer(cell.relatedCollectionView, index: cell.relatedCollectionView.tag)
-                }
+            cell.relatedCollectionView.addFooterRefresh(block: {
+                [weak self,weak cv = cell.relatedCollectionView] in
+                self?.getDataFromServer(cv)
+            })
+            
+            if lifeData.isEnd == true{
             }
             
+            if lifeData.lifeModels.count == 0 && lifeData.isEnd == false{
+                getDataFromServer(cell.relatedCollectionView)
+            }
+            
+//            if model.isTuanGou == true && model.isDaren == false{
+//                cell.relatedCollectionView.removeFooter()
+//            }else{
+//                cell.relatedCollectionView.addFooterRefresh({
+//                    [weak self,weak cv = cell.relatedCollectionView] in
+//                    self?.getDataFromServer(cv, index: cell.relatedCollectionView.tag)
+//                    })
+//                
+//                if lifeData.isEnd == true{
+//                    cell.relatedCollectionView.gifFooter.noticeNoMoreData()
+//                }
+//                
+//                if lifeData.lifeModels.count == 0 && lifeData.isEnd == false{
+//                    getDataFromServer(cell.relatedCollectionView, index: cell.relatedCollectionView.tag)
+//                }
+//            }
+            
             //获取内页数据
-            if model.isDaren == false{
-                if model.isSet == false{
-                    cell.setButtonsEnable(false)
-                    print("model.storyCollectionId: \(model.storyCollectionId)")
-                    
-                    
-                    let params:[String : AnyObject] = ["userId":Constants.CURRENT_USER_ID,"storyCollectionId":model.storyCollectionId]
-                    
-                    NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_LIFE_STORY_DETAIL, params:params, successClosure:
-                        { (bodyData) in
-                            
-                            if let bodyDic = bodyData as? NSDictionary {
-                                model.setValueForDicInSecondStep(bodyDic)
-                                if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? LifeInnerCell{
-                                    cell.setControlsInSecondStep()
-                                    if let topCell = cell.relatedCollectionView.cellForItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? InnerTopCell{
-                                        topCell.setControlsInSecondStep()
-                                    }
-                                    
-                                    if model.contentList.count > 0{
-                                        cell.relatedCollectionView.reloadAllSections()
-                                    }
-                                }
-                            }else{
-                                print("内页数据结构错误")
- 
+//            if model.isDaren == false{
+//                if model.isSet == false{
+//                    cell.setButtonsEnable(false)
+//                    print("model.storyCollectionId: \(model.storyCollectionId)")
+//                    
+//                    
+//                    let params:[String : AnyObject] = ["userId":Constants.CURRENT_USER_ID,"storyCollectionId":model.storyCollectionId]
+//                    
+//                    NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_LIFE_STORY_DETAIL, params:params, successClosure:
+//                        { (bodyData) in
+//                            
+//                            if let bodyDic = bodyData as? NSDictionary {
+//                                model.setValueForDicInSecondStep(bodyDic)
+//                                if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? LifeInnerCell{
+//                                    cell.setControlsInSecondStep()
+//                                    if let topCell = cell.relatedCollectionView.cellForItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? InnerTopCell{
+//                                        topCell.setControlsInSecondStep()
+//                                    }
+//                                    
+//                                    if model.contentList.count > 0{
+//                                        cell.relatedCollectionView.reloadAllSections()
+//                                    }
+//                                }
+//                            }else{
+//                                print("内页数据结构错误")
+// 
+//                            }
+//                            
+//                        }, failClosure: {
+//                            print("内页获取失败")
+//                        },noDataClosure:{
+//                            
+//                    })
+//                    
+//                }else{
+//                    cell.setControlsInSecondStep()
+//                }
+//            }
+            
+            if model.isSet == false{
+                cell.setButtonsEnable(false)
+                print("model.storyCollectionId: \(model.storyCollectionId)")
+                
+                let url = ""
+                let params:[String : Any] = ["userId":0,"storyCollectionId":model.storyCollectionId]
+                
+                let successClosure: ((_ body:AnyObject) -> Void) = {
+                    (bodyData) in
+                    if let bodyDic = bodyData as? NSDictionary {
+                        model.setValueForDicInSecondStep(bodyDic)
+                        if let cell = collectionView.cellForItem(at: indexPath) as? LifeInnerCell{
+                            cell.setControlsInSecondStep()
+                            if let topCell = cell.relatedCollectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? InnerTopCell{
+                                topCell.setControlsInSecondStep()
                             }
-                            
-                        }, failClosure: {
-                            print("内页获取失败")
-                        },noDataClosure:{
-                            
-                    })
-                    
-                }else{
-                    cell.setControlsInSecondStep()
+                        }
+                    }else{
+                        print("内页数据结构错误")
+                        
+                    }
                 }
+                let failureClosure: (() -> Void) = {
+
+                }
+                let nullClosure: (() -> Void) = {
+
+                }
+                
+                LifeUtils.request(url: url, pamams: params, successClosure: successClosure, failureClosure: failureClosure, nullClosure: nullClosure)
+//                
+//                NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_LIFE_STORY_DETAIL, params:params, successClosure:
+//                    { (bodyData) in
+//                        
+//                        if let bodyDic = bodyData as? NSDictionary {
+//                            model.setValueForDicInSecondStep(bodyDic)
+//                            if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? LifeInnerCell{
+//                                cell.setControlsInSecondStep()
+//                                if let topCell = cell.relatedCollectionView.cellForItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? InnerTopCell{
+//                                    topCell.setControlsInSecondStep()
+//                                }
+//                                
+//                                if model.contentList.count > 0{
+//                                    cell.relatedCollectionView.reloadAllSections()
+//                                }
+//                            }
+//                        }else{
+//                            print("内页数据结构错误")
+//                            
+//                        }
+//                        
+//                }, failClosure: {
+//                    print("内页获取失败")
+//                },noDataClosure:{
+//                    
+//                })
+                
+            }else{
+                cell.setControlsInSecondStep()
             }
             
             if indexPath.row == delegate.mainLifeData.lifeModels.count - 7{
@@ -363,43 +373,56 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
                 let index = collectionView.tag
                 let lifedata = lifeDatas[index]
                 
-                
-                if lifedata.isDaren {
-                    let model = lifedata.darenModels[indexPath.row]
-                    let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenDaPeiCell", forIndexPath: indexPath) as! DarenDaPeiCell
-                    cell.setData(model)
-                    if indexPath.row == lifeDatas[index].lifeModels.count - 7{
-                        getDataFromServer(collectionView, index: index)
-                    }
-                    return cell
-                }else{
-                    let lifeModel = lifedata.lifeModels[indexPath.row]
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
-                    cell.setData(lifeModel)
-                    if indexPath.row == lifeDatas[index].lifeModels.count - 7{
-                        getDataFromServer(collectionView, index: index)
-                    }
-                    return cell
+                let lifeModel = lifedata.lifeModels[indexPath.row]
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
+                cell.setData(lifeModel)
+                if indexPath.row == lifeDatas[index].lifeModels.count - 7{
+                    getDataFromServer(collectionView)
                 }
+                return cell
+//                if lifedata.isDaren {
+//                    let model = lifedata.darenModels[indexPath.row]
+//                    let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenDaPeiCell", forIndexPath: indexPath) as! DarenDaPeiCell
+//                    cell.setData(model)
+//                    if indexPath.row == lifeDatas[index].lifeModels.count - 7{
+//                        getDataFromServer(collectionView, index: index)
+//                    }
+//                    return cell
+//                }else{
+//                    let lifeModel = lifedata.lifeModels[indexPath.row]
+//                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
+//                    cell.setData(lifeModel)
+//                    if indexPath.row == lifeDatas[index].lifeModels.count - 7{
+//                        getDataFromServer(collectionView, index: index)
+//                    }
+//                    return cell
+//                }
             }else{
                 let index = collectionView.tag
                 let model = delegate.mainLifeData.lifeModels[index]
                 
-                if model.isDaren {
-                    let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenTopCell", forIndexPath: indexPath) as! DarenTopCell
-                    cell.index = index
-                    cell.model = model
-                    cell.vc = self
-                    cell.setData()
-                    return cell
-                }else{
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeadCell", for: indexPath) as! InnerTopCell
-                    cell.index = index
-                    cell.model = model
-                    cell.vc = self
-                    cell.setData()
-                    return cell
-                }
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeadCell", for: indexPath) as! InnerTopCell
+//                cell.index = index
+//                cell.model = model
+//                cell.vc = self
+//                cell.setData()
+                cell.setDate(index: index, model: model, vc: self)
+                return cell
+//                if model.isDaren {
+//                    let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenTopCell", forIndexPath: indexPath) as! DarenTopCell
+//                    cell.index = index
+//                    cell.model = model
+//                    cell.vc = self
+//                    cell.setData()
+//                    return cell
+//                }else{
+//                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeadCell", for: indexPath) as! InnerTopCell
+//                    cell.index = index
+//                    cell.model = model
+//                    cell.vc = self
+//                    cell.setData()
+//                    return cell
+//                }
             }
         }
         
@@ -409,9 +432,6 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if collectionView == self.mainCollectionView{
-            if indexPath.row == currentPlayIndex{
-                releasePlayer()
-            }
         }
     }
     
@@ -419,27 +439,37 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.section == 1 {
             let index = collectionView.tag
-            let lifeData = lifeDatas[index]
-            if lifeData.isDaren {
-                print("达人跳转")
-                let index = collectionView.tag
-                let model = lifeDatas[index].darenModels[indexPath.row]
-                var url = Constants.MATCH_DETAIL_H5_URL
-                url += "?caseId=\(model.id)"
-                let args = ["title":"搭配详情", "url":url, "action":"share", "rightType" : "image", "right":"share"]
-                MyScriptHandler.navigate(self, args: args)
-            }else{
-                mainLifeData = lifeDatas[collectionView.tag]
-                lifeCollectionView = collectionView
-                currentIndex = collectionView.tag
-                
-                let innerCell = mainCollectionView.cellForItem(at: IndexPath(row: collectionView.tag, section: 0)) as! LifeInnerCell
-                currentWaterfallLayout = innerCell.waterfallLayout
-                
-                let cell = collectionView.cellForItem(at: indexPath) as! LifeCollectionViewCell
-                
-                presentLifeInner(cell, index: indexPath.row)
-            }
+//            let lifeData = lifeDatas[index]
+            mainLifeData = lifeDatas[collectionView.tag]
+            lifeCollectionView = collectionView
+            currentIndex = collectionView.tag
+            
+            let innerCell = mainCollectionView.cellForItem(at: IndexPath(row: collectionView.tag, section: 0)) as! LifeInnerCell
+            currentWaterfallLayout = innerCell.waterfallLayout
+            
+            let cell = collectionView.cellForItem(at: indexPath) as! LifeCollectionViewCell
+            
+            presentLifeInner(cell, index: indexPath.row)
+//            if lifeData.isDaren {
+//                print("达人跳转")
+//                let index = collectionView.tag
+//                let model = lifeDatas[index].darenModels[indexPath.row]
+//                var url = Constants.MATCH_DETAIL_H5_URL
+//                url += "?caseId=\(model.id)"
+//                let args = ["title":"搭配详情", "url":url, "action":"share", "rightType" : "image", "right":"share"]
+//                MyScriptHandler.navigate(self, args: args)
+//            }else{
+//                mainLifeData = lifeDatas[collectionView.tag]
+//                lifeCollectionView = collectionView
+//                currentIndex = collectionView.tag
+//                
+//                let innerCell = mainCollectionView.cellForItem(at: IndexPath(row: collectionView.tag, section: 0)) as! LifeInnerCell
+//                currentWaterfallLayout = innerCell.waterfallLayout
+//                
+//                let cell = collectionView.cellForItem(at: indexPath) as! LifeCollectionViewCell
+//                
+//                presentLifeInner(cell, index: indexPath.row)
+//            }
         }
     }
     
@@ -447,11 +477,12 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         let index = waterFlowViewLayout.index
         if indextPath.section == 1{
             let lifeData = lifeDatas[index]
-            if lifeData.isDaren {
-                return lifeData.darenModels[indextPath.row].height
-            }else{
-                return lifeData.lifeModels[indextPath.row].height
-            }
+            return lifeData.lifeModels[indextPath.row].height
+//            if lifeData.isDaren {
+//                return lifeData.darenModels[indextPath.row].height
+//            }else{
+//                return lifeData.lifeModels[indextPath.row].height
+//            }
         }else{
             return delegate.mainLifeData.lifeModels[index].bigHeight
         }
@@ -479,534 +510,167 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         self.present(navi, animated: true, completion: nil)
     }
     
-    func follow(_ b:UIButton){
-        
-        if !DocumentUtil.haveLogin(){
-            DocumentUtil.logIn(self,animated: false)
-            return
-        }
-        b.isEnabled = false
-        
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        
-        
-        let params:[String : AnyObject] = ["userId":Constants.CURRENT_USER_ID, "watchUserId":model.userId]
-        NetKit.sharedInstance.doPostRequest((b.selected==false ? RequestURL.REQUEST_USER_WATCH_URL : RequestURL.REQUEST_CANCLE_GZ_URL), params:params, successClosure:
-            { (bodyData) in
-                
-                if bodyData is NSDictionary {
-                    model.isfans = 1
-                    b.selected = true
-                }else{
-                    model.isfans = 0
-                    b.selected = false
-                }
-                b.enabled = true
-                
-            }, failClosure: {
-                print("关注失败！")
-                b.enabled = true
-            },noDataClosure:{
-                
-        })
-        
-        
-    }
-    
-    func guess(_ b:UIButton){
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        
-        print("guess: \(model.storyCollectionId)")
-        
-        
-        let uwantVC = UWantViewController()
-        uwantVC.storyCollectionId = String(model.storyCollectionId)
-        self.navigationController?.pushViewController(uwantVC, animated: true)
-    }
-    
-    func headTap(_ ges:UserIdTapGestureRecognizer){
-        MyScriptHandler.toUserPage(self, userId: String(ges.userId))
-    }
-    
-    func share(_ b:UIButton){
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        let url = Constants.LIFE_SHARE_H5_URL + String(model.storyCollectionId)
-        let imageUrl = model.collectionImgArr[0]
-        b.isEnabled = false
-        MyScriptHandler.share(self, title: model.collectionName, content: model.content, url: url,imageUrl: imageUrl, closure: {
-            b.enabled = true
-        })
-    }
-    
-    func read(_ b:UIButton){
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        if model.user_type == 0{
-            let args = ["title":"文章", "url":model.article_url, "action":"", "rightType" : "", "right":""]
-//            MyScriptHandler.shareInstance.navigateToInternal(self, args: args,method: "navigateToInternal")
-            MyScriptHandler.navigate(self, args: args)
-        }else{
-            MyScriptHandler.toUserPage(self, userId: String(model.userId))
-        }
-        
-    }
-    //MARK:喜欢
-    func like(_ b:UIButton){
-        if !DocumentUtil.haveLogin(){
-            DocumentUtil.logIn(self,animated: false)
-            return
-        }
-        
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        b.isEnabled = false
-        
-        let params:[String : AnyObject] = ["userId":Constants.CURRENT_USER_ID, "collectionId":model.storyCollectionId]
-        
-        NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_LIKE_STORY, params:params, successClosure:
-            { (bodyData) in
-                
-                if let dic = bodyData as? NSDictionary{
-                    let result = dic.intForKey("result")
-                    let likecount = dic.intForKey("likecount")
-                    model.likeSize = likecount
-                    if result == 0{
-                        model.islike = 0
-                        b.selected = false
-                    }else if result == 1{
-                        model.islike = 1
-                        b.selected = true
-                    }
-                }
-                
-                let cell = self.mainCollectionView.visibleCells()[0] as! LifeInnerCell
-                
-                if let topCell = cell.relatedCollectionView.cellForItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? InnerTopCell{
-                    //                    topCell.likeButton.setTitle(String(model.likeSize), forState: UIControlState.Normal)
-                    //                topCell.configInfoView(model.likeSize,replySize: model.replySize)
-                    topCell.configInfoView()
-                }
-                
-                b.enabled = true
-                
-            }, failClosure: {
-                print("点赞失败！")
-                b.enabled = true
-            },noDataClosure:{
-                
-        })
-    }
-    
-    func collect(_ b:UIButton){
-        if !DocumentUtil.haveLogin(){
-            DocumentUtil.logIn(self,animated: false)
-            return
-        }
-        
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        b.isEnabled = false
-        
-        
-        let params:[String : AnyObject] = ["userId":Constants.CURRENT_USER_ID, "sourceId":model.storyCollectionId]
-        
-        NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_USER_COLLECTION_STORY, params:params, successClosure:
-            { (bodyData) in
-                
-                if let str = bodyData as? String{
-                    if str == "收藏成功" {
-                        model.iscollect = 1
-                        b.selected = true
-                        MBProgressHUD.showSuccess("收藏成功", toView: self.view)
-                    }else if str == "取消收藏成功" {
-                        model.iscollect = 0
-                        b.selected = false
-                        MBProgressHUD.showSuccess("取消收藏", toView: self.view)
-                    }
-                    
-                }
-                b.enabled = true
-                
-            }, failClosure: {
-                print("收藏失败！")
-                b.enabled = true
-            },noDataClosure:{
-                
-        })
-    }
-    //MARK:-RewardView 悬赏
-    func bounty(_ b:UIButton){
-        
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        
-        print("bounty: \(model.storyCollectionId)")
-        
-        let rewardView = RewardView.init(frame: CGRect(x: 0, y: 0, width: Width, height: Height),storyId: String(model.storyCollectionId))
-        rewardView.delegate = self
-        rewardView.showInView(self)
-        
-        pausePlayer()
-    }
-    
-    //MARK:RewardViewDelegate
-    func rewardViewClosed(){
-        resumePlayer()
-    }
-    
-    //MARK:buy
-    func buy(_ b:UIButton){
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        
-        print("buy: \(model)")
-        var url = ""
-        if model.sponsored_url_type == 0{
-            url = Constants.H5_IP + (model.sponsored_url as NSString).substringFromIndex(1)
-        }else{
-            url = model.sponsored_url
-        }
-        let args = ["title":model.goods_title, "url":url, "action":"", "rightType" : "", "right":""]
-         MyScriptHandler.navigate(self, args: args)
-    }
-    
-    //MARK:搭配
-    func arrange(_ b:UIButton){
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        
-        print("buy: \(model)")
-        let args = ["title":"定制专属搭配", "url":model.masterUrl, "action":"", "rightType" : "", "right":""]
-        MyScriptHandler.navigate(self, args: args)
-    }
-    //MARK:评论
-    func comment(_ b:UIButton){
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        HttpSingleton.shareInstance().queryLifeCommentListData("", storyCollectionId: String(model.storyCollectionId), vc: self)
-    }
-    
-    //MARK: 刷新
-    func refreshTopCell(){
-//        if let cell = self.mainCollectionView.visibleCells().first as? LifeInnerCell{
-//            let model = delegate.mainLifeData.lifeModels[cell.index]
-//            
-//            let successClosure:((body:AnyObject) -> Void) = {  (body) in
-//                if let dic = body as? NSDictionary{
-//                    model.setAskForDic(dic)
-//                    if let topCell = cell.relatedCollectionView.cellForItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? InnerTopCell{
-//                        topCell.setGuessViewContent()
-//                    }
-//                }
-//            }
-//            let failureClosure = {
-//                print("猜你想重刷失败！")
-//            }
-//            SomeUtils.request(Constants.REQUEST_LIFE_STORY_DETAIL, pamams:["userId":Constants.CURRENT_USER_ID, "collectionId":model.storyCollectionId], successClosure:successClosure, failureClosure:failureClosure)
+//    func follow(_ b:UIButton){
+//        
+//        if !DocumentUtil.haveLogin(){
+//            DocumentUtil.logIn(self,animated: false)
+//            return
 //        }
-    }
-    
-    
-    //MARK：播放
-    var currentPlayIndex:Int = -1
-    
-    let reachability = Reachability.reachabilityForInternetConnection()
-    func play(_ b:UIButton){
-        print("play video")
-        
-        //3.判断网络状态
-        let status = reachability.currentReachabilityStatus()
-        switch status {
-        case .ReachableViaWiFi:
-            //                self.errorMsg("wifi连接下,可以播放")
-            break
-        case .ReachableViaWWAN:
-            self.errorMsg("非wifi连接下播放")
-        //                return
-        case .NotReachable:
-            self.errorMsg("网络有问题")
-            return
-        }
-        
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        
-        if model.videoType == 1{
-            print("VR播放")
-            let storyboard:UIStoryboard = UIStoryboard.init(name: "Player", bundle: nil)
-            let vc = storyboard.instantiateViewControllerWithIdentifier("PlayerViewController") as! PlayerViewController
-            
-            
-            
-            self.presentViewController(vc, animated: false) {
-                vc.initParams(URL.init(string: model.videoUrl))
-            }
-            
-            return
-        }
-        
-        let cell = self.mainCollectionView.visibleCells[0] as! LifeInnerCell
-        
-        LifeConstant.player?.removeFromSuperview()
-        
-        currentPlayIndex = index
-        
-        if let topCell = cell.relatedCollectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? InnerTopCell{
-            print("video url: \(model.videoUrl)")
-            LifeConstant.player = HTPlayer(frame: topCell.iView.bounds, videoURLStr:model.videoUrl)
-            //            LifeConstant.player = HTPlayer(frame: topCell.iView.bounds, videoURLStr: "http://flv2.bn.netease.com/videolib3/1605/05/dGhJO3809/SD/dGhJO3809-mobile.mp4")
-            
-            topCell.iView.addSubview(LifeConstant.player!)
-            topCell.iView.bringSubviewToFront(LifeConstant.player!)
-        }
-        
-    }
-    
-    func addObserver(){
-        NotificationCenter.defaultCenter().addObserver(self, selector: #selector(LifeInnerController.fullScreenBtnClick(_:)), name: kHTPlayerFullScreenBtnNotificationKey, object: nil)
-        NotificationCenter.defaultCenter().addObserver(self, selector: #selector(LifeInnerController.checkNetworkStatus(_:)), name: kReachabilityChangedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(LifeInnerController.guessSend(_:)), name: "GuessSendSuccess", object: nil)
-        reachability.startNotifier()
-    }
-    
-    func removeObserver(){
-        NotificationCenter.defaultCenter().removeObserver(self, name: kHTPlayerFullScreenBtnNotificationKey, object: nil)
-        NotificationCenter.defaultCenter().removeObserver(self, name: kReachabilityChangedNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: "GuessSendSuccess", object: nil)
-    }
-    
-    func guessSend(_ notice:Notification){
-        refreshTopCell()
-    }
-    
-    func checkNetworkStatus(_ notice:Notification){
-        let status = reachability.currentReachabilityStatus()
-        switch status {
-        case .ReachableViaWiFi:
-            //            self.errorMsg("wifi连接下,可以播放")
-            break
-        case .ReachableViaWWAN:
-//            self.errorMsg("非wifi连接下播放")
-            MBProgressHUD.showError("非wifi连接下播放", toView: self.view)
-            //            releasePlayer()
-        //            return
-        case .NotReachable:
-            MBProgressHUD.showError("网络有问题", toView: self.view)
-//            self.errorMsg("网络有问题")
-        }
-    }
-    
-    var isStatusBarHidden = false
-    func fullScreenBtnClick(_ notice:Notification){
-        let b = notice.object as! UIButton
-        print("full screen")
-        if b.isSelected == true{
-            LifeConstant.player?.toFullScreenWithInterfaceOrientation(UIInterfaceOrientation.LandscapeRight)
-            isStatusBarHidden = true
-            setNeedsStatusBarAppearanceUpdate()
-        }else{
-            //            LifeConstant.player.toSmallScreen()
-            toCell()
-            isStatusBarHidden = false
-            setNeedsStatusBarAppearanceUpdate()
-        }
-        
-        
-    }
-    
-    func toSmall(){
-        if LifeConstant.player?.isPlaying() == true{
-            LifeConstant.player?.toSmallScreen()
-        }
-        
-    }
-    
-    func toCell(){
-        if let cell = self.mainCollectionView?.visibleCells.first as? LifeInnerCell{
-            if let topCell = cell.relatedCollectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? InnerTopCell{
-                //            topCell.iView.addSubview(LifeConstant.player)
-                //            topCell.iView.bringSubviewToFront(LifeConstant.player)
-                LifeConstant.player?.reductionWithInterfaceOrientation(topCell.iView)
-            }
-        }
-    }
-    
-    func autoPlay(_ index:Int){
-        let model = delegate.mainLifeData.lifeModels[index]
-        if model.videoUrl == "" {
-            return
-        }
-        
-        //3.判断网络状态
-        let status = reachability.currentReachabilityStatus()
-        switch status {
-        case .ReachableViaWiFi:
-            //            self.errorMsg("wifi连接下自动播放")
-            break
-        case .ReachableViaWWAN:
-//            self.errorMsg("非wifi连接下点击播放")
-            MBProgressHUD.showMessage("非wifi连接下点击播放", toView: self.view)
-            return
-        case .NotReachable:
-            MBProgressHUD.showError("网络有问题", toView: self.view)
-//            self.errorMsg("网络有问题")
-            return
-        }
-        
-        let b = UIButton()
-        b.tag = index
-        play(b)
-    }
-    
-    func releasePlayer(){
-        LifeConstant.player?.releaseWMPlayer()
-    }
-    
-    var needResume = false
-    func pausePlayer(){
-        if LifeConstant.player?.isPlaying() == true {
-            LifeConstant.player?.pause()
-            needResume = true
-        }
-    }
-    
-    func resumePlayer(){
-        if needResume == true{
-            LifeConstant.player?.resume()
-            needResume = false
-        }
-    }
-    
-    
-    override var prefersStatusBarHidden : Bool {
-        return isStatusBarHidden
-    }
-    
-    //MARK: 我想要，阅读，购买。
-    func want(_ b:UIButton){
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-
-        if !DocumentUtil.haveLogin(){
-            DocumentUtil.logIn(self,animated: false)
-            return
-        }
-        
-        
-//        return -2;//用户不存在
-//        return -3;//团购商品不存在
-//        return -4;//不是团购商品
-//        return -5;//团购商品待上线
-//        return -6;//团购商品已下架
-        
-        //用户已经想要
-        if model.userWanted != 0{
-            var url = ""
-            url =  model.sponsored_url
-            let args = ["title":model.goods_title, "url":url, "action":"", "rightType" : "", "right":""]
-            MyScriptHandler.navigate(self, args: args)
-            return
-        }
-        
-        b.isEnabled = false
-        
-        let params:[String : AnyObject] = ["userId":Constants.CURRENT_USER_ID, "goodsId":model.goodsId]
-        NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_I_WANT, params:params, successClosure:
-            { (bodyData) in
-                
-                let n = (bodyData as? Int) ?? 0
-                
-                switch n {
-                case 1,-1:
-                    var url = ""
-                    url =  model.sponsored_url
-                    let args = ["title":model.goods_title, "url":url, "action":"", "rightType" : "", "right":""]
-                    MyScriptHandler.navigate(self, args: args)
-                case -6:
-                    MBProgressHUD.showError("团购商品已下架", toView: rootController.view)
-                default:
-                    MBProgressHUD.showError("有错误", toView: rootController.view)
-                }
-                b.enabled = true
-                
-            }, failClosure: {
-                MBProgressHUD.showError("有错误", toView: rootController.view)
-                b.enabled = true
-            },noDataClosure:{
-                
-        })
-        
-        
-    }
-
-    
-    //MARK: 我想要，阅读，购买。
-//    func takeAction(b:UIButton){
+//        b.isEnabled = false
+//        
 //        let index = b.tag
 //        let model = delegate.mainLifeData.lifeModels[index]
 //        
-//        switch model.wantType {
-//        case 0:
-//            if !DocumentUtil.haveLogin(){
-//                DocumentUtil.logIn(self,animated: false)
-//                return
-//            }
-//            
-//            let index = b.tag
-//            let model = delegate.mainLifeData.lifeModels[index]
-//            b.enabled = false
-//            
-//            print("model.storyCollectionId: \(model.storyCollectionId)")
-//            print("Constants.CURRENT_USER_ID: \(Constants.CURRENT_USER_ID)")
-//            
-//            LifeConstant.manager.request(.POST,Constants.REQUEST_COLLECTION_WANT, parameters: ["userId":Constants.CURRENT_USER_ID, "storyCollectionId":model.storyCollectionId]).responseJSON {
-//                (r) -> Void in
-//            let result = r.result
-//                if result.isSuccess && ((result.value as! NSDictionary).valueForKey("code") as! String) == Constants.ROMOTE_REQUEST_SUCCESS{
-//                    print("want result.value \(result.value as! NSDictionary)")
-//                    model.wantNum += 1
-//                    b.setTitle( String(model.wantNum) + "人想要", forState: UIControlState.Normal)
-//                    model.wantType = 3
-//                    b.enabled = false
+//        
+//        let params:[String : AnyObject] = ["userId":Constants.CURRENT_USER_ID, "watchUserId":model.userId]
+//        NetKit.sharedInstance.doPostRequest((b.selected==false ? RequestURL.REQUEST_USER_WATCH_URL : RequestURL.REQUEST_CANCLE_GZ_URL), params:params, successClosure:
+//            { (bodyData) in
+//                
+//                if bodyData is NSDictionary {
+//                    model.isfans = 1
+//                    b.selected = true
 //                }else{
-//                    print("点赞失败！")
-//                    b.enabled = true
+//                    model.isfans = 0
+//                    b.selected = false
 //                }
-//            }
-//        case 1:
-//            //            let url = Constants.H5_IP + (model.sponsored_url as NSString).substringFromIndex(1)
-//            let url = model.sponsored_url
-//            let args = ["title":model.goods_title, "url":url, "action":"", "rightType" : "", "right":""]
-//            MyScriptHandler.shareInstance.navigateToInternal(self, args: args,method: "navigateToInternal")
-//        case 2:
-//            let args = ["title":"文章", "url":model.article_url, "action":"", "rightType" : "", "right":""]
-//            MyScriptHandler.shareInstance.navigateToInternal(self, args: args,method: "navigateToInternal")
-//        default:
-//            break
-//            
-//        }
+//                b.enabled = true
+//                
+//            }, failClosure: {
+//                print("关注失败！")
+//                b.enabled = true
+//            },noDataClosure:{
+//                
+//        })
 //        
 //        
 //    }
+//    
+//    func guess(_ b:UIButton){
+//        let index = b.tag
+//        let model = delegate.mainLifeData.lifeModels[index]
+//        
+//        print("guess: \(model.storyCollectionId)")
+//        
+//        
+//        let uwantVC = UWantViewController()
+//        uwantVC.storyCollectionId = String(model.storyCollectionId)
+//        self.navigationController?.pushViewController(uwantVC, animated: true)
+//    }
+//    
+//    func share(_ b:UIButton){
+//        let index = b.tag
+//        let model = delegate.mainLifeData.lifeModels[index]
+//        let url = Constants.LIFE_SHARE_H5_URL + String(model.storyCollectionId)
+//        let imageUrl = model.collectionImgArr[0]
+//        b.isEnabled = false
+//        MyScriptHandler.share(self, title: model.collectionName, content: model.content, url: url,imageUrl: imageUrl, closure: {
+//            b.enabled = true
+//        })
+//    }
     
-    func toLikeList(_ b:UIButton){
-        let index = b.tag
-        let model = delegate.mainLifeData.lifeModels[index]
-        let url = Constants.H5_IP + "finding/favouriteuser.html?story=\(model.storyCollectionId)&userId=\(Constants.CURRENT_USER_ID)"
-        let args = ["title":"喜欢列表", "url":url, "action":"", "rightType" : "", "right":""]
-//        MyScriptHandler.shareInstance.navigateToInternal(self, args: args,method: "navigateToInternal")
-         MyScriptHandler.navigate(self, args: args)
-    }
+//    func read(_ b:UIButton){
+//        let index = b.tag
+//        let model = delegate.mainLifeData.lifeModels[index]
+//        if model.user_type == 0{
+//            let args = ["title":"文章", "url":model.article_url, "action":"", "rightType" : "", "right":""]
+////            MyScriptHandler.shareInstance.navigateToInternal(self, args: args,method: "navigateToInternal")
+//            MyScriptHandler.navigate(self, args: args)
+//        }else{
+//            MyScriptHandler.toUserPage(self, userId: String(model.userId))
+//        }
+//        
+//    }
+//    //MARK:喜欢
+//    func like(_ b:UIButton){
+//        if !DocumentUtil.haveLogin(){
+//            DocumentUtil.logIn(self,animated: false)
+//            return
+//        }
+//        
+//        let index = b.tag
+//        let model = delegate.mainLifeData.lifeModels[index]
+//        b.isEnabled = false
+//        
+//        let params:[String : AnyObject] = ["userId":Constants.CURRENT_USER_ID, "collectionId":model.storyCollectionId]
+//        
+//        NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_LIKE_STORY, params:params, successClosure:
+//            { (bodyData) in
+//                
+//                if let dic = bodyData as? NSDictionary{
+//                    let result = dic.intForKey("result")
+//                    let likecount = dic.intForKey("likecount")
+//                    model.likeSize = likecount
+//                    if result == 0{
+//                        model.islike = 0
+//                        b.selected = false
+//                    }else if result == 1{
+//                        model.islike = 1
+//                        b.selected = true
+//                    }
+//                }
+//                
+//                let cell = self.mainCollectionView.visibleCells()[0] as! LifeInnerCell
+//                
+//                if let topCell = cell.relatedCollectionView.cellForItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? InnerTopCell{
+//                    //                    topCell.likeButton.setTitle(String(model.likeSize), forState: UIControlState.Normal)
+//                    //                topCell.configInfoView(model.likeSize,replySize: model.replySize)
+//                    topCell.configInfoView()
+//                }
+//                
+//                b.enabled = true
+//                
+//            }, failClosure: {
+//                print("点赞失败！")
+//                b.enabled = true
+//            },noDataClosure:{
+//                
+//        })
+//    }
+    
+//    func collect(_ b:UIButton){
+//        if !DocumentUtil.haveLogin(){
+//            DocumentUtil.logIn(self,animated: false)
+//            return
+//        }
+//        
+//        let index = b.tag
+//        let model = delegate.mainLifeData.lifeModels[index]
+//        b.isEnabled = false
+//        
+//        
+//        let params:[String : AnyObject] = ["userId":Constants.CURRENT_USER_ID, "sourceId":model.storyCollectionId]
+//        
+//        NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_USER_COLLECTION_STORY, params:params, successClosure:
+//            { (bodyData) in
+//                
+//                if let str = bodyData as? String{
+//                    if str == "收藏成功" {
+//                        model.iscollect = 1
+//                        b.selected = true
+//                        MBProgressHUD.showSuccess("收藏成功", toView: self.view)
+//                    }else if str == "取消收藏成功" {
+//                        model.iscollect = 0
+//                        b.selected = false
+//                        MBProgressHUD.showSuccess("取消收藏", toView: self.view)
+//                    }
+//                    
+//                }
+//                b.enabled = true
+//                
+//            }, failClosure: {
+//                print("收藏失败！")
+//                b.enabled = true
+//            },noDataClosure:{
+//                
+//        })
+//    }
     
     //MARK:图片点击
     func clickPhoto(_ sender:ImageClickTapGestureRecognizer){
 //        let index = sender.index
 //        let model = delegate.mainLifeData.lifeModels[index]
         let viewController = PhotoBrowsingController()
-        viewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+        viewController.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
         viewController.startPage = sender.page
 //        viewController.images = model.collectionImgArr
          viewController.images = sender.images
@@ -1031,23 +695,19 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
     
     func back() {
         
-        releasePlayer()
-        
         let cell = mainCollectionView.visibleCells[0] as! LifeInnerCell
         let indexPath = mainCollectionView.indexPath(for: cell)!
         
         delegate.desFrame = delegate.frameForIndex(indexPath.row)
-//        delegate.backIndex = indexPath.row
-//        delegate.lifeCollectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: indexPath.row, inSection: 1), atScrollPosition: .Top, animated: false)
         
         let window = UIApplication.shared.keyWindow!
         
-        if let topCell = cell.relatedCollectionView.cellForItemAtIndexPath(IndexPath(forRow: 0, inSection: 0)) as? CommonCollectionViewCell{
+        if let topCell = cell.relatedCollectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? CommonCollectionViewCell{
             
-            let frame = topCell.contentView.convertRect(topCell.iView.frame, toView: window)
+            let frame = topCell.contentView.convert(topCell.iView.frame, to: window)
             
             if frame.maxY > 64{
-                delegate.transView = topCell.iView.snapshotViewAfterScreenUpdates(true)
+                delegate.transView = topCell.iView.snapshotView(afterScreenUpdates: true)
                 delegate.transView!.frame = frame
             }else{
                 delegate.transView = nil
@@ -1057,7 +717,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         }
         self.navigationController?.delegate = delegate
         self.delegate.lifeInner = nil
-        navigationController?.popViewController(animated: true)
+        _ = navigationController?.popViewController(animated: true)
         
     }
     
@@ -1075,20 +735,6 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
                 return
             }
             delegate.footerRefreshData()
-        }
-        
-        if let cell = self.mainCollectionView.visibleCells.first as? LifeInnerCell{
-            let model = delegate.mainLifeData.lifeModels[cell.index]
-            if model.sponsored_url != "" {
-                if (scrollView.contentOffset.y > (scrollView.contentSize.height - scrollView.frame.size.height) + 25){
-                    setBottomUpPush()
-//                    self.want(cell.tuanGouWantView.iWant)
-                    var url = ""
-                    url =  model.sponsored_url
-                    let args = ["title":model.goods_title, "url":url, "action":"", "rightType" : "", "right":""]
-                    MyScriptHandler.navigate(self, args: args)
-                }
-            }
         }
     }
     
@@ -1110,7 +756,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
     }
     
     func giveTip(){
-        MBProgressHUD.showError("没有数据了", toView: self.view)
+
     }
     
 }
