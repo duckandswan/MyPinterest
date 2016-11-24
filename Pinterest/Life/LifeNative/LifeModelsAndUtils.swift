@@ -24,7 +24,6 @@ class LifeModel:NSObject{
     var collectionName = ""
     var collectionUrl = ""
     var content = ""
-    var isJoined = 0//是否加入看生活
     var isfans = 0
     var islike = 0
     var iscollect = 0
@@ -37,78 +36,38 @@ class LifeModel:NSObject{
     var slogon = ""
     var source = ""
     var storyCollectionId = 0
-    var type = 0
     var userId = 0
     var userNick = ""
-    var user_type = 0
-    var reference_price = 0.0
-    var location = ""
     var tagId:[String] = []
     var tagName:[String] = []
-    var wantNum = 0
-    var wantType = 0
     var article_url = ""
     var sponsored_url = ""
     var sponsored_url_type = 0
     var goods_title = ""
-//    var rewardPoints = 0
-    
-    var position = 0
-    
     var tagList:[NSDictionary] = []
-    
-    var videoUrl = ""
-    var mayaskList:[NSDictionary] = []
-    
     var readFlag = 0
-    
-    var videoType = 0
-    
-    var remarks = ""
-    
-    var contentList:[NSDictionary] = []
     
     //是否加载了内页数据
     var isSet = false
-    var masterId = 0
-    var masterName = ""
-    var masterPhotos = ""
-    var masterRemark = ""
-    var masterUrl = ""
-    var seqNum = 0
-    var darenratio:CGFloat = 1
-    var goodsId = 0
-    var goodsPrice = 0.0
-    var goodsBoughtNum = 0
-    var remainNum = 0
-    var paidNum = 0
-    var userWanted = 0
-    var isTuanGou = false
-    
-    var groupbuyStatus = 0
-    
-    
 
-    
     func setValueForDic(_ dic:NSDictionary){
         
-        avatar = dic.stringFor(key: "avatar")
-        collectionImgArr = dic.stringArrFor(key: "collectionImgArr")
-        content = dic.stringFor(key: "content")
-        likeSize = dic.intFor(key: "likeSize")
-        replySize = dic.intFor(key: "replySize")
-        collectionName = dic.stringFor(key: "collectionName")
-        collectionUrl = dic.stringFor(key: "collectionUrl")
-        sequence_num = dic.intFor(key: "sequence_num")
+        avatar = dic.string(forKey: "avatar")
+        collectionImgArr = dic.stringArr(forKey: "collectionImgArr")
+        content = dic.string(forKey: "content")
+        likeSize = dic.int(forKey: "likeSize")
+        replySize = dic.int(forKey: "replySize")
+        collectionName = dic.string(forKey: "collectionName")
+        collectionUrl = dic.string(forKey: "collectionUrl")
+        sequence_num = dic.int(forKey: "sequence_num")
         sizes = sizeArrForJsonString(dic)
-        slogon = dic.stringFor(key: "slogon")
-        source = dic.stringFor(key: "source")
-        storyCollectionId = dic.intFor(key: "storyCollectionId")
-        userId = dic.intFor(key: "userId")
-        userNick = dic.stringFor(key: "userNick")
-        reference_price = dic.doubleFor(key: "reference_price")
-        tagId = dic.stringArrFor(key: "tagId")
-        tagName = dic.stringArrFor(key: "tagName")
+        slogon = dic.string(forKey: "slogon")
+        source = dic.string(forKey: "source")
+        storyCollectionId = dic.int(forKey: "storyCollectionId")
+        userId = dic.int(forKey: "userId")
+        userNick = dic.string(forKey: "userNick")
+        tagId = dic.stringArr(forKey: "tagId")
+        tagName = dic.stringArr(forKey: "tagName")
 
         //设置高度
         setH()
@@ -120,18 +79,18 @@ class LifeModel:NSObject{
             return
         }
         
-        iscollect = dic.intFor(key: "collection")
-        article_url = dic.stringFor(key: "article_url")
-        sponsored_url_type = dic.intFor(key: "sponsored_url_type")
-        sponsored_url = dic.stringFor(key: "sponsored_url")
-        goods_title = dic.stringFor(key: "goods_title")
-        readFlag = dic.intFor(key: "readFlag")
+        iscollect = dic.int(forKey: "collection")
+        article_url = dic.string(forKey: "article_url")
+        sponsored_url_type = dic.int(forKey: "sponsored_url_type")
+        sponsored_url = dic.string(forKey: "sponsored_url")
+        goods_title = dic.string(forKey: "goods_title")
+        readFlag = dic.int(forKey: "readFlag")
         
         
         if let storyCollection = dic["storyCollection"] as? NSDictionary {
-            isfans = storyCollection.intFor(key: "isfans")
-            islike = storyCollection.intFor(key: "islike")
-            tagList = storyCollection.dicArrFor(key: "tagList")
+            isfans = storyCollection.int(forKey: "isfans")
+            islike = storyCollection.int(forKey: "islike")
+            tagList = storyCollection.dicArr(forKey: "tagList")
         }
         
         isSet = true
@@ -148,10 +107,6 @@ class LifeModel:NSObject{
             }
         }
         
-        if videoUrl != "" {
-            arr = [arr[0]]
-            collectionImgArr = [collectionImgArr[0]]
-        }
         
         return arr
     }
@@ -276,8 +231,8 @@ class LifeCategoryModel:NSObject{
     var categoryName = ""
     
     func setValueForDic(_ dic:NSDictionary){
-        categoryId    = dic.intFor(key: "categoryId")
-        categoryName  = dic.stringFor(key: "categoryName")
+        categoryId    = dic.int(forKey: "categoryId")
+        categoryName  = dic.string(forKey: "categoryName")
     }
 }
 
@@ -362,7 +317,7 @@ class LifeConstant{
 
 class LifeUtils{
     
-    static func request(url:String,pamams:[String : AnyObject]?, successClosure: ((_ body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
+    static func request(url:String,pamams:[String : Any]?, successClosure: ((_ body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
 //        LifeConstant.manager.request(.POST, url, parameters:pamams).responseJSON {
 //            (r) -> Void in
 //            let result = r.result
@@ -394,7 +349,7 @@ class LifeUtils{
         
     }
     
-    static func requestAndCache(_ url:String,pamams:[String : AnyObject]?, successClosure: ((_ body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
+    static func requestAndCache(_ url:String,pamams:[String : Any]?, successClosure: ((_ body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
         
         let userDefaults = UserDefaults.standard
         let key = url + (pamams?.description ?? "")
@@ -403,22 +358,16 @@ class LifeUtils{
             { (bodyData) in
                 
                 userDefaults.set(bodyData , forKey: key)
-                successClosure?(bodyData)
+                successClosure?(bodyData )
                 
         }, failureClosure: failureClosure!,nullClosure:nullClosure!)
         
     }
     
     static func arrForJsonString(_ str:NSString)->[NSDictionary]{
-        let data = str.data(using: String.Encoding.utf8)
+        let data = str.data(using: String.Encoding.utf8.rawValue)
         let obj = try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
         return (obj as! [NSDictionary])
-    }
-    
-    static func setImageViewForUrl(_ imageView:UIImageView,url:String){
-        imageView.contentMode = UIViewContentMode.scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.setImageForUsIpWithURL(url)
     }
     
     static func calculateHWRatioFromString(_ str:String)->CGFloat{
@@ -462,7 +411,7 @@ class LifeUtils{
     
     static func calculateHeightForDarenStr(_ str:String)->CGFloat{
         let maximumLabelSize = CGSize(width: LifeConstant.innerWidth, height: LifeConstant.darenContentHeight)
-        let expectedLabelRect = str.boundingRect(with: maximumLabelSize, options: [.usesLineFragmentOrigin,.usesFontLeading], attributes: LifeConstant.darenContentAttributesDic, context: nil)
+        let expectedLabelRect = str.boundingRect(with: maximumLabelSize, options: [.usesLineFragmentOrigin,.usesFontLeading], attributes: LifeConstant.bigContentAttributesDic, context: nil)
         return expectedLabelRect.size.height
     }
     
@@ -495,15 +444,13 @@ class LifeUtils{
         return image
     }
     
-    static func executeInMainQueue(_ closure: () -> Void){
+    static func executeInMainQueue(_ closure: @escaping () -> Void){
         DispatchQueue.main.async { () -> Void in
             closure()
         }
-        
-        
     }
     
-    static func executeInGlobalQueue(_ closure: () -> Void){
+    static func executeInGlobalQueue(_ closure: @escaping () -> Void){
         DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.high).async(execute: { () -> Void in
             closure()
         })
@@ -518,21 +465,6 @@ class LifeUtils{
             newFrame.size.width = (size.width * frame.size.height) / size.height
             newFrame.origin.x += (frame.size.width - newFrame.size.width) / 2
         }
-        
         return newFrame
-    }
-    
-    static func truncatedString(_ str:String)->String{
-        var i = 0
-        for character in str.characters{
-            if String(character).range(of: "\\p{Han}", options: .regularExpression) != nil{
-                i += 1
-            }
-        }
-        if i >= 8 {
-            return str.substring(to: str.characters.index(str.startIndex, offsetBy: 8))
-        }else{
-            return str
-        }
     }
 }

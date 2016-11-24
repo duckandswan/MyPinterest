@@ -39,8 +39,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     
     //MARK: - 即将消失
     override func viewWillDisappear(_ animated: Bool) {
-        //切换页面时，关闭弹幕
-        closeBarrage()
+        
     }
     
     //MARK:初始化分类
@@ -95,196 +94,62 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         view.addSubview(mainCollectionView)
     }
 
-    func getBarrageData() {
-        
-        let params:[String:AnyObject] = ["pageNo":"1","pageSize":"20"]
-        
-        NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_BARRAGE, params: params, successClosure:
-            { (bodyData) in
-                
-                if let bodyDic = bodyData as? NSDictionary {
-                    if let barrageList = bodyDic["rewardReplyList"] as? NSArray {
-                        self.barrageArr.removeAll()
-                        for item in barrageList {
-                            if let barrageDic = item as? NSDictionary {
-                                let barrageModel = BarrageModel()
-                                barrageModel.setValueForDic(barrageDic)
-                                self.barrageArr.append(barrageModel)
-                            }
-                        }
-                        self.openBarrage()
-                    }
-                }
-                
-            }, failClosure: {
-                
-            },noDataClosure:{
-                
-        })
-
-    }
     //MARK:分类
     func getCategoryData() {
         
-        self.view.addBadNetworkingDefaultImageView(false)
-        
-        NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_LIFE_CATEGORY, params: ["" : ""], successClosure:
-            { (bodyData) in
-                
-                let arr = bodyData as! [NSDictionary]
-                let m1 = LifeCategoryModel()
-                m1.categoryName = "推荐"
-                let m2 = LifeCategoryModel()
-                m2.categoryName = "活动"
-                self.lifeCategoryArr = [m1,m2]
-                for item in arr {
-                    let model = LifeCategoryModel()
-                    model.setValueForDic(item)
-                    self.lifeCategoryArr.append(model)
-                }
-                //            self.lifeCategoryArr.popLast()
-                //            self.lifeCategoryArr.popLast()
-                
-                let flowLayout = self.categoryView.collectionViewLayout as! UICollectionViewFlowLayout
-                var space:CGFloat = 0
-                flowLayout.minimumInteritemSpacing = space
-                flowLayout.minimumLineSpacing = space
-                flowLayout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
-                self.categoryView.reloadAllSections()
-                //重新布局
-                if let layout = self.categoryView.layoutAttributesForItemAtIndexPath(NSIndexPath(forItem: self.lifeCategoryArr.count - 1, inSection: 0)){
-                    if (layout.frame.maxX) < SCREEN_W{
-                        //                    let inc = (SCREEN_W - (layout.frame.maxX + 20)) / CGFloat(self.lifeCategoryArr.count - 1)
-                        let flowLayout = self.categoryView.collectionViewLayout as! UICollectionViewFlowLayout
-                        //                    space = 10 + inc
-                        //                    self.space = (SCREEN_W - layout.frame.maxX) / CGFloat(self.lifeCategoryArr.count + 1)
-                        //                    self.categoryView.reloadData()
-                        //                    self.categoryView.reloadSections(NSIndexSet(index: 0))
-                        space = (SCREEN_W - layout.frame.maxX) / CGFloat(self.lifeCategoryArr.count + 1)
-                        flowLayout.minimumInteritemSpacing = space
-                        flowLayout.minimumLineSpacing = space
-                        flowLayout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
-                        self.categoryView.reloadAllSections()
-                    }
-                }
-                self.categoryView.addLine()
-                self.categoryView.selectInCategoryView(0)
-                //看生活内容
-                self.lifeDatas = []
-                for item in self.lifeCategoryArr{
-                    let data = LifeData()
-                    data.storyId = item.categoryId
-                    self.lifeDatas.append(data)
-                }
-                self.mainCollectionView.reloadAllSections()
-                
-            }, failClosure: {
-                self.view.addBadNetworkingDefaultImageView(true, target: self, action: #selector(LifeNativeViewController.getCategoryData))
-                
-            },noDataClosure:{
-                
-        })
-    }
-    
-
-    
-    //开启弹幕
-    func openBarrage(){
-        if barrageTimer != nil {
-            barrageTimer.invalidate()
-            barrageTimer = nil
-        }
-        
-        barrageTimer = Timer.scheduledTimer(timeInterval: 30.0, target: self, selector: #selector(LifeNativeViewController.showBarrageView), userInfo: nil, repeats: true)
-        print("弹幕定时器开启")
-    }
-    
-    //关闭弹幕
-    func closeBarrage() {
-        if barrageTimer != nil {
-            barrageTimer.invalidate()
-            barrageTimer = nil
-            print("弹幕定时器关闭")
-        }
-    }
-    
-    //显示弹幕
-    func showBarrageView() {
-        /******
-         逻辑：接口返回的弹幕数组为正序排列，即id为从小到大，从小到大播放
-         每次播放弹幕时，将该弹幕的id存在NSUserDefaults，覆盖上一次的id，保证这个id是已经播放过的最大的id。
-         下一次重新请求数据的时候，将本地的这个最大id取出来，遍历新的弹幕数据，找到这个id的位置，并从下一个id开始播放，此id之前（包括此id）的弹幕，不再进行播放。如果服务器没有返回此id或者此id之前的数据，那么就从第一个开始播放
-         *****/
-        var localBarrageId = UserDefaults.standard.object(forKey: "LastShowBarrageId") as? NSNumber
-        if localBarrageId == nil {
-            localBarrageId = 0
-        }
-        var count = 0 //计数，如果循环走完，一次都没有播放，说明所有弹幕已经播放完毕，则关闭弹幕
-        for barrageModel in self.barrageArr {
-            if barrageModel.rewardReplyId.integerValue > localBarrageId!.integerValue{
-                let contentStr = barrageModel.pointStr
-                let avatarStr  = barrageModel.avatar
-                
-                barrageView.show( contentStr,avatar:avatarStr,view: self.view)
-                saveBarrageIdToLocal(barrageModel.rewardReplyId)
-                count += 1
-                break
+        self.view.addBadNetworkingDefaultImageView(isadd: false)
+        let url = "api/tag/catedisplay"
+        let params:[String:Any] = ["" : ""]
+        let successClosure: ((_ body:AnyObject) -> Void) = {
+            (bodyData) in
+            let arr = bodyData as! [NSDictionary]
+            let m1 = LifeCategoryModel()
+            m1.categoryName = "推荐"
+            self.lifeCategoryArr = [m1]
+            for item in arr {
+                let model = LifeCategoryModel()
+                model.setValueForDic(item)
+                self.lifeCategoryArr.append(model)
             }
-        }
-        
-        if count == 0{
-            closeBarrage()
-        }
-    }
-    
-    func saveBarrageIdToLocal(_ barrageId:NSNumber){
-        UserDefaults.standard.set(barrageId, forKey: "LastShowBarrageId")
-        UserDefaults.standard.synchronize()
-    }
-    
-      //MARK: -广告
-    func getAdFromServer(){
-        
-        NetKit.sharedInstance.doPostRequest(RequestURL.REQUEST_LIFE_ADVERT, params: ["index":0], successClosure:
-            { (bodyData) in
-                
-                if let arr = bodyData as? [NSDictionary]{
-                    if arr.count != 0{
-                        self.parseAdDic(arr[0])
-                    }
+            //            self.lifeCategoryArr.popLast()
+            //            self.lifeCategoryArr.popLast()
+            
+            let flowLayout = self.categoryView.collectionViewLayout as! UICollectionViewFlowLayout
+            var space:CGFloat = 0
+            flowLayout.minimumInteritemSpacing = space
+            flowLayout.minimumLineSpacing = space
+            flowLayout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
+            self.categoryView.reloadAllSections()
+            //重新布局
+            if let layout = self.categoryView.layoutAttributesForItem(at: IndexPath(row:self.lifeCategoryArr.count - 1, section: 0)){
+                if (layout.frame.maxX) < SCREEN_W{
+                    let flowLayout = self.categoryView.collectionViewLayout as! UICollectionViewFlowLayout
+                    space = (SCREEN_W - layout.frame.maxX) / CGFloat(self.lifeCategoryArr.count + 1)
+                    flowLayout.minimumInteritemSpacing = space
+                    flowLayout.minimumLineSpacing = space
+                    flowLayout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
+                    self.categoryView.reloadAllSections()
                 }
-                
-            }, failClosure: {
-                
-            },noDataClosure:{
-                
-        })
-        
-    }
-    
-    func parseAdDic(_ adDic:NSDictionary){
-        adModel.setValueForDic(adDic)
-        hasAd = true
-        if  let cell = mainCollectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? LifeNativeCollectionViewCell{
-            cell.relatedCollectionView.reloadData()
+            }
+            self.categoryView.addLine()
+            self.categoryView.selectInCategoryView(0)
+            //看生活内容
+            self.lifeDatas = []
+            for item in self.lifeCategoryArr{
+                let data = LifeData()
+                data.storyId = item.categoryId
+                self.lifeDatas.append(data)
+            }
+            self.mainCollectionView.reloadAllSections()
         }
-    }
-    
-    var hasAd = false
-    
-    var adSizeChanged = false
-    
-    func removeAd(_ b:UIButton){
-        b.isEnabled = false
-        hasAd = false
-        if let cell = mainCollectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? LifeNativeCollectionViewCell{
-            cell.relatedCollectionView.deleteItems(at: [IndexPath(row: 0, section: 0)])
+        let failureClosure: (() -> Void) = {
+            self.view.addBadNetworkingDefaultImageView(isadd: true, target: self, action: #selector(LifeNativeViewController.getCategoryData))
         }
-        
+        LifeUtils.request(url: url, pamams: params, successClosure: successClosure, failureClosure: failureClosure)
     }
     
     func arrForJsonString(_ str:NSString)->[NSDictionary]{
-        let data = str.data(using: String.Encoding.utf8)
+        let data = str.data(using: String.Encoding.utf8.rawValue)
         let obj = try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
         return (obj as! [NSDictionary])
     }
@@ -292,28 +157,10 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     //MARK:- UIScrollViewDelegate
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView){
-//        print("scrollViewWillBeginDragging:\(scrollView.contentOffset.y)");
-//        isDragging = true
-//        firstTouchOffsetY = scrollView.contentOffset.y
+        
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        if isDragging{//是否是用手拖动
-//            let moveDistance = scrollView.contentOffset.y - firstTouchOffsetY
-//            //            print(moveDistance)
-//            if moveDistance < 0  {
-//                //                print("向下滑")
-//                setIwantBtnImage(moveDistance)
-//                isDraggingUp = false
-//            }else if moveDistance > 0{
-//                //                print("向上滑")
-//                setIwantBtnImage(moveDistance)
-//                isDraggingUp = true
-//                
-//            }else if moveDistance >= changeGap*4{
-//                //                endDraggingAnimation()
-//            }
-//        }
         if scrollView != mainCollectionView && scrollView != categoryView {
             lifeDatas[scrollView.tag].yOffset = scrollView.contentOffset.y
         }
@@ -324,7 +171,6 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 categoryView.scrollLineInCategoryView(f)
             }
         }
-        
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -337,132 +183,9 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-//        print("scrollViewWillEndDragging:\(scrollView.contentOffset.y)");
-//        isDragging = false
-//        endDraggingAnimation()
+
     }
     
-/*
-    //MARK:- 我想按钮动画
-    func setIwantBtnImage(moveDistance:CGFloat){
-        
-        var imageName = "iwant_bubble"
-        
-        
-        if moveDistance >= -changeGap && moveDistance <= changeGap {
-            imageName = "iwant_bubble"
-        }
-            
-            //向上滑
-        else if moveDistance > changeGap && moveDistance <= changeGap*2 {
-            imageName = "iwant_bubble_up_1"
-            iWantBtn.frame = CGRectMake((Width-iWantBtnWidth)/2, Height - 50 - iWantBtnWidth - 70 - 10, iWantBtnWidth, iWantBtnWidth + 10)
-            
-        }else if moveDistance > changeGap*2 && moveDistance <= changeGap*3 {
-            imageName = "iwant_bubble_up_2"
-            iWantBtn.frame = CGRectMake((Width-iWantBtnWidth)/2, Height - 50 - iWantBtnWidth - 70 - 20, iWantBtnWidth, iWantBtnWidth + 20)
-            
-        }else if moveDistance > changeGap*3 && moveDistance <= changeGap*4{
-            imageName = "iwant_bubble_up_3"
-            iWantBtn.frame = CGRectMake((Width-iWantBtnWidth)/2, Height - 50 - iWantBtnWidth - 70 - 30, iWantBtnWidth, iWantBtnWidth + 30)
-            
-        }else if  moveDistance > changeGap*4{
-            imageName = "iwant_bubble_up_4"
-            iWantBtn.frame = CGRectMake((Width-iWantBtnWidth)/2, Height - 50 - iWantBtnWidth - 70 - 40, iWantBtnWidth, iWantBtnWidth + 40)
-            
-        }
-            //向下滑
-        else if moveDistance >= -changeGap*2 && moveDistance < -changeGap {
-            imageName = "iwant_bubble_down_1"
-            iWantBtn.frame = CGRectMake((Width-iWantBtnWidth)/2, Height - 50 - iWantBtnWidth - 70, iWantBtnWidth, iWantBtnWidth + 10)
-            
-        }else if moveDistance >= -changeGap*3 && moveDistance < -changeGap*2 {
-            imageName = "iwant_bubble_down_2"
-            iWantBtn.frame = CGRectMake((Width-iWantBtnWidth)/2, Height - 50 - iWantBtnWidth - 70, iWantBtnWidth, iWantBtnWidth + 20)
-            
-        }else if moveDistance >= -changeGap*4 && moveDistance < -changeGap*3{
-            imageName = "iwant_bubble_down_3"
-            iWantBtn.frame = CGRectMake((Width-iWantBtnWidth)/2, Height - 50 - iWantBtnWidth - 70, iWantBtnWidth, iWantBtnWidth + 30)
-            
-        }else if moveDistance < -changeGap*4{
-            imageName = "iwant_bubble_down_4"
-            iWantBtn.frame = CGRectMake((Width-iWantBtnWidth)/2, Height - 50 - iWantBtnWidth - 70, iWantBtnWidth, iWantBtnWidth + 40)
-            
-        }
-        
-        iWantBtn.setImage(UIImage.init(named: imageName), forState: .Normal)
-        
-    }
-    
-    func endDraggingAnimation(){
-        
-        var images:[CGImage] = []
-        for index in 0...3{
-            var img:UIImage!
-            if isDraggingUp{
-                img = UIImage.init(named: "iwant_bubble_up_\(4-index)")
-            }else{
-                img = UIImage.init(named: "iwant_bubble_down_\(4-index)")
-            }
-            let cgImg = img.CGImage
-            images.append(cgImg!)
-        }
-        //        let imgOrginal  = UIImage.init(named: "iwant_bubble")
-        //        let imgShake    = UIImage.init(named: "iwant_bubble_shake")
-        //
-        //        images.append((imgOrginal?.CGImage)!)
-        //
-        //        for _ in 0...1{
-        //            images.append((imgShake?.CGImage)!)
-        //            images.append((imgOrginal?.CGImage)!)
-        //        }
-        
-        let animation = CAKeyframeAnimation.init(keyPath: "contents")
-        animation.duration = 0.1
-        animation.delegate = self
-        animation.values = images
-//        iWantBtn.imageView?.layer.addAnimation(animation, forKey: nil)
-        
-        
-        
-    }
-    
-    
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-        
-        
-        let imgOrginal  = UIImage.init(named: "iwant_bubble")
-        let imgShake = UIImage.init(named: "iwant_bubble_shake")
-        
-        UIView.animateWithDuration(0.1, animations: {
-            
-            self.iWantBtn.setImage(imgShake, forState: .Normal)
-            if self.isDraggingUp{
-                self.iWantBtn.frame = CGRectMake((Width - self.iWantBtnWidth)/2, Height - 50 -  self.iWantBtnWidth - 60,  self.iWantBtnWidth,  self.iWantBtnWidth - 10)
-            }else{
-                self.iWantBtn.frame = CGRectMake((Width - self.iWantBtnWidth)/2, Height - 50 -  self.iWantBtnWidth - 70,  self.iWantBtnWidth,  self.iWantBtnWidth - 10)
-            }
-        }) { (_) in
-            
-            
-            
-            UIView.animateWithDuration(0.1, animations: {
-                self.iWantBtn.setImage(imgOrginal, forState: .Normal)
-                if self.isDraggingUp{
-                    self.iWantBtn.frame = CGRectMake((Width - self.iWantBtnWidth)/2, Height - 50 -  self.iWantBtnWidth - 80,  self.iWantBtnWidth,  self.iWantBtnWidth)
-                }else{
-                    self.iWantBtn.frame = CGRectMake((Width - self.iWantBtnWidth)/2, Height - 50 -  self.iWantBtnWidth - 60,  self.iWantBtnWidth,  self.iWantBtnWidth)
-                }
-                }, completion: { (_) in
-                    
-                    self.iWantBtn.setImage(imgOrginal, forState: .Normal)
-                    self.iWantBtn.frame = CGRectMake((Width - self.iWantBtnWidth)/2, Height - 50 -  self.iWantBtnWidth - 70,  self.iWantBtnWidth,  self.iWantBtnWidth)
-            })
-        }
-    }
-    
-    var currentIndex = 0
- */
     // MARK: - Parse
     func parseDataFromArr(_ arr:NSArray,collectionView:UICollectionView?,index:Int,isrefresh:Bool = false){
         
@@ -471,7 +194,6 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         let lifeData = lifeDatas[index]
         
         if arr.count < lifeData.pageSize {
-            collectionView?.gifFooter.noticeNoMoreData()
             lifeData.isEnd = true
         }else{
             lifeData.pageNo += 1
@@ -491,20 +213,6 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
             
             lifeData.lifeModels.append(model)
             
-            //达人
-            if (lifeData.lifeModels.count + 1) % 5 == 0 {
-                for (i,daren) in lifeData.darenArr.enumerated() {
-                    if daren.intForKey("position") == (lifeData.lifeModels.count + 1) || (daren.intForKey("position") == 0 && (i + 1) * 5 == (lifeData.lifeModels.count + 1)){
-                        print("\(i):\(daren.intForKey("id"))")
-                        let model = LifeModel()
-                        model.setValueForDarenDic(daren)
-                        lifeData.lifeModels.append(model)
-                        
-                        lifeInner?.addLifeDatas(model)
-                        break
-                    }
-                }
-            }
         }
         
         print("before refesh lifeData index \(index): \(lifeData.lifeModels.count)")
@@ -512,46 +220,14 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         if  isrefresh == true {
             collectionView?.reloadAllSections()
         }else{
-            collectionView?.insertItemsToSection(1)
+            collectionView?.insertItemsTo(section: 1)
         }
         
         if lifeInner?.isViewLoaded == true {
-            lifeInner?.mainCollectionView.insertItemsToSection(0)
+            lifeInner?.mainCollectionView.insertItemsTo(section: 0)
         }
         
     }
-    
-    // MARK: - Parse
-    func parseActivityDataFromArr(_ arr:NSArray,collectionView:UICollectionView?,index:Int,isrefresh:Bool = false){
-        
-        let lifeData = lifeDatas[index]
-        
-        if arr.count < lifeData.pageSize {
-            collectionView?.gifFooter.noticeNoMoreData()
-            lifeData.isEnd = true
-        }else{
-            lifeData.pageNo += 1
-        }
-        
-        if  isrefresh == true {
-            lifeData.activityModels = []
-        }
-        
-        for item in arr{
-            let model = ActivityModel()
-            
-            model.setValueForDic(item as! NSDictionary)
-            
-            lifeData.activityModels.append(model)
-        }
-        
-        if  isrefresh == true {
-            collectionView?.reloadSections( IndexSet(integersIn: NSMakeRange (0, 2).toRange()!))
-        }else{
-            collectionView?.insertItemsToSection(0)
-        }
-    }
-
     
     var choicedMinNum = 0
     var storyMinNum = 0
@@ -576,7 +252,6 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         }
         
         if lifeData.isEnd == true {
-            collectionView?.gifFooter?.noticeNoMoreData()
             return
         }
         print("发请求 request for index :\(index)")
@@ -591,15 +266,12 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
             }
         }
         
-        var params:[String:AnyObject] = ["pageNo":lifeData.pageNo,"pageSize":lifeData.pageSize,"categoryId":lifeData.storyId]
-        var url = RequestURL.REQUEST_LIFE_STOY_CATEGORY
+        var params:[String:Any] = ["pageNo":lifeData.pageNo,"pageSize":lifeData.pageSize,"categoryId":lifeData.storyId]
+        var url = "api/life/catelist"
         
         if index == 0{
-            url = RequestURL.REQUEST_LIFE_RECOMMAND
-            params = ["pageNo":lifeData.pageNo, "pageSize":lifeData.pageSize, "userId":Constants.CURRENT_USER_ID]
-        }else if lifeCategoryArr[index].categoryName == "活动"{
-            url = RequestURL.REQUEST_LIFE_ACTIVITY
-            params = ["pageNo":lifeData.pageNo, "pageSize":lifeData.pageSize]
+            url = "api/life/recommand"
+            params = ["pageNo":lifeData.pageNo, "pageSize":lifeData.pageSize, "userId":"0"]
         }
         
         
@@ -607,75 +279,49 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
             if index == 0{
                 params["choicedMinNum"] = choicedMinNum
                 params["storyMinNum"] = storyMinNum
-            }else if lifeCategoryArr[index].categoryName == "活动" {
-                if let minId  = lifeData.activityModels.last?.seqNum {
-                    params["minId"] = minId
-                }
             }else{
                 if let minId  = lifeData.lifeModels.last?.sequence_num {
                     params["minId"] = minId
                 }
-                
-                if let id = lifeData.darenArr.last?.intForKey("seqNum"){
-                    params["masterMinId"] = id
-                }
             }
         }
         
-        NetKit.sharedInstance.doPostRequest(url, params: params, successClosure:
-            { (bodyData) in
+        let successClosure: ((_ body:AnyObject) -> Void) = {
+            (bodyData) in
+            self.endRefresh(collectionView,index: index)
+            if index == 0 {
+                let dic = bodyData as! NSDictionary
                 
-                self.endRefresh(collectionView,index: index)
-                if index == 0 {
-                    if adjustedIsrefresh == true{
-                        lifeData.darenArr = []
+                if let dic = dic.value(forKey: "storyList") as? NSDictionary {
+                    if let arr = dic.value(forKey: "list") as? [NSDictionary] {
+                        self.parseDataFromArr(arr as NSArray,collectionView:collectionView,index:index,isrefresh: adjustedIsrefresh)
                     }
-                    let dic = bodyData as! NSDictionary
-                    let darenArr = dic.dicArrForKey("masterList")
-                    lifeData.darenArr.appendContentsOf(darenArr)
-                    if let hotDic = dic.valueForKey("hot") as? NSDictionary{
-                        self.hotModel.setValueForDic(hotDic)
-                    }
-                    
-                    if let dic = dic.valueForKey("storyList") as? NSDictionary {
-                        if let arr = dic.valueForKey("list") as? [NSDictionary] {
-                            self.parseDataFromArr(arr,collectionView:collectionView,index:index,isrefresh: adjustedIsrefresh)
-                        }
-                        self.choicedMinNum = dic.intForKey("choicedMinNum")
-                        self.storyMinNum = dic.intForKey("storyMinNum")
-                    }
-                }else if self.lifeCategoryArr[index].categoryName == "活动"{
-                    //活动
-                    let arr = bodyData as! NSArray
-                    self.parseActivityDataFromArr(arr, collectionView: collectionView, index: index, isrefresh: adjustedIsrefresh)
-                }else{
-                    if adjustedIsrefresh == true{
-                        lifeData.darenArr = []
-                    }
-                    //其他标签
-                    let dic = bodyData as! NSDictionary
-                    let darenArr = dic.dicArrForKey("masterList")
-                    lifeData.darenArr.appendContentsOf(darenArr)
-                    if let arr = dic.valueForKey("storyList") as? [NSDictionary] {
-                        self.parseDataFromArr(arr,collectionView:collectionView,index:index,isrefresh: adjustedIsrefresh)
-                    }
+                    self.choicedMinNum = dic.int(forKey: "choicedMinNum")
+                    self.storyMinNum = dic.int(forKey: "storyMinNum")
                 }
-                
-            }, failClosure: {
-                self.endRefresh(collectionView,index: index)
-            },noDataClosure:{
-                self.endRefresh(collectionView,index: index)
-                lifeData.isEnd = true
-        })
+            }else{
+                //其他标签
+                let dic = bodyData as! NSDictionary
+                if let arr = dic.value(forKey: "storyList") as? [NSDictionary] {
+                    self.parseDataFromArr(arr as NSArray,collectionView:collectionView,index:index,isrefresh: adjustedIsrefresh)
+                }
+            }
+        }
+        let failureClosure: (() -> Void) = {
+            self.endRefresh(collectionView,index: index)
+        }
+        let nullClosure: (() -> Void) = {
+            self.endRefresh(collectionView,index: index)
+            lifeData.isEnd = true
+        }
+        
+        LifeUtils.request(url: url, pamams: params, successClosure: successClosure, failureClosure: failureClosure, nullClosure: nullClosure)
         
     }
     
     func endRefresh(_ collectionView:UICollectionView?,index:Int){
         print("endRefresh collectionView?.tag:\(collectionView?.tag) index:\(index)")
         if collectionView?.tag == index{
-            collectionView?.gifHeader?.endRefreshing()
-            print("end index: \(index)")
-            collectionView?.gifFooter?.endRefreshing()
         }else{
             print("not end index: \(index)")
         }
@@ -687,7 +333,6 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         getDataFromServer(lifeCollectionView)
     }
     
-//    var selectedIndex = 0
     //MARK:-  UICollectionViewDataSource
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if collectionView == categoryView || collectionView == mainCollectionView {
@@ -703,27 +348,13 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
             return lifeCategoryArr.count
         }else{
             if collectionView == mainCollectionView{
-                print("numberOfItemsInSection lifeDatas.count: \(lifeDatas.count)")
                 return lifeDatas.count
             }else{
                 if section == 1 {
                     let index = collectionView.tag
-                    if index == 0{
-                        //Finding.志
-                        return lifeDatas[index].lifeModels.count + 1
-                    }else{
-                        return lifeDatas[index].lifeModels.count
-                    }
-                    
+                    return lifeDatas[index].lifeModels.count
                 }else{
-                    let index = collectionView.tag
-                    if lifeCategoryArr[index].categoryName == "活动"{
-                        return lifeDatas[index].activityModels.count
-                    }else if index == 0{
-                        return hasAd == true ? 1 : 0
-                    }else{
-                        return 0
-                    }
+                    return 0
                 }
             }
         }
