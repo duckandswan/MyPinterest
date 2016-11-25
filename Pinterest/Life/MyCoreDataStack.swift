@@ -78,3 +78,14 @@ class MyCoreDataStack {
     }
     
 }
+
+@objc(LifeImage)
+public class LifeImage: NSManagedObject {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<LifeImage> {
+        return NSFetchRequest<LifeImage>(entityName: "LifeImage");
+    }
+    
+    @NSManaged public var date: NSDate?
+    @NSManaged public var imageData: NSData?
+    @NSManaged public var urlString: String?
+}

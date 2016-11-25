@@ -234,7 +234,7 @@ class InnerTopCell:CommonCollectionViewCell{
             
         }
         
-        for i in urls.count..<4{
+        for i in urls.count..<9{
             imageViews[i].image = nil
             imageViews[i].isHidden = true
         }

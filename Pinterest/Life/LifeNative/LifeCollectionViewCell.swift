@@ -30,7 +30,7 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
         self.layer.cornerRadius = 5
         self.layer.masksToBounds = true
         self.contentView.backgroundColor = UIColor.white
-        for _ in 0..<4{
+        for _ in 0..<9{
             let imageView = UIImageView()
             imageViews.append(imageView)
             iView.addSubview(imageView)
@@ -125,22 +125,22 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
     func setContentLabel(_ label:UILabel,text:String,maxY:inout CGFloat){
         
         let height =  LifeUtils.calculateHeightForContentStr(text)
-        label.frame = CGRect(x: LifeConstant.margin / 2, y: maxY + LifeConstant.margin/2, width: LifeConstant.innerWidth,  height: height)
+        label.frame = CGRect(x: LifeConstant.margin, y: maxY + LifeConstant.margin, width: LifeConstant.innerWidth,  height: height)
         label.numberOfLines = 0
         label.attributedText = NSAttributedString(string: text, attributes: LifeConstant.contentAttributesDic)
         label.textColor = UIColor.gray
         label.textAlignment = .justified
-        maxY += height + LifeConstant.margin / 2
+        maxY += height + LifeConstant.margin
     }
     
     func setTitleLabel(_ label:UILabel,text:String,maxY:inout CGFloat){
         let height =  LifeUtils.calculateHeightForTitleStr(text)
-        label.frame = CGRect(x: LifeConstant.margin / 2, y: maxY + LifeConstant.margin/2, width: LifeConstant.innerWidth,  height: height)
+        label.frame = CGRect(x: LifeConstant.margin, y: maxY + LifeConstant.margin, width: LifeConstant.innerWidth,  height: height)
         label.numberOfLines = 0
         label.attributedText = NSAttributedString(string: text, attributes: LifeConstant.titleAttributesDic)
         label.textColor = UIColor.black
         label.textAlignment = .justified
-        maxY += height + LifeConstant.margin / 2
+        maxY += height + LifeConstant.margin
     }
     
     
@@ -159,7 +159,7 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
             maxY += imageheight
         }
         
-        for i in urls.count..<4{
+        for i in urls.count..<9{
             imageViews[i].image = nil
             imageViews[i].isHidden = true
         }

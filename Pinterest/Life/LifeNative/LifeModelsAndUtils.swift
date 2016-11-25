@@ -160,9 +160,7 @@ class LifeModel:NSObject{
             height += titleH
             height += LifeConstant.margin / 2
         }
-        
-        
-        //        contentH += LifeUtils.calculateSizeForStr(content, size: CGSizeMake(width - LifeConstant.margin, LifeConstant.contentHeight), font: LifeConstant.contentFont).height
+
         contentH += LifeUtils.calculateHeightForContentStr(content)
         height += contentH
         height += LifeConstant.margin / 2
@@ -180,7 +178,6 @@ class LifeModel:NSObject{
         bigHeight += LifeConstant.BIG_HEAD_HEIGHT
         
         if collectionName != "" {
-            //            bigTitleH = LifeUtils.calculateSizeForStr(collectionName, size: CGSizeMake(bigWidth - LifeConstant.bigMargin, LifeConstant.bigTitleHeight), font: LifeConstant.bigTitleFont).height
             bigTitleH = LifeUtils.calculateHeightForBigTitleStr(collectionName)
             bigHeight += bigTitleH
             bigHeight +=  LifeConstant.articleMargin
@@ -238,7 +235,7 @@ class LifeConstant{
     
     static let width = WaterFlowViewLayout.columnWidth
     static let margin:CGFloat = 5
-    static let innerWidth:CGFloat = width - margin * 5
+    static let innerWidth:CGFloat = width - margin * 2
     
     static let titleHeight:CGFloat = 45
     static let contentHeight:CGFloat = 55
@@ -250,7 +247,7 @@ class LifeConstant{
     
     static let bigWidth = UIScreen.main.bounds.size.width
     static let bigMargin:CGFloat = 10
-    static let bigInnerWidth:CGFloat = bigWidth - bigMargin * 10
+    static let bigInnerWidth:CGFloat = bigWidth - bigMargin * 2
     
     static let articleMargin:CGFloat = margin
     
@@ -338,7 +335,67 @@ class LifeUtils{
 //                failureClosure?()
 //            }
 //        }
-        
+        print("pamams:\(pamams)")
+        var request = URLRequest(url:URL(string: url)!)
+        request.httpMethod = "POST"
+//        let bodyString = "key1=value&key2=value&key3=value"
+        var bodyString = ""
+        if let ps = pamams {
+            for key in ps.keys{
+                bodyString += "\(key)=\(ps[key]!)&"
+            }
+        }
+        bodyString.remove(at: bodyString.index(before: bodyString.endIndex))
+        print("url:\(url)")
+        print("bodyString:\(bodyString)")
+        request.httpBody = bodyString.data(using: String.Encoding.utf8)
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
+            if let error = error {
+                print("error: \(error)")
+                DispatchQueue.main.async { () -> Void in
+                    failureClosure?()
+                }
+                return
+            }
+            
+            guard let data = data else {
+                DispatchQueue.main.async { () -> Void in
+                    failureClosure?()
+                }
+                return
+            }
+            print("data: \(data)")
+            
+            if let result = try? JSONSerialization.jsonObject(with: data, options: .allowFragments){
+                let resultDic = result as! NSDictionary
+                print("resultDic: \(resultDic)")
+                print("访问服务器成功")
+                let codeString = resultDic.string(forKey: "code")
+                if codeString == "100" {
+                    print("code 100")
+                    let body = resultDic.value(forKey:"body") as AnyObject
+                    DispatchQueue.main.async { () -> Void in
+                        successClosure?(body)
+                    }
+                }else if codeString == "103" {
+                    print("code 103")
+                    DispatchQueue.main.async { () -> Void in
+                        nullClosure?()
+                        failureClosure?()
+                    }
+                }else{
+                    print("code \(codeString)")
+                    DispatchQueue.main.async { () -> Void in
+                        failureClosure?()
+                    }
+                }
+            }else{
+                DispatchQueue.main.async { () -> Void in
+                    failureClosure?()
+                }
+            }
+            
+        }).resume()
         
     }
     

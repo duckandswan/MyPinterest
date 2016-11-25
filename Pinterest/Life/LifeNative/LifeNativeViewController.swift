@@ -100,7 +100,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         self.view.addBadNetworkingDefaultImageView(isadd: false)
         let url = "http://api.finding.com/api/tag/catedisplay"
         let params:[String:Any] = ["" : ""]
-        let successClosure: ((_ body:AnyObject) -> Void) = {
+        let successClosure: ((_ body:Any) -> Void) = {
             (bodyData) in
             let arr = bodyData as! [NSDictionary]
             let m1 = LifeCategoryModel()
@@ -267,10 +267,10 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         }
         
         var params:[String:Any] = ["pageNo":lifeData.pageNo,"pageSize":lifeData.pageSize,"categoryId":lifeData.storyId]
-        var url = "http://api.finding.com/life/catelist"
+        var url = "http://api.finding.com/api/life/catelist"
         
         if index == 0{
-            url = "http://api.finding.com/life/recommand"
+            url = "http://api.finding.com/api/life/recommand"
             params = ["pageNo":lifeData.pageNo, "pageSize":lifeData.pageSize, "userId":"0"]
         }
         
@@ -286,7 +286,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
             }
         }
         
-        let successClosure: ((_ body:AnyObject) -> Void) = {
+        let successClosure: ((_ body:Any) -> Void) = {
             (bodyData) in
             self.endRefresh(collectionView,index: index)
             if index == 0 {
