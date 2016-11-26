@@ -358,7 +358,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
                 cell.setControlsInSecondStep()
             }
             
-            if indexPath.row == delegate.mainLifeData.lifeModels.count - 7{
+            if indexPath.row == delegate.mainLifeData.lifeModels.count - LifeCollectionViewCell.requestNumber{
                 delegate.footerRefreshData()
             }
             
@@ -372,7 +372,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
                 let lifeModel = lifedata.lifeModels[indexPath.row]
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
                 cell.setData(lifeModel)
-                if indexPath.row == lifeDatas[index].lifeModels.count - 7{
+                if indexPath.row == lifeDatas[index].lifeModels.count - LifeCollectionViewCell.requestNumber{
                     getDataFromServer(collectionView)
                 }
                 return cell

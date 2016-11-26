@@ -217,31 +217,7 @@ extension UIImageView{
         //        }catch{
         //
         //        }
-        
-        
-        //            print("urls.count: \(urls.count)")
-        //            if urls.count == 0 {
-        ////                let entity =  EntityDescription.entityForName("MyImage",
-        ////                    inManagedObjectContext: self.coreDataStack.context)
-        ////                let myImage = MyImage(entity: entity!,
-        ////                    insertIntoManagedObjectContext: self.coreDataStack.context)
-        //                DispatchQueue.global().async {
-        //                    let imageData = NSData(contentsOf: URL(string: str)!)
-        //                    let myImage = MyImage(context: MyCoreDataStack.coreDataStack.context)
-        //                    myImage.urlString = str
-        //                    myImage.imageData = imageData
-        //                    myImage.date = NSDate()
-        //                    do {
-        //                        try MyCoreDataStack.coreDataStack.context.save()
-        //                    } catch let error as NSError {
-        //                        print("Could not save \(error), \(error.userInfo)")
-        //                    }
-        //                }
-        //
-        //            }
-        //        }catch{
-        //
-        //        }
+
     }
 }
 

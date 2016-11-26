@@ -411,7 +411,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                     
                     let index = collectionView.tag
                     let lifeModel = lifeDatas[index].lifeModels[indexPath.row]
-                    if indexPath.row - 1 == lifeDatas[index].lifeModels.count - 7{
+                    if indexPath.row - 1 == lifeDatas[index].lifeModels.count - LifeCollectionViewCell.requestNumber{
                         getDataFromServer(collectionView)
                     }
                     

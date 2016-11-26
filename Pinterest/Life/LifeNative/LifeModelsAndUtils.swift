@@ -55,6 +55,7 @@ class LifeModel:NSObject{
         
         avatar = dic.string(forKey: "avatar")
         collectionImgArr = dic.stringArr(forKey: "collectionImgArr")
+        releaseTime = dic.string(forKey: "releaseTime")
         content = dic.string(forKey: "content")
         likeSize = dic.int(forKey: "likeSize")
         replySize = dic.int(forKey: "replySize")

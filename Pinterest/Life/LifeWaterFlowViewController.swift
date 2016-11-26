@@ -245,7 +245,7 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
             cell.setData(mainLifeData.lifeModels[indexPath.row])
-            if indexPath.row == mainLifeData.lifeModels.count - 7{
+            if indexPath.row == mainLifeData.lifeModels.count - LifeCollectionViewCell.requestNumber{
 //                lifeCollectionView.gifFooter?.beginRefreshing()
                 getDataFromServer()
             }
