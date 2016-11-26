@@ -21,10 +21,10 @@ class LifeInnerCell:UICollectionViewCell{
     var commentBtn = UIButton()
     
     var bountyBtn = UIButton()
-    
-    var arrangeBtn = UIButton()
-    
-    let darenHeadTitle = UILabel()
+//    
+//    var arrangeBtn = UIButton()
+//    
+//    let darenHeadTitle = UILabel()
     
     weak var vc:LifeInnerController?
     var model:LifeModel!
@@ -42,24 +42,25 @@ class LifeInnerCell:UICollectionViewCell{
         backBtn.setImage(UIImage(named: "btn_back"), for: UIControlState())
         topView.addSubview(backBtn)
         backBtn.frame.origin.y = 20
+        backBtn.addTarget(vc, action: Selector(("back")), for: .touchUpInside)
         
-        shareBtn.frame =  CGRect(x: frame.size.width - 44, y: 20, width: 44, height: 44)
-        shareBtn.setImage(UIImage(named: "share"), for: UIControlState())
-        topView.addSubview(shareBtn)
-        
-        commentBtn.frame =  CGRect(x: shareBtn.frame.origin.x - 44, y: 20, width: 44, height: 44)
-        commentBtn.setImage(UIImage(named: "btn_comments"), for: UIControlState())
-        topView.addSubview(commentBtn)
-        
-        collectButton.frame =  CGRect(x: commentBtn.frame.origin.x - 54, y: 20, width: 44, height: 44)
-        collectButton.setImage(UIImage(named: "btn_collect"), for: UIControlState())
-        collectButton.setImage(UIImage(named: "btn_collect_select"), for: UIControlState.selected)
-        topView.addSubview(collectButton)
-        
-        likeButton.frame =  CGRect(x: collectButton.frame.origin.x - 54, y: 20, width: 44, height: 44)
-        likeButton.setImage(UIImage(named: "btn_like"), for: UIControlState())
-        likeButton.setImage(UIImage(named: "btn_like_select"), for: UIControlState.selected)
-        topView.addSubview(likeButton)
+//        shareBtn.frame =  CGRect(x: frame.size.width - 44, y: 20, width: 44, height: 44)
+//        shareBtn.setImage(UIImage(named: "share"), for: UIControlState())
+//        topView.addSubview(shareBtn)
+//        
+//        commentBtn.frame =  CGRect(x: shareBtn.frame.origin.x - 44, y: 20, width: 44, height: 44)
+//        commentBtn.setImage(UIImage(named: "btn_comments"), for: UIControlState())
+//        topView.addSubview(commentBtn)
+//        
+//        collectButton.frame =  CGRect(x: commentBtn.frame.origin.x - 54, y: 20, width: 44, height: 44)
+//        collectButton.setImage(UIImage(named: "btn_collect"), for: UIControlState())
+//        collectButton.setImage(UIImage(named: "btn_collect_select"), for: UIControlState.selected)
+//        topView.addSubview(collectButton)
+//        
+//        likeButton.frame =  CGRect(x: collectButton.frame.origin.x - 54, y: 20, width: 44, height: 44)
+//        likeButton.setImage(UIImage(named: "btn_like"), for: UIControlState())
+//        likeButton.setImage(UIImage(named: "btn_like_select"), for: UIControlState.selected)
+//        topView.addSubview(likeButton)
         
         let lineView: UIView = UIView(frame: CGRect(x: 0, y: topView.frame.maxY - 1, width: SCREEN_W, height: 1))
         lineView.backgroundColor = LifeConstant.mainBackgroundColor
@@ -86,22 +87,22 @@ class LifeInnerCell:UICollectionViewCell{
 //        innerWantView.priceLabel.text = "参考价格\n" + String(5000000.0)
 //        contentView.addSubview(innerWantView)
         
-        arrangeBtn.frame = CGRect(x: 0, y: frame.size.height - 50, width: frame.size.width, height: 50)
-        arrangeBtn.backgroundColor = LifeConstant.redFontColor
-        arrangeBtn.setTitle("定制专属搭配", for: UIControlState())
-        arrangeBtn.setTitleColor(UIColor.white, for: UIControlState())
-        arrangeBtn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-        arrangeBtn.isHidden = true
-        contentView.addSubview(arrangeBtn)
-        
-        darenHeadTitle.frame = CGRect(x: 0, y: 0, width: 100, height: 30)
-        darenHeadTitle.text = "达人"
-        darenHeadTitle.textColor = UIColor.black
-        darenHeadTitle.font = UIFont.boldSystemFont(ofSize: 18)
-        darenHeadTitle.textAlignment = .center
-        darenHeadTitle.center.y = topView.frame.size.height * CGFloat(0.5) + 10
-        darenHeadTitle.center.x = topView.center.x
-        topView.addSubview(darenHeadTitle)
+//        arrangeBtn.frame = CGRect(x: 0, y: frame.size.height - 50, width: frame.size.width, height: 50)
+//        arrangeBtn.backgroundColor = LifeConstant.redFontColor
+//        arrangeBtn.setTitle("定制专属搭配", for: UIControlState())
+//        arrangeBtn.setTitleColor(UIColor.white, for: UIControlState())
+//        arrangeBtn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+//        arrangeBtn.isHidden = true
+//        contentView.addSubview(arrangeBtn)
+//        
+//        darenHeadTitle.frame = CGRect(x: 0, y: 0, width: 100, height: 30)
+//        darenHeadTitle.text = "达人"
+//        darenHeadTitle.textColor = UIColor.black
+//        darenHeadTitle.font = UIFont.boldSystemFont(ofSize: 18)
+//        darenHeadTitle.textAlignment = .center
+//        darenHeadTitle.center.y = topView.frame.size.height * CGFloat(0.5) + 10
+//        darenHeadTitle.center.x = topView.center.x
+//        topView.addSubview(darenHeadTitle)
     }
     
     func setButtonsEnable(_ isTrue:Bool){
@@ -112,17 +113,10 @@ class LifeInnerCell:UICollectionViewCell{
         shareBtn.isEnabled = isTrue
     }
     
-    func setViewsHidden(_ isHiden:Bool){
-        shareBtn.isHidden = isHiden
-        commentBtn.isHidden = isHiden
-        collectButton.isHidden = isHiden
-        likeButton.isHidden = isHiden
-    }
-    
-    func setViews(){
-        relatedCollectionView.frame.size.height = frame.height - 64
-        setViewsHidden(false)
-    }
+//    func setViews(){
+//        relatedCollectionView.frame.size.height = frame.height - 64
+//        setViewsHidden(false)
+//    }
 
     //MARK:内页
     func setControlsInSecondStep(){
@@ -162,7 +156,7 @@ class LifeInnerCell:UICollectionViewCell{
         relatedCollectionView.reloadData()
         relatedCollectionView.contentOffset.y = 0
         
-        setViews()
+//        setViews()
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -382,7 +382,7 @@
 				DEVELOPMENT_TEAM = L2XU33FY6N;
 				INFOPLIST_FILE = Pinterest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.fxdz.Pinterest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.duckandswan.Pinterest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -395,7 +395,7 @@
 				DEVELOPMENT_TEAM = L2XU33FY6N;
 				INFOPLIST_FILE = Pinterest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.fxdz.Pinterest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.duckandswan.Pinterest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
