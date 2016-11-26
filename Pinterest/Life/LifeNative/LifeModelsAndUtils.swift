@@ -64,7 +64,7 @@ class LifeModel:NSObject{
         sizes = sizeArrForJsonString(dic)
         slogon = dic.string(forKey: "slogon")
         source = dic.string(forKey: "source")
-        storyCollectionId = dic.int(forKey: "id")
+        storyCollectionId = dic.int(forKey: "id") != 0 ? dic.int(forKey: "id") : dic.int(forKey: "storyCollectionId")
         userId = dic.int(forKey: "userId")
         userNick = dic.string(forKey: "userNick")
         remarks = dic.string(forKey: "remarks")

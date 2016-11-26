@@ -44,8 +44,8 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
         
         self.contentView.addSubview(bottomView)
         
-        initViewsInLikeView(likeImageView, image: "img_like2-1", label: likeLabel)
-        initViewsInLikeView(replyImageView, image: "img_comment2-1", label: replyLabel)
+        initViewsInLikeView(likeImageView, image: "img_like", label: likeLabel)
+        initViewsInLikeView(replyImageView, image: "img_comment", label: replyLabel)
         
         
         likeView.backgroundColor = UIColor.white

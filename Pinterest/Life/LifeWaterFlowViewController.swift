@@ -20,20 +20,40 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
+        self.navigationController?.navigationBar.isHidden = true
+
         params = ["userId":"0","pageNo":mainLifeData.pageNo,"pageSize":mainLifeData.pageSize]
         //
         initCollectionView()
         
         self.automaticallyAdjustsScrollViewInsets = false
         
+    }
+    //MARK: - 初始化头部
+    func initHeadBar(name:String) {
         
-        //                headerRefreshData()
-        //        lifeCollectionView.gifHeader.beginRefreshing()
+        let headBgView = UIView(frame: CGRect(x: 0, y: 0, width: SCREEN_W, height: 64))
+        headBgView.backgroundColor = UIColor.white
+        
+        
+        let headTitle = UILabel(frame: CGRect(x: 0, y: 0, width: SCREEN_W - 128, height: 30))
+        headTitle.text = name
+        headTitle.textColor = UIColor.black
+        headTitle.font = UIFont.boldSystemFont(ofSize: 18)
+        headTitle.textAlignment = .center
+        headTitle.center.y = (headBgView.frame.size.height) * CGFloat(0.5) + 10
+        headTitle.center.x = headBgView.center.x
+        
+        let backBtn = UIButton(frame: CGRect(x: 0, y: 20, width: 44, height: 44))
+        backBtn.setImage(UIImage(named: "btn_back"), for: UIControlState.normal)
+        backBtn.addTarget(self, action: #selector(LifeWaterFlowViewController.back), for: UIControlEvents.touchUpInside)
+        
+        headBgView.addSubview(backBtn)
+        headBgView.addSubview(headTitle)
+        self.view.addSubview(headBgView)
     }
     
     func initCollectionView(){
-        
         lifeCollectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: SCREEN_W, height: SCREEN_H), collectionViewLayout: waterfallLayout)
         
         waterfallLayout.delegate = self
@@ -44,8 +64,8 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
         lifeCollectionView.delegate = self
         
         lifeCollectionView.register(LifeCollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
-        
         view.addSubview(lifeCollectionView)
+
     }
     
     var canRequest = true

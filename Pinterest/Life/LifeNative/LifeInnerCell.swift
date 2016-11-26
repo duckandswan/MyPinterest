@@ -44,24 +44,6 @@ class LifeInnerCell:UICollectionViewCell{
         backBtn.frame.origin.y = 20
         backBtn.addTarget(vc, action: Selector(("back")), for: .touchUpInside)
         
-//        shareBtn.frame =  CGRect(x: frame.size.width - 44, y: 20, width: 44, height: 44)
-//        shareBtn.setImage(UIImage(named: "share"), for: UIControlState())
-//        topView.addSubview(shareBtn)
-//        
-//        commentBtn.frame =  CGRect(x: shareBtn.frame.origin.x - 44, y: 20, width: 44, height: 44)
-//        commentBtn.setImage(UIImage(named: "btn_comments"), for: UIControlState())
-//        topView.addSubview(commentBtn)
-//        
-//        collectButton.frame =  CGRect(x: commentBtn.frame.origin.x - 54, y: 20, width: 44, height: 44)
-//        collectButton.setImage(UIImage(named: "btn_collect"), for: UIControlState())
-//        collectButton.setImage(UIImage(named: "btn_collect_select"), for: UIControlState.selected)
-//        topView.addSubview(collectButton)
-//        
-//        likeButton.frame =  CGRect(x: collectButton.frame.origin.x - 54, y: 20, width: 44, height: 44)
-//        likeButton.setImage(UIImage(named: "btn_like"), for: UIControlState())
-//        likeButton.setImage(UIImage(named: "btn_like_select"), for: UIControlState.selected)
-//        topView.addSubview(likeButton)
-        
         let lineView: UIView = UIView(frame: CGRect(x: 0, y: topView.frame.maxY - 1, width: SCREEN_W, height: 1))
         lineView.backgroundColor = LifeConstant.mainBackgroundColor
         topView.addSubview(lineView)

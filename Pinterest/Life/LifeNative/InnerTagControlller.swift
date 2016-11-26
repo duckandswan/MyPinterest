@@ -12,21 +12,17 @@ class InnerTagController: LifeWaterFlowViewController {
     
 //    var lifeCollectionView:UICollectionView!
     
-    var sceneId:String?
+//    var sceneId:String?
     
     var logString = "看生活"
-    
-//    var hotModel:LifeHotModel = LifeHotModel()
-    
-//    let waterfallLayout = WaterFlowViewLayout()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        self.title = tagName
-
+        initHeadBarAndLifeCollectionView()
         initUrlAndParameter()
+        
+        getDataFromServer()
     }
     
 
@@ -42,15 +38,18 @@ class InnerTagController: LifeWaterFlowViewController {
 
     }
     
+    func initHeadBarAndLifeCollectionView(){
+        initHeadBar(name: tagName)
+        lifeCollectionView.frame = CGRect(x:0, y:64, width:view.frame.width, height:SCREEN_H - 64)
+    }
+    
     var tagName = "工艺"
-    var tagId:Int?
+    var tagId:Int = 0
     
     func initUrlAndParameter(){
-        lifeUrlString = ""
+        lifeUrlString = "http://api.finding.com/api/life/index"
         
-        if let id = tagId{
-            params["tagId"] = id as AnyObject?
-        }
+        params["tagId"] = tagId as AnyObject?
 
     }
     

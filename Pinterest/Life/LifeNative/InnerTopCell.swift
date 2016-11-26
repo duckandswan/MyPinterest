@@ -99,8 +99,8 @@ class InnerTopCell:CommonCollectionViewCell{
         readView.addSubview(readButton)
         
         infoView.backgroundColor = UIColor.white
-        initButton(likeButton,image:"img_like3")
-        initButton(replyButton,image:"img_comment3")
+        initButton(likeButton,image:"img_like")
+        initButton(replyButton,image:"img_comment")
         
         relatedView.backgroundColor = LifeConstant.mainBackgroundColor
         
@@ -334,7 +334,6 @@ class InnerTopCell:CommonCollectionViewCell{
         configTagView(model.tagList)
         
         likeButton.tag = index
-
         
         replyButton.tag = index
         
