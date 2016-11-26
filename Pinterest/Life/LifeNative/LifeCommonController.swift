@@ -30,10 +30,12 @@ class LifeCommonController:UIViewController, UIViewControllerAnimatedTransitioni
         let layoutAttributes = lifeCollectionView.layoutAttributesForItem(at: indexPath)!
         var newFrame = lifeCollectionView.convert(layoutAttributes.frame, to: window)
         
-        if newFrame.origin.y + iH < 64 || newFrame.origin.y > UIScreen.main.bounds.size.height - 70{
-            lifeCollectionView.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.top, animated: false)
-            newFrame = lifeCollectionView.convert(layoutAttributes.frame, to: window)
-        }
+//        if newFrame.origin.y + iH < 64 || newFrame.origin.y > UIScreen.main.bounds.size.height - 70{
+//            lifeCollectionView.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.top, animated: false)
+//            newFrame = lifeCollectionView.convert(layoutAttributes.frame, to: window)
+//        }
+        lifeCollectionView.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.top, animated: false)
+        newFrame = lifeCollectionView.convert(layoutAttributes.frame, to: window)
         
         newFrame.size.height = iH
         return newFrame
