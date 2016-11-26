@@ -127,15 +127,8 @@ class LifeModel:NSObject{
     func getImagesHeight(_ width:CGFloat)->CGFloat{
         var hg:CGFloat = 0
 
-        if sizes.count <= 4 {
-            for size in sizes{
-                hg += (size["height"] as! CGFloat)/(size["width"] as! CGFloat)*width
-            }
-        }else if sizes.count % 2 == 0{
-            hg += CGFloat(sizes.count/2) * width/2
-        }else{
-            hg += (sizes[0]["height"] as! CGFloat)/(sizes[0]["width"] as! CGFloat)*width
-            hg += CGFloat((sizes.count - 1)/2) * width/2
+        for size in sizes{
+            hg += (size["height"] as! CGFloat)/(size["width"] as! CGFloat)*width
         }
         return hg
     }
@@ -158,13 +151,13 @@ class LifeModel:NSObject{
             //            titleH += LifeUtils.calculateSizeForStr(collectionName, size: CGSizeMake(width - LifeConstant.margin, LifeConstant.titleHeight), font: LifeConstant.titleFont).height
             titleH += LifeUtils.calculateHeightForTitleStr(collectionName)
             height += titleH
-            height += LifeConstant.margin / 2
+            height += LifeConstant.margin
         }
 
         contentH += LifeUtils.calculateHeightForContentStr(content)
         height += contentH
-        height += LifeConstant.margin / 2
-        height += LifeConstant.margin / 2
+        height += LifeConstant.margin
+        height += LifeConstant.margin
         
         if likeSize != 0 || replySize != 0 {
             height += 20
@@ -501,9 +494,9 @@ class LifeUtils{
     }
     
     static func executeInGlobalQueue(_ closure: @escaping () -> Void){
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.high).async(execute: { () -> Void in
+        DispatchQueue.global().async {
             closure()
-        })
+        }
     }
     
     static func aspectFitFrameForFrame(_ frame:CGRect,size:CGSize)->CGRect{

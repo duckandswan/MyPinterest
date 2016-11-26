@@ -59,7 +59,7 @@ class LifeCommonController:UIViewController, UIViewControllerAnimatedTransitioni
         
         let imagesY = lifeModel.bigImageY
         let bigImagesH = lifeModel.bigImagesH
-        desFrame = CGRect(x: LifeConstant.bigMargin/2, y: 64 + imagesY, width: LifeConstant.bigInnerWidth, height: bigImagesH)
+        desFrame = CGRect(x: LifeConstant.bigMargin, y: 64 + imagesY, width: LifeConstant.bigInnerWidth, height: bigImagesH)
         
         let lifeInnerController = LifeInnerController()
         self.lifeInner = lifeInnerController

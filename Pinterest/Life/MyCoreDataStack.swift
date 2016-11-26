@@ -11,6 +11,8 @@ import CoreData
 
 class MyCoreDataStack {
     
+    static var  coreDataStack = MyCoreDataStack()
+    
     var context:NSManagedObjectContext
     var psc:NSPersistentStoreCoordinator
     var model:NSManagedObjectModel
@@ -77,15 +79,4 @@ class MyCoreDataStack {
         return urls[0] as NSURL
     }
     
-}
-
-@objc(LifeImage)
-public class LifeImage: NSManagedObject {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<LifeImage> {
-        return NSFetchRequest<LifeImage>(entityName: "LifeImage");
-    }
-    
-    @NSManaged public var date: NSDate?
-    @NSManaged public var imageData: NSData?
-    @NSManaged public var urlString: String?
 }

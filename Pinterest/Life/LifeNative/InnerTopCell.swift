@@ -39,9 +39,9 @@ class InnerTopCell:CommonCollectionViewCell{
     let playBtn = UIButton()
     
     //内容的宽度
-    var cWidth:CGFloat!
+//    var cWidth:CGFloat!
     //边缘的宽度
-    var margin:CGFloat!
+//    var margin:CGFloat!
     
     var likeButton = LifeButton()
     let replyButton = LifeButton()
@@ -49,19 +49,17 @@ class InnerTopCell:CommonCollectionViewCell{
     let bottomLabel = UILabel()
     
     override init(frame: CGRect) {
-        margin = LifeConstant.bigMargin
-        cWidth = LifeConstant.bigInnerWidth
         
         headView = Bundle.main.loadNibNamed("lifeViews", owner: nil, options: nil)![1] as! InnerHeadView
-        headView.frame.size.width = cWidth
-        headView.frame.origin.x = margin
+        headView.frame.size.width = LifeConstant.bigInnerWidth
+        headView.frame.origin.x = LifeConstant.bigMargin
         headView.frame.size.height = LifeConstant.BIG_HEAD_HEIGHT
 
         
         contentListView = UIView(frame:CGRect(x:0,y: 0,width: SCREEN_W,height: 0))
         
         
-        infoView = UIView(frame:CGRect(x:margin,y: 0,width: cWidth,height: LifeConstant.BIG_LIKE_HEIGHT))
+        infoView = UIView(frame:CGRect(x:LifeConstant.bigMargin,y: 0,width: LifeConstant.bigInnerWidth,height: LifeConstant.BIG_LIKE_HEIGHT))
         
         relatedView =  UIView(frame: CGRect(x:0,y: 0,width: LifeConstant.bigWidth,height: 40))
         
@@ -69,7 +67,7 @@ class InnerTopCell:CommonCollectionViewCell{
         self.layer.cornerRadius = 5
         self.layer.masksToBounds = true
         self.contentView.backgroundColor = UIColor.white
-        iView.frame = CGRect(x:margin,y: 0,width: cWidth,height: 50)
+        iView.frame = CGRect(x:LifeConstant.bigMargin,y: 0,width: LifeConstant.bigInnerWidth,height: 50)
         for _ in 0..<9{
             let imageView = UIImageView()
             imageViews.append(imageView)
@@ -91,7 +89,7 @@ class InnerTopCell:CommonCollectionViewCell{
         headView.headImageView.layer.masksToBounds = true
         headView.headImageView.isUserInteractionEnabled = true
         
-        readView.frame = CGRect(x:margin,y: 0,width: cWidth,height: 20)
+        readView.frame = CGRect(x:LifeConstant.bigMargin,y: 0,width: LifeConstant.bigInnerWidth,height: 20)
         readButton.frame = CGRect(x:readView.frame.size.width - 50,y: 0,width: 50,height: LifeConstant.BIG_READ_HEIGHT)
         readButton.setTitle("阅读全文", for: UIControlState.normal)
         readButton.titleLabel?.textAlignment = .right
@@ -140,7 +138,7 @@ class InnerTopCell:CommonCollectionViewCell{
         
         let height =  LifeUtils.calculateHeightForBigContentStr(text)
         
-        label.frame = CGRect(x: margin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
+        label.frame = CGRect(x: LifeConstant.bigMargin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
         label.numberOfLines = 0
         label.attributedText = NSAttributedString(string: text, attributes: LifeConstant.bigContentAttributesDic)
         label.textColor = UIColor.black
@@ -149,7 +147,7 @@ class InnerTopCell:CommonCollectionViewCell{
     }
     
 //    func setimageView(_ iv:UIImageView,image:String, height:CGFloat, maxY:inout CGFloat){
-//        iv.frame = CGRect(x: margin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth, height: height)
+//        iv.frame = CGRect(x: LifeConstant.bigMargin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth, height: height)
 //        iv.setImageForURLString(str: image)
 //        maxY += height + LifeConstant.articleMargin
 //        contentImageViewsAndUrls.append((iv,image))
@@ -157,7 +155,7 @@ class InnerTopCell:CommonCollectionViewCell{
     
     func setTitleLabel(_ label:UILabel,text:String,maxY:inout CGFloat){
         let height =  LifeUtils.calculateHeightForBigTitleStr(text)
-        label.frame = CGRect(x: margin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
+        label.frame = CGRect(x: LifeConstant.bigMargin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
         label.numberOfLines = 0
         label.attributedText = NSAttributedString(string: text, attributes: LifeConstant.bigTitleAttributesDic)
         label.textColor = UIColor.black
@@ -228,8 +226,8 @@ class InnerTopCell:CommonCollectionViewCell{
         
         var iY:CGFloat = 0
         for i in 0..<urls.count {
-            let imageheight = (sizes[i]["height"] as! CGFloat)/(sizes[i]["width"] as! CGFloat) * cWidth
-            setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x: 0, y: iY, width: cWidth, height: imageheight), url: urls[i])
+            let imageheight = (sizes[i]["height"] as! CGFloat)/(sizes[i]["width"] as! CGFloat) * LifeConstant.bigInnerWidth
+            setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x: 0, y: iY, width: LifeConstant.bigInnerWidth, height: imageheight), url: urls[i])
             iY += imageheight
             
         }
@@ -290,7 +288,7 @@ class InnerTopCell:CommonCollectionViewCell{
         
         //tags
         tagView.removeFromSuperview()
-        tagView = UIView(frame:CGRect(x: margin, y: maxY, width: cWidth, height: LifeConstant.BIG_TAG_HEIGHT))
+        tagView = UIView(frame:CGRect(x: LifeConstant.bigMargin, y: maxY, width: LifeConstant.bigInnerWidth, height: LifeConstant.BIG_TAG_HEIGHT))
         tagView.backgroundColor = UIColor.white
         contentView.addSubview(tagView)
     

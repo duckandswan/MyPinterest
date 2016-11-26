@@ -73,10 +73,10 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.minimumLineSpacing = 0
         flowLayout.minimumInteritemSpacing = 0
-        flowLayout.itemSize = CGSize(width: view.frame.width, height: SCREEN_H - 50 - categoryView.frame.maxY)
+        flowLayout.itemSize = CGSize(width: view.frame.width, height: SCREEN_H - categoryView.frame.maxY)
         flowLayout.scrollDirection = .horizontal
         
-        mainCollectionView = UICollectionView(frame: CGRect(x: 0, y: categoryView.frame.maxY, width: view.frame.width, height: SCREEN_H - 50 - categoryView.frame.maxY), collectionViewLayout: flowLayout)
+        mainCollectionView = UICollectionView(frame: CGRect(x: 0, y: categoryView.frame.maxY, width: view.frame.width, height: SCREEN_H - categoryView.frame.maxY), collectionViewLayout: flowLayout)
         
         mainCollectionView.isPagingEnabled = true
         mainCollectionView.dataSource = self
@@ -512,7 +512,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == mainCollectionView {
-            return CGSize(width: view.frame.width, height: SCREEN_H - 50 - categoryView.frame.maxY)
+            return CGSize(width: view.frame.width, height: SCREEN_H - categoryView.frame.maxY)
         }else{
             let size =  LifeUtils.calculateSizeForStr(lifeCategoryArr[indexPath.row].categoryName, size: CGSize(width: 500, height: 44), font: UIFont.systemFont(ofSize: CategoryCell.fontSize))
             return CGSize(width: size.width + 10, height: 44)

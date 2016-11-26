@@ -26,6 +26,9 @@
 		E44F93A21DE3D76B007E0805 /* lifeViews.xib in Resources */ = {isa = PBXBuildFile; fileRef = E44F936E1DE3D76B007E0805 /* lifeViews.xib */; };
 		E44F93A41DE3D76B007E0805 /* WaterFlowViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F93701DE3D76B007E0805 /* WaterFlowViewLayout.swift */; };
 		E44F93AA1DE3D76B007E0805 /* LifeWaterFlowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44F93771DE3D76B007E0805 /* LifeWaterFlowViewController.swift */; };
+		E4522C1A1DE82F4F001EF61E /* ImageRecord+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4522C181DE82F4F001EF61E /* ImageRecord+CoreDataClass.swift */; };
+		E4522C1B1DE82F4F001EF61E /* ImageRecord+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4522C191DE82F4F001EF61E /* ImageRecord+CoreDataProperties.swift */; };
+		E4522C1D1DE83590001EF61E /* Life.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4522C1C1DE83590001EF61E /* Life.xcassets */; };
 		E4E325061DE6DF5D00D721C7 /* MyCoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E325051DE6DF5D00D721C7 /* MyCoreDataStack.swift */; };
 		E81DE27F1DE70B0A00D304E7 /* MyImage.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E81DE27D1DE70B0A00D304E7 /* MyImage.xcdatamodeld */; };
 /* End PBXBuildFile section */
@@ -52,6 +55,9 @@
 		E44F936E1DE3D76B007E0805 /* lifeViews.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = lifeViews.xib; sourceTree = "<group>"; };
 		E44F93701DE3D76B007E0805 /* WaterFlowViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterFlowViewLayout.swift; sourceTree = "<group>"; };
 		E44F93771DE3D76B007E0805 /* LifeWaterFlowViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LifeWaterFlowViewController.swift; path = ../LifeWaterFlowViewController.swift; sourceTree = "<group>"; };
+		E4522C181DE82F4F001EF61E /* ImageRecord+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageRecord+CoreDataClass.swift"; sourceTree = "<group>"; };
+		E4522C191DE82F4F001EF61E /* ImageRecord+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageRecord+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		E4522C1C1DE83590001EF61E /* Life.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Life.xcassets; sourceTree = "<group>"; };
 		E4E325051DE6DF5D00D721C7 /* MyCoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCoreDataStack.swift; sourceTree = "<group>"; };
 		E81DE27E1DE70B0A00D304E7 /* MyImage.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyImage.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -124,6 +130,8 @@
 		E44F934A1DE3D76B007E0805 /* Life */ = {
 			isa = PBXGroup;
 			children = (
+				E4522C181DE82F4F001EF61E /* ImageRecord+CoreDataClass.swift */,
+				E4522C191DE82F4F001EF61E /* ImageRecord+CoreDataProperties.swift */,
 				E4E325051DE6DF5D00D721C7 /* MyCoreDataStack.swift */,
 				E81DE27D1DE70B0A00D304E7 /* MyImage.xcdatamodeld */,
 				E447DB6D1DE53FAD009B49F0 /* Extension */,
@@ -148,6 +156,7 @@
 				E44F936B1DE3D76B007E0805 /* LifeNativeViewController.swift */,
 				E44F936E1DE3D76B007E0805 /* lifeViews.xib */,
 				E44F93701DE3D76B007E0805 /* WaterFlowViewLayout.swift */,
+				E4522C1C1DE83590001EF61E /* Life.xcassets */,
 			);
 			path = LifeNative;
 			sourceTree = "<group>";
@@ -217,6 +226,7 @@
 				E44F93A21DE3D76B007E0805 /* lifeViews.xib in Resources */,
 				E44F93401DE3D498007E0805 /* Assets.xcassets in Resources */,
 				E44F933E1DE3D498007E0805 /* Main.storyboard in Resources */,
+				E4522C1D1DE83590001EF61E /* Life.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,6 +245,7 @@
 				E44F939F1DE3D76B007E0805 /* LifeNativeViewController.swift in Sources */,
 				E44F939E1DE3D76B007E0805 /* LifeNativeCollectionViewCell.swift in Sources */,
 				E44F939D1DE3D76B007E0805 /* LifeModelsAndUtils.swift in Sources */,
+				E4522C1A1DE82F4F001EF61E /* ImageRecord+CoreDataClass.swift in Sources */,
 				E44F93391DE3D498007E0805 /* AppDelegate.swift in Sources */,
 				E44F93A41DE3D76B007E0805 /* WaterFlowViewLayout.swift in Sources */,
 				E44F939A1DE3D76B007E0805 /* LifeInnerCell.swift in Sources */,
@@ -244,6 +255,7 @@
 				E447DB801DE53FAD009B49F0 /* Extension.swift in Sources */,
 				E44F93981DE3D76B007E0805 /* LifeCommonController.swift in Sources */,
 				E4E325061DE6DF5D00D721C7 /* MyCoreDataStack.swift in Sources */,
+				E4522C1B1DE82F4F001EF61E /* ImageRecord+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
