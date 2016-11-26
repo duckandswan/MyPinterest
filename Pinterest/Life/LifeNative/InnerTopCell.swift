@@ -134,8 +134,10 @@ class InnerTopCell:CommonCollectionViewCell{
         contentImageViewsAndUrls.append((imageView,url))
     }
     
-    func setContentLabel(_ label:UILabel,text:String,maxY:inout CGFloat){
-        
+    func setContentLabel(){
+        let label = contentLabel
+        let text = model.content
+
         let height =  LifeUtils.calculateHeightForBigContentStr(text)
         
         label.frame = CGRect(x: LifeConstant.bigMargin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
@@ -146,14 +148,9 @@ class InnerTopCell:CommonCollectionViewCell{
         maxY += height + LifeConstant.articleMargin
     }
     
-//    func setimageView(_ iv:UIImageView,image:String, height:CGFloat, maxY:inout CGFloat){
-//        iv.frame = CGRect(x: LifeConstant.bigMargin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth, height: height)
-//        iv.setImageForURLString(str: image)
-//        maxY += height + LifeConstant.articleMargin
-//        contentImageViewsAndUrls.append((iv,image))
-//    }
-    
-    func setTitleLabel(_ label:UILabel,text:String,maxY:inout CGFloat){
+    func setTitleLabel(){
+        let label = titleLabel
+        let text = model.collectionName
         let height =  LifeUtils.calculateHeightForBigTitleStr(text)
         label.frame = CGRect(x: LifeConstant.bigMargin, y: maxY + LifeConstant.articleMargin, width: LifeConstant.bigInnerWidth,  height: height)
         label.numberOfLines = 0
@@ -250,7 +247,7 @@ class InnerTopCell:CommonCollectionViewCell{
     }
     
     //MARK:设置数据
-    func setData(){
+    private func setData(){
         contentImageViewsAndUrls = []
         maxY = 0
         
@@ -269,7 +266,7 @@ class InnerTopCell:CommonCollectionViewCell{
         
         titleLabel.frame.size.height = 0
         if model.collectionName != "" {
-            setTitleLabel(titleLabel, text: model.collectionName, maxY: &maxY)
+            setTitleLabel()
         }
         
         maxY += LifeConstant.articleMargin
@@ -278,9 +275,11 @@ class InnerTopCell:CommonCollectionViewCell{
         sizes = model.sizes
         setIView()
         
-        contentListView.frame.origin.y = maxY
-        contentListView.frame.size.height = model.contentListH
-        maxY += model.contentListH
+        setContentLabel()
+        
+//        contentListView.frame.origin.y = maxY
+//        contentListView.frame.size.height = model.contentListH
+//        maxY += model.contentListH
         
         //阅读
         readView.frame.origin.y = maxY
@@ -419,14 +418,6 @@ class ImageClickTapGestureRecognizer: UITapGestureRecognizer{
     var page:Int!
     weak var iv:UIImageView!
     var imageViews:[WeakBox<UIImageView>] = []
-}
-
-class GuessView:UIView{
-    @IBOutlet weak var tLable: UILabel!
-    @IBOutlet weak var aLabel1: UILabel!
-    @IBOutlet weak var aLabel2: UILabel!
-    @IBOutlet weak var wholeButton: UIButton!
-    
 }
 
 

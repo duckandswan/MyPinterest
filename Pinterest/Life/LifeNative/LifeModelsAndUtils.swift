@@ -116,7 +116,7 @@ class LifeModel:NSObject{
     var bigImagesH:CGFloat = 0
     var titleH:CGFloat = 0
     var contentH:CGFloat = 0
-    var contentListH:CGFloat = 0
+//    var contentListH:CGFloat = 0
     var bigTitleH:CGFloat = 0
     var bigContentH:CGFloat = 0
     
