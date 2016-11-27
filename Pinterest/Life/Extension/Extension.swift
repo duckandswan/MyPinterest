@@ -129,16 +129,16 @@ extension UIImageView{
         
         let asyncFetchRequest =
             NSAsynchronousFetchRequest(fetchRequest: imageFetch)
-            { (result: NSAsynchronousFetchResult! )
+            {[weak self] (result: NSAsynchronousFetchResult! )
                 -> Void in
                 let irs = result.finalResult!
                 for ir in irs{
                     print("str:\(str)\nir.urlString:\(ir.urlString)")
-                    self.image = UIImage(data: ir.imageData as! Data)
+                    self?.image = UIImage(data: ir.imageData as! Data)
                 }
                 
                 if irs.count == 0{
-                    self.image = nil
+                    self?.image = nil
 //                    DispatchQueue.global().async {
 //                        if let imageData = NSData(contentsOf: URL(string: str)!){
 //                            DispatchQueue.main.async { () -> Void in
@@ -172,7 +172,7 @@ extension UIImageView{
                                     print("Could not save \(error), \(error.userInfo)")
                                 }
                                 print("download str:\(str)")
-                                self.image = UIImage(data: imageData)
+                                self?.image = UIImage(data: imageData)
                             }
                         }) .resume()
                     
