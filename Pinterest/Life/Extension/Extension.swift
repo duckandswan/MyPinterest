@@ -122,6 +122,21 @@ extension UIImageView{
     
     func setImageForURLString(str:String){
         self.image = nil
+        URLSession.shared.dataTask(with: URL(string: str)!, completionHandler: { (data, response, error) in
+            DispatchQueue.main.async { () -> Void in
+                guard let imageData = data else {
+                    return
+                }
+                print("download str:\(str)")
+                self.image = UIImage(data: imageData)
+            }
+        }) .resume()
+        return
+    }
+    
+    func setImageForURLStringWithCache(str:String){
+        self.image = nil
+        
         let imageFetch: NSFetchRequest<ImageRecord> = ImageRecord.fetchRequest()
         let predicate = NSPredicate(format: "urlString = %@", str)
         imageFetch.predicate = predicate
@@ -138,43 +153,42 @@ extension UIImageView{
                 }
                 
                 if irs.count == 0{
-                    self?.image = nil
-//                    DispatchQueue.global().async {
-//                        if let imageData = NSData(contentsOf: URL(string: str)!){
-//                            DispatchQueue.main.async { () -> Void in
-//                                let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
-//                                myImage.urlString = str
-//                                myImage.imageData = imageData
-//                                myImage.date = NSDate()
-//                                do {
-//                                    try MyCoreDataStack.coreDataStack.context.save()
-//                                } catch let error as NSError {
-//                                    print("Could not save \(error), \(error.userInfo)")
-//                                }
-//                                print("download str:\(str)")
-//                                self.image = UIImage(data: imageData as Data)
-//                            }
-//                        }
-//                }
-                
-                        URLSession.shared.dataTask(with: URL(string: str)!, completionHandler: { (data, response, error) in
-                            DispatchQueue.main.async { () -> Void in
-                                guard let imageData = data else {
-                                    return
-                                }
-                                let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
-                                myImage.urlString = str
-                                myImage.imageData = imageData as NSData
-                                myImage.date = NSDate()
-                                do {
-                                    try MyCoreDataStack.coreDataStack.context.save()
-                                } catch let error as NSError {
-                                    print("Could not save \(error), \(error.userInfo)")
-                                }
-                                print("download str:\(str)")
-                                self?.image = UIImage(data: imageData)
+                    //                    DispatchQueue.global().async {
+                    //                        if let imageData = NSData(contentsOf: URL(string: str)!){
+                    //                            DispatchQueue.main.async { () -> Void in
+                    //                                let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
+                    //                                myImage.urlString = str
+                    //                                myImage.imageData = imageData
+                    //                                myImage.date = NSDate()
+                    //                                do {
+                    //                                    try MyCoreDataStack.coreDataStack.context.save()
+                    //                                } catch let error as NSError {
+                    //                                    print("Could not save \(error), \(error.userInfo)")
+                    //                                }
+                    //                                print("download str:\(str)")
+                    //                                self.image = UIImage(data: imageData as Data)
+                    //                            }
+                    //                        }
+                    //                }
+                    
+                    URLSession.shared.dataTask(with: URL(string: str)!, completionHandler: { (data, response, error) in
+                        DispatchQueue.main.async { () -> Void in
+                            guard let imageData = data else {
+                                return
                             }
-                        }) .resume()
+                            let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
+                            myImage.urlString = str
+                            myImage.imageData = imageData as NSData
+                            myImage.date = NSDate()
+                            do {
+                                try MyCoreDataStack.coreDataStack.context.save()
+                            } catch let error as NSError {
+                                print("Could not save \(error), \(error.userInfo)")
+                            }
+                            print("download str:\(str)")
+                            self?.image = UIImage(data: imageData)
+                        }
+                    }) .resume()
                     
                     
                 }
@@ -218,8 +232,9 @@ extension UIImageView{
         //        }catch{
         //
         //        }
-
+        
     }
+
 }
 
 extension NSDictionary{
