@@ -121,6 +121,7 @@ extension UIView{
 extension UIImageView{
     
     func setImageForURLString(str:String){
+        self.image = nil
         let imageFetch: NSFetchRequest<ImageRecord> = ImageRecord.fetchRequest()
         let predicate = NSPredicate(format: "urlString = %@", str)
         imageFetch.predicate = predicate
