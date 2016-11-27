@@ -173,16 +173,31 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
         return cell
     }
     
-    
     func handleLongPressGestures(sender: UILongPressGestureRecognizer){
+        if self.presentedViewController != nil {
+            return
+        }
         let controller = UIAlertController(title: nil,message: nil,preferredStyle: .actionSheet)
         let action = UIAlertAction(title: "保存图片", style: UIAlertActionStyle.default, handler: {(paramAction:UIAlertAction!) in
+            DispatchQueue.global().async(execute: {
+                let imgData = UIImageJPEGRepresentation((sender.view! as! UIImageView).image!, 1)
+                let img = UIImage(data: imgData!)!
+                PHPhotoLibrary.shared().performChanges({
+                    _ = PHAssetChangeRequest.creationRequestForAsset(from: img)
+                },
+               completionHandler: { success, error in
+                    if success == true{
+                        print("保存成功")
+                    }
+                })
+            })
         })
         controller.addAction(action)
         
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: {(paramAction:UIAlertAction!) in
         })
         controller.addAction(cancelAction)
+        
         
         self.present(controller, animated: true, completion: nil)
         

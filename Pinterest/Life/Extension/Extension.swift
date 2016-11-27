@@ -139,7 +139,7 @@ extension UIImageView{
                 
                 if irs.count == 0{
                     self.image = nil
-                    DispatchQueue.global().async {
+//                    DispatchQueue.global().async {
 //                        if let imageData = NSData(contentsOf: URL(string: str)!){
 //                            DispatchQueue.main.async { () -> Void in
 //                                let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
@@ -155,7 +155,8 @@ extension UIImageView{
 //                                self.image = UIImage(data: imageData as Data)
 //                            }
 //                        }
-                        
+//                }
+                
                         URLSession.shared.dataTask(with: URL(string: str)!, completionHandler: { (data, response, error) in
                             DispatchQueue.main.async { () -> Void in
                                 guard let imageData = data else {
@@ -174,8 +175,7 @@ extension UIImageView{
                                 self.image = UIImage(data: imageData)
                             }
                         }) .resume()
-                        
-                    }
+                    
                     
                 }
         }

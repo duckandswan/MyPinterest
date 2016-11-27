@@ -302,33 +302,7 @@ class LifeConstant{
 class LifeUtils{
     
     static func request(url:String,pamams:[String : Any]?, successClosure: ((_ body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
-//        LifeConstant.manager.request(.POST, url, parameters:pamams).responseJSON {
-//            (r) -> Void in
-//            let result = r.result
-//            print("req: \(r.request)")
-//            print("pamams: \(pamams)")
-//            print("request?.HTTPBody:\(r.request?.HTTPBody)")
-//            if result.isSuccess{
-//                print("访问服务器成功")
-//                print("result.value: \(result.value)")
-//                let codeString = String((result.value)!.valueFor("code")!)
-//                if codeString == "100" {
-//                    print("code 100")
-//                    let body = (result.value as! NSDictionary).valueFor("body")!
-//                    successClosure?(body: body)
-//                }else if codeString == "103" {
-//                    print("code 103")
-//                    nullClosure?()
-//                    failureClosure?()
-//                }else{
-//                    print("code \(codeString)")
-//                    failureClosure?()
-//                }
-//            }else{
-//                print("访问服务器失败")
-//                failureClosure?()
-//            }
-//        }
+
         print("pamams:\(pamams)")
         var request = URLRequest(url:URL(string: url)!)
         request.httpMethod = "POST"
