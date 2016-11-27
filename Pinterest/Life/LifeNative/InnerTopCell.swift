@@ -131,6 +131,8 @@ class InnerTopCell:CommonCollectionViewCell{
         imageView.frame = frame
         imageView.setImageForURLString(str: url)
         imageView.isHidden = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         contentImageViewsAndUrls.append((imageView,url))
     }
     
@@ -219,14 +221,38 @@ class InnerTopCell:CommonCollectionViewCell{
     
     
     func setIView(){
+        let cWidth = LifeConstant.bigInnerWidth
+
         iView.frame.origin.y = maxY
         
         var iY:CGFloat = 0
-        for i in 0..<urls.count {
-            let imageheight = (sizes[i]["height"] as! CGFloat)/(sizes[i]["width"] as! CGFloat) * LifeConstant.bigInnerWidth
-            setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x: 0, y: iY, width: LifeConstant.bigInnerWidth, height: imageheight), url: urls[i])
+        if sizes.count <= 4 {
+            for i in 0..<urls.count {
+                let imageheight = (sizes[i]["height"] as! CGFloat)/(sizes[i]["width"] as! CGFloat) * cWidth
+                setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x:0,y: iY,width: cWidth,height: imageheight), url: urls[i])
+                iY += imageheight
+                
+            }
+        }else if sizes.count % 2 == 0{
+            for i in 0..<urls.count {
+                
+                setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x:CGFloat(i%2) * cWidth/2,y: iY,width: cWidth/2,height: cWidth/2), url: urls[i])
+                if i%2 == 1{
+                    iY += cWidth/2
+                }
+            }
+        }else{
+            let imageheight = (sizes[0]["height"] as! CGFloat)/(sizes[0]["width"] as! CGFloat) * cWidth
+            setImageViewFrameAndUrl(imageViews[0], frame: CGRect(x:0,y: iY,width: cWidth,height: imageheight), url: urls[0])
             iY += imageheight
             
+            for i in 1..<urls.count {
+                
+                setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x:CGFloat((i-1)%2) * cWidth/2,y: iY ,width: cWidth/2,height: cWidth/2), url: urls[i])
+                if i%2 == 0{
+                    iY += cWidth/2
+                }
+            }
         }
         
         for i in urls.count..<9{

@@ -21,7 +21,7 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
     let likeView:UIView!
     
     override init(frame: CGRect) {
-//        iView = UIView(frame:CGRectMake(0, 0, frame.size.width, 50))
+//        iView = UIView(frame:CGRect(x:0,y: 0,width: frame.size.width,height: 50))
         likeView = UIView(frame:CGRect(x:0, y:0, width:frame.size.width, height:20))
         bottomView = Bundle.main.loadNibNamed("lifeViews", owner: nil, options: nil)!.first as! LifeBotttomView
         bottomView.frame.size.width = frame.size.width
@@ -85,6 +85,8 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
     
     func setImageViewFrameAndUrl(_ imageView:UIImageView,frame:CGRect,url:String){
         imageView.frame = frame
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.setImageForURLString(str: url)
         imageView.isHidden = false
     }
@@ -153,10 +155,33 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
         
         maxY = 0
         
-        for i in 0..<urls.count {
-            let imageheight = (sizes[i]["height"] as! CGFloat)/(sizes[i]["width"] as! CGFloat) * frame.size.width
-            setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x: 0, y: maxY, width: frame.size.width, height: imageheight), url: urls[i])
+        if sizes.count <= 4 {
+            for i in 0..<urls.count {
+                let imageheight = (sizes[i]["height"] as! CGFloat)/(sizes[i]["width"] as! CGFloat) * frame.size.width
+                setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x:0,y: maxY,width: frame.size.width,height: imageheight), url: urls[i])
+                maxY += imageheight
+                
+            }
+        }else if sizes.count % 2 == 0{
+            for i in 0..<urls.count {
+                
+                setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x:CGFloat(i%2) * frame.size.width/2,y: maxY,width: frame.size.width/2,height: frame.size.width/2), url: urls[i])
+                if i%2 == 1{
+                    maxY += frame.size.width/2
+                }
+            }
+        }else{
+            let imageheight = (sizes[0]["height"] as! CGFloat)/(sizes[0]["width"] as! CGFloat) * frame.size.width
+            setImageViewFrameAndUrl(imageViews[0], frame: CGRect(x:0,y: maxY,width: frame.size.width,height: imageheight), url: urls[0])
             maxY += imageheight
+            
+            for i in 1..<urls.count {
+                
+                setImageViewFrameAndUrl(imageViews[i], frame: CGRect(x:CGFloat((i-1)%2) * frame.size.width/2,y: maxY,width: frame.size.width/2,height: frame.size.width/2), url: urls[i])
+                if i%2 == 0{
+                    maxY += frame.size.width/2
+                }
+            }
         }
         
         for i in urls.count..<9{

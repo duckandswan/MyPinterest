@@ -127,9 +127,16 @@ class LifeModel:NSObject{
     
     func getImagesHeight(_ width:CGFloat)->CGFloat{
         var hg:CGFloat = 0
-
-        for size in sizes{
-            hg += (size["height"] as! CGFloat)/(size["width"] as! CGFloat)*width
+        //        print("sizes:\(sizes)")
+        if sizes.count <= 4 {
+            for size in sizes{
+                hg += (size["height"] as! CGFloat)/(size["width"] as! CGFloat)*width
+            }
+        }else if sizes.count % 2 == 0{
+            hg += CGFloat(sizes.count/2) * width/2
+        }else{
+            hg += (sizes[0]["height"] as! CGFloat)/(sizes[0]["width"] as! CGFloat)*width
+            hg += CGFloat((sizes.count - 1)/2) * width/2
         }
         return hg
     }
@@ -260,34 +267,18 @@ class LifeConstant{
     static let BIG_READ_HEIGHT:CGFloat = 20
     
     static var contentAttributesDic:[String : AnyObject] = {
-//        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
-//        style.lineSpacing = 5
-//        let dic = [NSFontAttributeName : LifeConstant.contentFont, NSParagraphStyleAttributeName:style] as [String : AnyObject]
-//        return dic
         attributesDicFor(font: LifeConstant.contentFont, lineSpacing: 5)
     }()
     
     static var titleAttributesDic:[String : AnyObject] = {
-//        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
-//        style.lineSpacing = 5
-//        let dic = [NSFontAttributeName : LifeConstant.titleFont, NSParagraphStyleAttributeName:style]
-//        return dic
         attributesDicFor(font: LifeConstant.titleFont, lineSpacing: 5)
     }()
     
     static var bigContentAttributesDic:[String : AnyObject] = {
-//        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
-//        style.lineSpacing = 7
-//        let dic = [NSFontAttributeName : LifeConstant.bigContentFont, NSParagraphStyleAttributeName:style]
-//        return dic
         attributesDicFor(font: LifeConstant.bigContentFont, lineSpacing: 7)
     }()
     
     static var bigTitleAttributesDic:[String : AnyObject] = {
-//        var style: NSMutableParagraphStyle = NSMutableParagraphStyle()
-//        style.lineSpacing = 7
-//        let dic = [NSFontAttributeName : LifeConstant.bigTitleFont, NSParagraphStyleAttributeName:style]
-//        return dic
         attributesDicFor(font: LifeConstant.bigTitleFont, lineSpacing: 7)
     }()
     

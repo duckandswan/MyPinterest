@@ -36,7 +36,7 @@
 /* Begin PBXFileReference section */
 		E447DB6E1DE53FAD009B49F0 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		E447DB771DE53FAD009B49F0 /* PhotoBrowsingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoBrowsingController.swift; sourceTree = "<group>"; };
-		E44F93351DE3D498007E0805 /* Pinterest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pinterest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E44F93351DE3D498007E0805 /* MyPinterest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPinterest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E44F93381DE3D498007E0805 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E44F933A1DE3D498007E0805 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		E44F933D1DE3D498007E0805 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -100,7 +100,7 @@
 		E44F932C1DE3D498007E0805 = {
 			isa = PBXGroup;
 			children = (
-				E44F93371DE3D498007E0805 /* Pinterest */,
+				E44F93371DE3D498007E0805 /* MyPinterest */,
 				E44F93361DE3D498007E0805 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -108,12 +108,12 @@
 		E44F93361DE3D498007E0805 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E44F93351DE3D498007E0805 /* Pinterest.app */,
+				E44F93351DE3D498007E0805 /* MyPinterest.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E44F93371DE3D498007E0805 /* Pinterest */ = {
+		E44F93371DE3D498007E0805 /* MyPinterest */ = {
 			isa = PBXGroup;
 			children = (
 				E44F934A1DE3D76B007E0805 /* Life */,
@@ -124,6 +124,7 @@
 				E44F93411DE3D498007E0805 /* LaunchScreen.storyboard */,
 				E44F93441DE3D498007E0805 /* Info.plist */,
 			);
+			name = MyPinterest;
 			path = Pinterest;
 			sourceTree = "<group>";
 		};
@@ -162,12 +163,12 @@
 		E815BC981DEADAE400B7EFE0 /* controller */ = {
 			isa = PBXGroup;
 			children = (
+				E815BC9B1DEADDB100B7EFE0 /* Utils */,
 				E815BC991DEADB0E00B7EFE0 /* layout */,
 				E44F93771DE3D76B007E0805 /* LifeWaterFlowViewController.swift */,
 				E44F93611DE3D76B007E0805 /* InnerTagControlller.swift */,
 				E44F93641DE3D76B007E0805 /* LifeCommonController.swift */,
 				E44F93671DE3D76B007E0805 /* LifeInnerController.swift */,
-				E44F93691DE3D76B007E0805 /* LifeModelsAndUtils.swift */,
 				E44F936A1DE3D76B007E0805 /* LifeNativeCollectionViewCell.swift */,
 				E44F936B1DE3D76B007E0805 /* LifeNativeViewController.swift */,
 			);
@@ -193,12 +194,20 @@
 			name = MyImage;
 			sourceTree = "<group>";
 		};
+		E815BC9B1DEADDB100B7EFE0 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				E44F93691DE3D76B007E0805 /* LifeModelsAndUtils.swift */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E44F93341DE3D498007E0805 /* Pinterest */ = {
+		E44F93341DE3D498007E0805 /* MyPinterest */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E44F93471DE3D498007E0805 /* Build configuration list for PBXNativeTarget "Pinterest" */;
+			buildConfigurationList = E44F93471DE3D498007E0805 /* Build configuration list for PBXNativeTarget "MyPinterest" */;
 			buildPhases = (
 				E44F93311DE3D498007E0805 /* Sources */,
 				E44F93321DE3D498007E0805 /* Frameworks */,
@@ -208,9 +217,9 @@
 			);
 			dependencies = (
 			);
-			name = Pinterest;
+			name = MyPinterest;
 			productName = Pinterest;
-			productReference = E44F93351DE3D498007E0805 /* Pinterest.app */;
+			productReference = E44F93351DE3D498007E0805 /* MyPinterest.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -231,7 +240,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E44F93301DE3D498007E0805 /* Build configuration list for PBXProject "Pinterest" */;
+			buildConfigurationList = E44F93301DE3D498007E0805 /* Build configuration list for PBXProject "MyPinterest" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -244,7 +253,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E44F93341DE3D498007E0805 /* Pinterest */,
+				E44F93341DE3D498007E0805 /* MyPinterest */,
 			);
 		};
 /* End PBXProject section */
@@ -436,7 +445,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E44F93301DE3D498007E0805 /* Build configuration list for PBXProject "Pinterest" */ = {
+		E44F93301DE3D498007E0805 /* Build configuration list for PBXProject "MyPinterest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E44F93451DE3D498007E0805 /* Debug */,
@@ -445,7 +454,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E44F93471DE3D498007E0805 /* Build configuration list for PBXNativeTarget "Pinterest" */ = {
+		E44F93471DE3D498007E0805 /* Build configuration list for PBXNativeTarget "MyPinterest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E44F93481DE3D498007E0805 /* Debug */,
