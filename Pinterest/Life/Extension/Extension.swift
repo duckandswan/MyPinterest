@@ -121,17 +121,17 @@ extension UIView{
 extension UIImageView{
     
     func setImageForURLString(str:String){
-        self.image = nil
-        URLSession.shared.dataTask(with: URL(string: str)!, completionHandler: { (data, response, error) in
-            DispatchQueue.main.async { () -> Void in
-                guard let imageData = data else {
-                    return
-                }
-                print("download str:\(str)")
-                self.image = UIImage(data: imageData)
-            }
-        }) .resume()
-        return
+        setImageForURLStringWithCache(str: str)
+//        self.image = nil
+//        URLSession.shared.dataTask(with: URL(string: str)!, completionHandler: { (data, response, error) in
+//            DispatchQueue.main.async { () -> Void in
+//                guard let imageData = data else {
+//                    return
+//                }
+//                print("download str:\(str)")
+//                self.image = UIImage(data: imageData)
+//            }
+//        }) .resume()
     }
     
     func setImageForURLStringWithCache(str:String){
@@ -153,29 +153,31 @@ extension UIImageView{
                 }
                 
                 if irs.count == 0{
-                    //                    DispatchQueue.global().async {
-                    //                        if let imageData = NSData(contentsOf: URL(string: str)!){
-                    //                            DispatchQueue.main.async { () -> Void in
-                    //                                let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
-                    //                                myImage.urlString = str
-                    //                                myImage.imageData = imageData
-                    //                                myImage.date = NSDate()
-                    //                                do {
-                    //                                    try MyCoreDataStack.coreDataStack.context.save()
-                    //                                } catch let error as NSError {
-                    //                                    print("Could not save \(error), \(error.userInfo)")
-                    //                                }
-                    //                                print("download str:\(str)")
-                    //                                self.image = UIImage(data: imageData as Data)
-                    //                            }
-                    //                        }
-                    //                }
                     
+//                    DispatchQueue.global().async {
+//                        if let imageData = NSData(contentsOf: URL(string: str)!){
+//                            DispatchQueue.main.async { () -> Void in
+//                                let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
+//                                myImage.urlString = str
+//                                myImage.imageData = imageData
+//                                myImage.date = NSDate()
+//                                do {
+//                                    try MyCoreDataStack.coreDataStack.context.save()
+//                                } catch let error as NSError {
+//                                    print("Could not save \(error), \(error.userInfo)")
+//                                }
+//                                print("download str:\(str)")
+//                                self?.image = UIImage(data: imageData as Data)
+//                            }
+//                        }
+//                }
+                
                     URLSession.shared.dataTask(with: URL(string: str)!, completionHandler: { (data, response, error) in
-                        DispatchQueue.main.async { () -> Void in
-                            guard let imageData = data else {
-                                return
-                            }
+                        guard let imageData = data else {
+                            return
+                        }
+                        let serialQueue = DispatchQueue(label: "queuename")
+                        serialQueue.sync {
                             let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
                             myImage.urlString = str
                             myImage.imageData = imageData as NSData
@@ -185,11 +187,13 @@ extension UIImageView{
                             } catch let error as NSError {
                                 print("Could not save \(error), \(error.userInfo)")
                             }
+                        }
+                        DispatchQueue.main.async { () -> Void in
                             print("download str:\(str)")
                             self?.image = UIImage(data: imageData)
                         }
                     }) .resume()
-                    
+                
                     
                 }
         }
