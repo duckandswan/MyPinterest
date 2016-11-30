@@ -1,22 +1,25 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="NO">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <development version="7000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="2Qb-UG-qgE" customClass="LifeBotttomView" customModule="Pinterest" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="2Qb-UG-qgE" customClass="LifeBotttomView" customModule="MyPinterest" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="300" height="50"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PM3-xR-DIM">
                     <rect key="frame" x="0.0" y="0.0" width="300" height="50"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="EbY-GW-5HH">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="EbY-GW-5HH" customClass="MyWebImageView" customModule="MyPinterest" customModuleProvider="target">
                             <rect key="frame" x="10" y="6" width="40" height="40"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="40" id="aY8-Ay-Cfn"/>
@@ -26,7 +29,7 @@
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s8F-Z9-pxo">
                             <rect key="frame" x="55" y="26" width="245" height="20"/>
                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                            <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AmZ-4r-ELW">
@@ -35,11 +38,11 @@
                                 <constraint firstAttribute="height" constant="20" id="kZ4-oQ-yZZ"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="AmZ-4r-ELW" firstAttribute="top" secondItem="EbY-GW-5HH" secondAttribute="top" id="7We-H5-Emi"/>
                         <constraint firstAttribute="height" constant="50" id="MgW-DU-vVu"/>
@@ -54,7 +57,7 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="PM3-xR-DIM" secondAttribute="trailing" id="A0d-Nr-e74"/>
                 <constraint firstItem="PM3-xR-DIM" firstAttribute="leading" secondItem="2Qb-UG-qgE" secondAttribute="leading" id="AWM-AB-ocr"/>
@@ -69,14 +72,14 @@
             </connections>
             <point key="canvasLocation" x="93" y="33"/>
         </view>
-        <view contentMode="scaleToFill" id="Hzq-nz-gbU" userLabel="InnerHeadView" customClass="InnerHeadView" customModule="Pinterest" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="Hzq-nz-gbU" userLabel="InnerHeadView" customClass="InnerHeadView" customModule="MyPinterest" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="300" height="70"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mhu-se-jND">
                     <rect key="frame" x="65" y="35" width="33" height="25"/>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                    <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N1U-47-UAn">
@@ -88,7 +91,7 @@
                     <state key="normal" title="Button" image="btn_follow"/>
                     <state key="selected" image="btn_cancel_follow"/>
                 </button>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8q3-8s-p2V">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8q3-8s-p2V" customClass="MyWebImageView" customModule="MyPinterest" customModuleProvider="target">
                     <rect key="frame" x="10" y="10" width="50" height="50"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="8q3-8s-p2V" secondAttribute="height" multiplier="1:1" id="ZSj-GR-Ag3"/>
@@ -101,11 +104,11 @@
                         <constraint firstAttribute="height" constant="25" id="rSX-SE-hZW"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="mhu-se-jND" firstAttribute="leading" secondItem="4LC-ao-yjg" secondAttribute="leading" id="9u3-Bm-Cwp"/>
                 <constraint firstItem="4LC-ao-yjg" firstAttribute="leading" secondItem="8q3-8s-p2V" secondAttribute="trailing" constant="5" id="PrL-aR-hgf"/>
@@ -130,6 +133,6 @@
     </objects>
     <resources>
         <image name="btn_cancel_follow" width="53" height="22"/>
-        <image name="btn_follow" width="53" height="22"/>
+        <image name="btn_follow" width="160" height="68"/>
     </resources>
 </document>

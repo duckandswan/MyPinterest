@@ -14,7 +14,7 @@ class CommonCollectionViewCell: UICollectionViewCell{
 // 第一页Cell
 class LifeCollectionViewCell:CommonCollectionViewCell{
     static let requestNumber = 7
-    var imageViews:[UIImageView] = []
+    var imageViews:[MyWebImageView] = []
     let tLabel = UILabel()
     let contentLabel = UILabel()
     let bottomView:LifeBotttomView!
@@ -31,7 +31,7 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
         self.layer.masksToBounds = true
         self.contentView.backgroundColor = UIColor.white
         for _ in 0..<9{
-            let imageView = UIImageView()
+            let imageView = MyWebImageView()
             imageViews.append(imageView)
             iView.addSubview(imageView)
         }
@@ -83,7 +83,7 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
     var sizes:[NSDictionary]!
     var urls:[String]!
     
-    func setImageViewFrameAndUrl(_ imageView:UIImageView,frame:CGRect,url:String){
+    func setImageViewFrameAndUrl(_ imageView:MyWebImageView,frame:CGRect,url:String){
         imageView.frame = frame
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -98,7 +98,7 @@ class LifeCollectionViewCell:CommonCollectionViewCell{
         label.textColor = textColor
         label.frame = frame
     }
-    
+    //like, reply
     func setPositionForImageViewAndLabel(_ imageView:UIImageView,label:UILabel,size:Int,maxX:inout CGFloat){
         if size != 0{
             imageView.isHidden = false

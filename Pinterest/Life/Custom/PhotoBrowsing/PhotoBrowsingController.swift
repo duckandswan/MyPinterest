@@ -553,7 +553,7 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
     
 }
 
-class PhotoBrowsingImageView:UIImageView{
+class PhotoBrowsingImageView:MyWebImageView{
     var lastTransform:CGAffineTransform = CGAffineTransform.identity
     var panGestureRecognizer:UIPanGestureRecognizer!
     var cell:UICollectionViewCell!

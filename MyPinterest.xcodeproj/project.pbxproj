@@ -31,6 +31,7 @@
 		E4522C1D1DE83590001EF61E /* Life.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4522C1C1DE83590001EF61E /* Life.xcassets */; };
 		E4E325061DE6DF5D00D721C7 /* MyCoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E325051DE6DF5D00D721C7 /* MyCoreDataStack.swift */; };
 		E81DE27F1DE70B0A00D304E7 /* MyImage.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E81DE27D1DE70B0A00D304E7 /* MyImage.xcdatamodeld */; };
+		E84A43741DEF07E200ECD3AF /* MyWebImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84A43731DEF07E200ECD3AF /* MyWebImageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		E4522C1C1DE83590001EF61E /* Life.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Life.xcassets; sourceTree = "<group>"; };
 		E4E325051DE6DF5D00D721C7 /* MyCoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCoreDataStack.swift; sourceTree = "<group>"; };
 		E81DE27E1DE70B0A00D304E7 /* MyImage.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyImage.xcdatamodel; sourceTree = "<group>"; };
+		E84A43731DEF07E200ECD3AF /* MyWebImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyWebImageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				E447DB751DE53FAD009B49F0 /* PhotoBrowsing */,
+				E84A43731DEF07E200ECD3AF /* MyWebImageView.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -283,6 +286,7 @@
 				E44F93951DE3D76B007E0805 /* InnerTagControlller.swift in Sources */,
 				E44F933B1DE3D498007E0805 /* ViewController.swift in Sources */,
 				E44F93961DE3D76B007E0805 /* InnerTopCell.swift in Sources */,
+				E84A43741DEF07E200ECD3AF /* MyWebImageView.swift in Sources */,
 				E44F939F1DE3D76B007E0805 /* LifeNativeViewController.swift in Sources */,
 				E44F939E1DE3D76B007E0805 /* LifeNativeCollectionViewCell.swift in Sources */,
 				E44F939D1DE3D76B007E0805 /* LifeModelsAndUtils.swift in Sources */,

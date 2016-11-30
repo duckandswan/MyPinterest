@@ -610,29 +610,17 @@ class CategoryCell:UICollectionViewCell{
 }
 
 class LifeBotttomView:UIView{
-    @IBOutlet weak var headImageView: UIImageView!
+    @IBOutlet weak var headImageView: MyWebImageView!
     @IBOutlet weak var nickLabel: UILabel!
     @IBOutlet weak var sourceLabel: UILabel!
 }
 
 class InnerHeadView:UIView{
-    @IBOutlet weak var headImageView: UIImageView!
+    @IBOutlet weak var headImageView: MyWebImageView!
     @IBOutlet weak var nickLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var followBtn: UIButton!
-    @IBOutlet weak var darenLabel: UILabel!
-}
 
-class InnerAddressView:UIView{
-    @IBOutlet weak var addressLabel: UILabel!
-}
-
-class InnerWantView:UIView{
-    @IBOutlet weak var likeButton: UIButton!
-    @IBOutlet weak var commentButton: UIButton!
-    @IBOutlet weak var collectButton: UIButton!
-    @IBOutlet weak var priceLabel: UILabel!
-    @IBOutlet weak var wantButton: UIButton!
 }
 
 class CategoryCollectionView:UICollectionView{

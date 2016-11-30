@@ -15,8 +15,8 @@ class InnerTopCell:CommonCollectionViewCell{
     var model:LifeModel!
     
     var index = -1
-    var contentImageViewsAndUrls:[(UIImageView,String)] = []
-    var imageViews:[UIImageView] = []
+    var contentImageViewsAndUrls:[(MyWebImageView,String)] = []
+    var imageViews:[MyWebImageView] = []
     let titleLabel = UILabel()
 //    let sourceLabel = UILabel()
 //    let addressView:InnerAddressView!
@@ -69,7 +69,7 @@ class InnerTopCell:CommonCollectionViewCell{
         self.contentView.backgroundColor = UIColor.white
         iView.frame = CGRect(x:LifeConstant.bigMargin,y: 0,width: LifeConstant.bigInnerWidth,height: 50)
         for _ in 0..<9{
-            let imageView = UIImageView()
+            let imageView = MyWebImageView()
             imageViews.append(imageView)
             iView.addSubview(imageView)
         }
@@ -127,7 +127,7 @@ class InnerTopCell:CommonCollectionViewCell{
     var sizes:[NSDictionary]!
     var urls:[String]!
     
-    func setImageViewFrameAndUrl(_ imageView:UIImageView,frame:CGRect,url:String){
+    func setImageViewFrameAndUrl(_ imageView:MyWebImageView,frame:CGRect,url:String){
         imageView.frame = frame
         imageView.setImageForURLString(str: url)
         imageView.isHidden = false
