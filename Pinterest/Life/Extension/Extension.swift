@@ -59,6 +59,19 @@ extension UIViewController{
     }
 }
 
+public extension UIImage {
+    public convenience init?(color: UIColor, size: CGSize = CGSize(width: 50, height: 50)) {
+        let rect = CGRect(origin: .zero, size: size)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+        color.setFill()
+        UIRectFill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        guard let cgImage = image?.cgImage else { return nil }
+        self.init(cgImage: cgImage)
+    }
+}
 
 //没有数据占位图
 extension UIView{
@@ -136,7 +149,7 @@ extension UIImageView{
     
     func setImageForURLStringWithCache(str:String){
         self.image = nil
-        
+//        self.image = UIImage(color: .white)
         let imageFetch: NSFetchRequest<ImageRecord> = ImageRecord.fetchRequest()
         let predicate = NSPredicate(format: "urlString = %@", str)
         imageFetch.predicate = predicate

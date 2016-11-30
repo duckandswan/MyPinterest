@@ -356,11 +356,6 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
                 
             }
             
-            
-            
-            
-            
-            
         }else {
             //        print("fail")
         }
