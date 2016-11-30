@@ -655,8 +655,12 @@ class CategoryCollectionView:UICollectionView{
     
     func selectInCategoryView(_ index: Int){
 
-        if let cell = self.cellForItem(at: IndexPath(row: selectedIndex, section: 0))as? CategoryCell {
-            cell.toDeselected()
+//        if let cell = self.cellForItem(at: IndexPath(row: selectedIndex, section: 0))as? CategoryCell {
+//            cell.toDeselected()
+//        }
+        
+        for cell in self.visibleCells{
+            (cell as? CategoryCell)?.toDeselected()
         }
         
         if let cell = self.cellForItem(at: IndexPath(row: index, section: 0)) as? CategoryCell {

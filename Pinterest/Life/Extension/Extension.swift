@@ -176,8 +176,10 @@ extension UIImageView{
                         guard let imageData = data else {
                             return
                         }
-                        let serialQueue = DispatchQueue(label: "queuename")
-                        serialQueue.sync {
+//                        let serialQueue = DispatchQueue(label: "queuename")
+//                        serialQueue.sync {
+                        let concurrentQueue = DispatchQueue(label: "queuename", attributes: .concurrent)
+                        concurrentQueue.sync {
                             let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
                             myImage.urlString = str
                             myImage.imageData = imageData as NSData
