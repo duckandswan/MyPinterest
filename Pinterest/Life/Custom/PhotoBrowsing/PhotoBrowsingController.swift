@@ -245,7 +245,7 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
                 
                 movingState = .Moving
                 
-                indexP = collectionView.indexPath(for: (imageView as! PhotoBrowsingImageView).cell)!
+                indexPathForAugmented = collectionView.indexPath(for: (imageView as! PhotoBrowsingImageView).cell)!
             }
             
             
@@ -290,7 +290,7 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
             movingState = .Moving
             
             
-            indexP = collectionView.indexPath(for: (imageView as! PhotoBrowsingImageView).cell)!
+            indexPathForAugmented = collectionView.indexPath(for: (imageView as! PhotoBrowsingImageView).cell)!
         }else{
             UIView.animate(withDuration: 0.5, animations: { () -> Void in
                 imageView.transform = CGAffineTransform.identity
@@ -357,7 +357,7 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
             }
             
         }else {
-            //        print("fail")
+
         }
         
         
@@ -372,7 +372,7 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
     }
     
     
-    var indexP = IndexPath(row: 3, section: 0)
+    var indexPathForAugmented = IndexPath(row: 3, section: 0)
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
@@ -380,21 +380,30 @@ class PhotoBrowsingController: UIViewController , UICollectionViewDataSource, UI
         
         setLable()
         
-        if collectionView.contentOffset.x >= CGFloat(indexP.row + 1) * SCREEN_W || collectionView.contentOffset.x <= CGFloat(indexP.row - 1) * SCREEN_W{
+        if collectionView.contentOffset.x >= CGFloat(indexPathForAugmented.row + 1) * SCREEN_W || collectionView.contentOffset.x <= CGFloat(indexPathForAugmented.row - 1) * SCREEN_W{
             movingState = .Still
+            if let cell = collectionView.cellForItem(at: indexPathForAugmented){
+                if let v = cell.contentView.viewWithTag(100){
+                    if v.transform != .identity{
+                        v.transform = CGAffineTransform.identity
+                        v.center = v.superview!.center
+                    }
+                }
+            }
+            
         }
         
         if movingState == .Moving {
-            collectionView.scrollToItem(at: indexP, at: UICollectionViewScrollPosition.left, animated: false)
+            collectionView.scrollToItem(at: indexPathForAugmented, at: UICollectionViewScrollPosition.left, animated: false)
         }
         
-        if collectionView.contentOffset.x >= CGFloat(indexP.row) * SCREEN_W && movingState == .Left{
-            collectionView.scrollToItem(at: indexP, at: UICollectionViewScrollPosition.left, animated: false)
+        if collectionView.contentOffset.x >= CGFloat(indexPathForAugmented.row) * SCREEN_W && movingState == .Left{
+            collectionView.scrollToItem(at: indexPathForAugmented, at: UICollectionViewScrollPosition.left, animated: false)
             movingState = .Moving
         }
         
-        if collectionView.contentOffset.x <= CGFloat(indexP.row) * SCREEN_W && movingState == .Right{
-            collectionView.scrollToItem(at: indexP, at: UICollectionViewScrollPosition.left, animated: false)
+        if collectionView.contentOffset.x <= CGFloat(indexPathForAugmented.row) * SCREEN_W && movingState == .Right{
+            collectionView.scrollToItem(at: indexPathForAugmented, at: UICollectionViewScrollPosition.left, animated: false)
             movingState = .Moving
         }
         
