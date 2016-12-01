@@ -9,36 +9,36 @@
 import UIKit
 import CoreData
 
-class CacheImage:UIImage{
-    var url:String = ""
-    var image:UIImage?
-    
-    override init() {
-        super.init()
-    }
-    
-    init(image:UIImage?,url:String){
-        super.init()
-        self.url = url
-        self.image = image
-    }
-    
-    required convenience init(imageLiteralResourceName name: String) {
-        fatalError("init(imageLiteralResourceName:) has not been implemented")
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
+//class CacheImage:UIImage{
+//    var url:String = ""
+//    var image:UIImage?
+//    
+//    override init() {
+//        super.init()
+//    }
+//    
+//    init(image:UIImage?,url:String){
+//        super.init()
+//        self.url = url
+//        self.image = image
+//    }
+//    
+//    required convenience init(imageLiteralResourceName name: String) {
+//        fatalError("init(imageLiteralResourceName:) has not been implemented")
+//    }
+//    
+//    required init?(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//}
 
 class MyWebImageView: UIImageView {
-    static var cacheArr = Array<CacheImage>(repeating: CacheImage(), count: 50)
+    static var cacheArr = Array<(String,UIImage?)>(repeating: ("",UIImage()), count: 50)
     var urlString = ""
     func setImageForURLString(str:String){
         for ci in MyWebImageView.cacheArr {
-            if ci.url == str {
-                self.image = ci.image
+            if ci.0 == str {
+                self.image = ci.1
                 return
             }
         }
@@ -74,9 +74,8 @@ class MyWebImageView: UIImageView {
                     DispatchQueue.main.async { () -> Void in
                         let image = UIImage(data: ir.imageData as! Data)
                         self?.image = image
-                        let cacheImage = CacheImage(image: image, url: str)
                         _ = MyWebImageView.cacheArr.removeFirst()
-                        MyWebImageView.cacheArr.append(cacheImage)
+                        MyWebImageView.cacheArr.append((str,image))
                     }
 
                 }
@@ -123,9 +122,8 @@ class MyWebImageView: UIImageView {
                             print("download str:\(str)")
                             let image = UIImage(data: imageData)
                             self?.image = image
-                            let cacheImage = CacheImage(image: image, url: str)
                             _ = MyWebImageView.cacheArr.removeFirst()
-                            MyWebImageView.cacheArr.append(cacheImage)
+                            MyWebImageView.cacheArr.append((str, image))
                             if self?.urlString == str {
                                 self?.image = image
                             }
