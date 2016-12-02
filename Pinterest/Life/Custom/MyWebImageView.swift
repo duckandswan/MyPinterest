@@ -104,10 +104,21 @@ class MyWebImageView: UIImageView {
                         guard let imageData = data else {
                             return
                         }
-                        let serialQueue = DispatchQueue(label: "queuename")
-                        serialQueue.sync {
+//                        let serialQueue = DispatchQueue(label: "queuename")
+//                        serialQueue.sync {
 //                            let concurrentQueue = DispatchQueue(label: "queuename", attributes: .concurrent)
 //                            concurrentQueue.sync {
+//                            let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
+//                            myImage.urlString = str
+//                            myImage.imageData = imageData as NSData
+//                            myImage.date = NSDate()
+//                            do {
+//                                try MyCoreDataStack.coreDataStack.context.save()
+//                            } catch let error as NSError {
+//                                print("Could not save \(error), \(error.userInfo)")
+//                            }
+//                        }
+                        MyCoreDataStack.coreDataStack.context.perform({ 
                             let myImage = ImageRecord(context: MyCoreDataStack.coreDataStack.context)
                             myImage.urlString = str
                             myImage.imageData = imageData as NSData
@@ -117,7 +128,7 @@ class MyWebImageView: UIImageView {
                             } catch let error as NSError {
                                 print("Could not save \(error), \(error.userInfo)")
                             }
-                        }
+                        })
                         DispatchQueue.main.async { () -> Void in
                             print("download str:\(str)")
                             let image = UIImage(data: imageData)
@@ -133,12 +144,15 @@ class MyWebImageView: UIImageView {
                     
                 }
         }
-        
-        do {
-            _ = try MyCoreDataStack.coreDataStack.context.execute(asyncFetchRequest)
-        } catch let error as NSError {
-            print("Could not save \(error), \(error.userInfo)")
-        }
+        MyCoreDataStack.coreDataStack.context.perform({
+            do {
+                _ = try MyCoreDataStack.coreDataStack.context.execute(asyncFetchRequest)
+                
+            } catch let error as NSError {
+                print("Could not save \(error), \(error.userInfo)")
+            }
+        })
+
         
         //        do {
         //
