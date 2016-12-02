@@ -132,7 +132,6 @@ class MyWebImageView: UIImageView {
                         DispatchQueue.main.async { () -> Void in
                             print("download str:\(str)")
                             let image = UIImage(data: imageData)
-                            self?.image = image
                             _ = MyWebImageView.cacheArr.removeFirst()
                             MyWebImageView.cacheArr.append((str, image))
                             if self?.urlString == str {
