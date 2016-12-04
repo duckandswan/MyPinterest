@@ -732,6 +732,12 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
             }
             delegate.footerRefreshData()
         }
+        
+        if scrollView != mainCollectionView {
+            if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
+                getDataFromServer(scrollView as? UICollectionView)
+            }
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

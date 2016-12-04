@@ -183,7 +183,13 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-
+        if scrollView != categoryView && scrollView != mainCollectionView {
+            if scrollView.contentOffset.y <= -45 {
+                getDataFromServer(scrollView as? UICollectionView,isrefresh: true)
+            }else if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
+                getDataFromServer(scrollView as? UICollectionView)
+            }
+        }
     }
     
     // MARK: - Parse

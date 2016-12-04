@@ -68,6 +68,12 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
 
     }
     
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
+            getDataFromServer()
+        }
+    }
+    
     var canRequest = true
     func headerRefreshData(){
         isRefreshing = true
