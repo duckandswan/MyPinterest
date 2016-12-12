@@ -20,7 +20,7 @@ class LifeNativeCollectionViewCell: UICollectionViewCell {
         relatedCollectionView.backgroundColor = LifeConstant.mainBackgroundColor
         relatedCollectionView.alwaysBounceVertical = true
         relatedCollectionView.showsVerticalScrollIndicator  = true
-    
+
         relatedCollectionView.register(LifeCollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
     }
     

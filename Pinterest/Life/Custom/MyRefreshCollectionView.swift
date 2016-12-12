@@ -10,10 +10,10 @@ import UIKit
 
 class MyRefreshCollectionView: UICollectionView {
     
-    var myRefreshControl = UIActivityIndicatorView()
+    var myRefreshControl = UIActivityIndicatorView(frame: CGRect(x: 0, y: -75, width: 50, height: 50))
     
-    enum RefreshStatus {
-        case idle,headRefreshing,footerRefreshing
+    enum RefreshStatus{
+        case idle, headRefreshing, footerRefreshing
     }
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
@@ -24,8 +24,10 @@ class MyRefreshCollectionView: UICollectionView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func refresh(sender:UIRefreshControl) {
-        // Code to refresh table view
+    //MARK: -下拉刷新，上拉加载更多
+    func addMyHeaderRefresh(obj:AnyObject, action:Selector) {
+        
+        refreshControl?.addTarget(obj, action: action, for: UIControlEvents.valueChanged)
     }
     
 }

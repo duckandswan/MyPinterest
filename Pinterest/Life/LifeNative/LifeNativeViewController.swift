@@ -398,7 +398,8 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
 //                    [weak self,weak cv = cell.relatedCollectionView] in
 //                    self?.getDataFromServer(cv, isrefresh: true)
 //                })
-                cell.relatedCollectionView.addHeaderRefresh(obj: self, action: #selector(LifeNativeViewController.refresh(sender:)))
+                
+//                cell.relatedCollectionView.addHeaderRefresh(obj: self, action: #selector(LifeNativeViewController.refresh(sender:)))
 
                 
                 cell.relatedCollectionView.addFooterRefresh(block: {
@@ -415,7 +416,25 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                     getDataFromServer(cell.relatedCollectionView, isrefresh: true)
                 }
                 
-                cell.relatedCollectionView.contentOffset.y = lifeData.yOffset
+//                cell.relatedCollectionView.contentOffset.y = lifeData.yOffset
+//                UIView.animate(withDuration: 2.0, animations: {
+//                    cell.relatedCollectionView.contentInset.top = 100
+//                }, completion: { (b) in
+//                    UIView.animate(withDuration: 2.0, animations: {
+//                        cell.relatedCollectionView.contentInset.top = 0
+//                    })
+//                })
+                
+                print("cell.relatedCollectionView.contentInset.top: \(cell.relatedCollectionView.contentInset.top)")
+                
+                UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.allowUserInteraction, animations: {
+                    cell.relatedCollectionView.contentOffset.y = -75
+                }, completion: { (b) in
+                    UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.allowUserInteraction, animations: {
+                        cell.relatedCollectionView.contentOffset.y = 0
+                    })
+                })
+                
                 
                 return cell
             }else{

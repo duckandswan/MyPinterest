@@ -70,7 +70,7 @@ class MyWebImageView: UIImageView {
                 -> Void in
                 let irs = result.finalResult!
                 for ir in irs{
-                    print("str:\(str)\nir.urlString:\(ir.urlString)")
+//                    print("str:\(str)\nir.urlString:\(ir.urlString)")
                     DispatchQueue.main.async { () -> Void in
                         let image = UIImage(data: ir.imageData as! Data)
                         self?.image = image
@@ -130,7 +130,7 @@ class MyWebImageView: UIImageView {
                             }
                         })
                         DispatchQueue.main.async { () -> Void in
-                            print("download str:\(str)")
+//                            print("download str:\(str)")
                             let image = UIImage(data: imageData)
                             _ = MyWebImageView.cacheArr.removeFirst()
                             MyWebImageView.cacheArr.append((str, image))
