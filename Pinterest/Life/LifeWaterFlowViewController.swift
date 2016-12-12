@@ -65,26 +65,26 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
         
         lifeCollectionView.register(LifeCollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
         view.addSubview(lifeCollectionView)
-
+        
+        lifeCollectionView.addHeaderRefresh(obj: self, action: #selector(LifeWaterFlowViewController.refresh(sender:)))
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
-            getDataFromServer()
-        }
+//        if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
+//            getDataFromServer()
+//        }
     }
     
-    var canRequest = true
-    func headerRefreshData(){
-        isRefreshing = true
-        mainLifeData.pageNo = 1
-        mainLifeData.isEnd = false
-        getDataFromServer()
-    }
+//    var canRequest = true
+//    func headerRefreshData(){
+//        isRefreshing = true
+//        mainLifeData.pageNo = 1
+//        mainLifeData.isEnd = false
+////        getDataFromServer()
+//    }
     
     
     override func footerRefreshData(){
-        isRefreshing = false
         getDataFromServer()
     }
     
@@ -94,12 +94,17 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
 //        self.lifeCollectionView.gifFooter?.endRefreshing()
 //        canRequest = true
         mainLifeData.canRequest = true
+        lifeCollectionView.refreshControl?.endRefreshing()
     }
     
     //    override func footerBeginRefreshing() {
     //        lifeCollectionView.gifFooter?.beginRefreshing()
     //    }
-    
+    func refresh(sender:UIRefreshControl) {
+        isRefreshing = true
+        mainLifeData.pageNo = 1
+        getDataFromServer()
+    }
 
     
     func getDataFromServer(){
@@ -253,7 +258,7 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
             cell.setData(mainLifeData.lifeModels[indexPath.row])
             if indexPath.row == mainLifeData.lifeModels.count - LifeCollectionViewCell.requestNumber{
 //                lifeCollectionView.gifFooter?.beginRefreshing()
-                getDataFromServer()
+//                getDataFromServer()
             }
             return cell
             

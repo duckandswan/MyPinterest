@@ -21,7 +21,6 @@ class InnerTagController: LifeWaterFlowViewController {
         // Do any additional setup after loading the view, typically from a nib.
         initHeadBarAndLifeCollectionView()
         initUrlAndParameter()
-        
         getDataFromServer()
     }
     

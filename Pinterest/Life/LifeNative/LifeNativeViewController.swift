@@ -184,9 +184,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView != categoryView && scrollView != mainCollectionView {
-            if scrollView.contentOffset.y <= -45 {
-                getDataFromServer(scrollView as? UICollectionView,isrefresh: true)
-            }else if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
+            if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
                 getDataFromServer(scrollView as? UICollectionView)
             }
         }
@@ -328,6 +326,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     func endRefresh(_ collectionView:UICollectionView?,index:Int){
         print("endRefresh collectionView?.tag:\(collectionView?.tag) index:\(index)")
         if collectionView?.tag == index{
+            collectionView?.refreshControl?.endRefreshing()
         }else{
             print("not end index: \(index)")
         }
@@ -337,6 +336,11 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     
     override func footerRefreshData(){
         getDataFromServer(lifeCollectionView)
+    }
+    
+    func refresh(sender:UIRefreshControl) {
+        let collectionView = sender.superview as! UICollectionView
+        getDataFromServer(collectionView, isrefresh: true)
     }
     
     //MARK:-  UICollectionViewDataSource
@@ -390,10 +394,12 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
 
                 cell.setRelatedCollectionView()
                 
-                cell.relatedCollectionView.addHeaderRefresh(block: { 
-                    [weak self,weak cv = cell.relatedCollectionView] in
-                    self?.getDataFromServer(cv, isrefresh: true)
-                })
+//                cell.relatedCollectionView.addHeaderRefresh(block: { 
+//                    [weak self,weak cv = cell.relatedCollectionView] in
+//                    self?.getDataFromServer(cv, isrefresh: true)
+//                })
+                cell.relatedCollectionView.addHeaderRefresh(obj: self, action: #selector(LifeNativeViewController.refresh(sender:)))
+
                 
                 cell.relatedCollectionView.addFooterRefresh(block: {
                     [weak self,weak cv = cell.relatedCollectionView] in
@@ -406,7 +412,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 //没数据时刷新
                 if lifeData.lifeModels.count == 0 && lifeData.isEnd == false{
                     print("beginRefreshing tag:\(cell.relatedCollectionView?.tag)")
-                    self.getDataFromServer(cell.relatedCollectionView)
+                    getDataFromServer(cell.relatedCollectionView, isrefresh: true)
                 }
                 
                 cell.relatedCollectionView.contentOffset.y = lifeData.yOffset
@@ -424,44 +430,6 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
                     cell.setData(lifeModel)
                     return cell
-//                    if index == 0{
-//                        if indexPath.row == 0{
-//                            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Zhi", for: indexPath) as! ZhiCell
-//                            LifeUtils.setImageViewForUrl(cell.iv, url: hotModel.hotImg)
-//                            return cell
-//                        }else{
-//                            let lifeModel = lifeDatas[index].lifeModels[indexPath.row - 1]
-//                            if indexPath.row - 1 == lifeDatas[index].lifeModels.count - 7{
-//                                getDataFromServer(collectionView)
-//                            }
-//                            
-//                            if lifeModel.isDaren {
-//                                let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenCell", forIndexPath: indexPath) as! DarenCollectionViewCell
-//                                cell.setData(lifeModel)
-//                                return cell
-//                            }else{
-//                                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
-//                                cell.setData(lifeModel)
-//                                return cell
-//                            }
-//                        }
-//                        
-//                    }else{
-//                        let lifeModel = lifeDatas[index].lifeModels[indexPath.row]
-//                        if indexPath.row == lifeDatas[index].lifeModels.count - 7{
-//                            getDataFromServer(collectionView)
-//                        }
-//                        
-//                        if lifeModel.isDaren {
-//                            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("DarenCell", forIndexPath: indexPath) as! DarenCollectionViewCell
-//                            cell.setData(lifeModel)
-//                            return cell
-//                        }else{
-//                            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
-//                            cell.setData(lifeModel)
-//                            return cell
-//                        }
-//                    }
                 }else if indexPath.section == 0{
                     return UICollectionViewCell()
                 }else{
