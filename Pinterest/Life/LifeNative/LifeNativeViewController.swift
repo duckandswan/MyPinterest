@@ -326,7 +326,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     func endRefresh(_ collectionView:UICollectionView?,index:Int){
         print("endRefresh collectionView?.tag:\(collectionView?.tag) index:\(index)")
         if collectionView?.tag == index{
-            collectionView?.refreshControl?.endRefreshing()
+            (collectionView as? MyRefreshCollectionView)?.endMyRefresh()
         }else{
             print("not end index: \(index)")
         }

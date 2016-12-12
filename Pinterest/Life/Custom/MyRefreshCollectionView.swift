@@ -19,9 +19,10 @@ class MyRefreshCollectionView: UICollectionView {
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
-        myRefreshControl = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        myRefreshControl = UIActivityIndicatorView(frame: CGRect(x: 0, y: -50, width: 50, height: 50))
         myRefreshControl.center.x = frame.width / 2
         myRefreshControl.activityIndicatorViewStyle = .gray
+        myRefreshControl.hidesWhenStopped = false
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -39,17 +40,28 @@ class MyRefreshCollectionView: UICollectionView {
     }
     
     func beginMyRefresh(){
+        refreshStatus = .headRefreshing
         myRefreshControl.startAnimating()
-        UIView.animate(withDuration: 1.0, animations: {
-            self.contentOffset.y = -75
+        UIView.animate(withDuration: 0.5, animations: {
+            self.contentOffset.y = -50
+            self.contentInset.top = 50
         }, completion: { (b) in
-            UIView.animate(withDuration: 1.0, animations: {
-                self.contentOffset.y = 0
-            }, completion: { (b) in
-                self.myRefreshControl.stopAnimating()
-                _ = self.headerObj?.perform(self.headerAction, with: self.myRefreshControl)
-            })
+            _ = self.headerObj?.perform(self.headerAction, with: self.myRefreshControl)
         })
     }
+    
+    func endMyRefresh(){
+        if refreshStatus == .headRefreshing {
+            UIView.animate(withDuration: 0.5, animations: {
+                self.contentOffset.y = 0
+                self.contentInset.top = 0
+            }, completion: { (b) in
+                //            self.myRefreshControl.stopAnimating()
+                self.refreshStatus = .idle
+            })
+        }
+    }
+    
+    
     
 }
