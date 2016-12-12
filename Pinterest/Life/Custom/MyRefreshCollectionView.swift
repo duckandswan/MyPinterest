@@ -23,6 +23,7 @@ class MyRefreshCollectionView: UICollectionView {
         myRefreshControl.center.x = frame.width / 2
         myRefreshControl.activityIndicatorViewStyle = .gray
         myRefreshControl.hidesWhenStopped = false
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -37,9 +38,14 @@ class MyRefreshCollectionView: UICollectionView {
         headerObj = obj
         headerAction = action
         addSubview(myRefreshControl)
+        addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
+//         addObserver(self, forKeyPath: #keyPath(UICollectionView.isDecelerating), options: [.new,.old,.initial,.prior], context: nil)
     }
     
     func beginMyRefresh(){
+        if refreshStatus == .headRefreshing {
+            return
+        }
         refreshStatus = .headRefreshing
         myRefreshControl.startAnimating()
         UIView.animate(withDuration: 0.5, animations: {
@@ -52,16 +58,27 @@ class MyRefreshCollectionView: UICollectionView {
     
     func endMyRefresh(){
         if refreshStatus == .headRefreshing {
+            self.refreshStatus = .idle
             UIView.animate(withDuration: 0.5, animations: {
                 self.contentOffset.y = 0
                 self.contentInset.top = 0
             }, completion: { (b) in
                 //            self.myRefreshControl.stopAnimating()
-                self.refreshStatus = .idle
             })
         }
     }
     
-    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        print("keyPath: \(keyPath): \(change?[.newKey])")
+        let contentOffset = change?[.newKey] as! CGPoint
+        if contentOffset.y < -50 && isDragging == false {
+            beginMyRefresh()
+        }
+//        if change?[.newKey] as! Bool == false {
+//            if contentOffset.y < -50 {
+//                beginMyRefresh()
+//            }
+//        }
+    }
     
 }

@@ -13,7 +13,7 @@ class CommonCollectionViewCell: UICollectionViewCell{
 
 // 第一页Cell
 class LifeCollectionViewCell:CommonCollectionViewCell{
-    static let requestNumber = 7
+    static let requestNumber = 3
     var imageViews:[MyWebImageView] = []
     let tLabel = UILabel()
     let contentLabel = UILabel()
