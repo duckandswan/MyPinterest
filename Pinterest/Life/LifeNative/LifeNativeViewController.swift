@@ -184,9 +184,9 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView != categoryView && scrollView != mainCollectionView {
-            if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
-                getDataFromServer(scrollView as? UICollectionView)
-            }
+//            if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
+//                getDataFromServer(scrollView as? UICollectionView)
+//            }
         }
     }
     
@@ -338,7 +338,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         getDataFromServer(lifeCollectionView)
     }
     
-    func refresh(sender:UIRefreshControl) {
+    func refresh(sender:UIActivityIndicatorView) {
         let collectionView = sender.superview as! UICollectionView
         getDataFromServer(collectionView, isrefresh: true)
     }
@@ -401,6 +401,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 
 //                cell.relatedCollectionView.addHeaderRefresh(obj: self, action: #selector(LifeNativeViewController.refresh(sender:)))
 
+                cell.relatedCollectionView.addMyHeaderRefresh(obj: self, action: #selector(LifeNativeViewController.refresh(sender:)))
                 
                 cell.relatedCollectionView.addFooterRefresh(block: {
                     [weak self,weak cv = cell.relatedCollectionView] in
@@ -413,7 +414,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 //没数据时刷新
                 if lifeData.lifeModels.count == 0 && lifeData.isEnd == false{
                     print("beginRefreshing tag:\(cell.relatedCollectionView?.tag)")
-                    getDataFromServer(cell.relatedCollectionView, isrefresh: true)
+//                    getDataFromServer(cell.relatedCollectionView, isrefresh: true)
                 }
                 
 //                cell.relatedCollectionView.contentOffset.y = lifeData.yOffset
@@ -427,14 +428,14 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 
                 print("cell.relatedCollectionView.contentInset.top: \(cell.relatedCollectionView.contentInset.top)")
                 
-                UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.allowUserInteraction, animations: {
-                    cell.relatedCollectionView.contentOffset.y = -75
-                }, completion: { (b) in
-                    UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.allowUserInteraction, animations: {
-                        cell.relatedCollectionView.contentOffset.y = 0
-                    })
-                })
-                
+//                UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.allowUserInteraction, animations: {
+//                    cell.relatedCollectionView.contentOffset.y = -75
+//                }, completion: { (b) in
+//                    UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.allowUserInteraction, animations: {
+//                        cell.relatedCollectionView.contentOffset.y = 0
+//                    })
+//                })
+                cell.relatedCollectionView.beginMyRefresh()
                 
                 return cell
             }else{
