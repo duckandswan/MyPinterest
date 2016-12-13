@@ -16,6 +16,7 @@ class LifeData{
     var canRequest = true
     var isEnd = false
     var yOffset:CGFloat = 0
+    var status:MyRefreshCollectionView.Status = .idle
 }
 
 class LifeModel:NSObject{

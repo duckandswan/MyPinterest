@@ -110,6 +110,8 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 let model = LifeCategoryModel()
                 model.setValueForDic(item)
                 self.lifeCategoryArr.append(model)
+                self.lifeCategoryArr.append(model)
+                self.lifeCategoryArr.append(model)
             }
             //            self.lifeCategoryArr.popLast()
             //            self.lifeCategoryArr.popLast()
@@ -246,15 +248,17 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         
         let lifeData = lifeDatas[index]
         
+        lifeData.status = (collectionView as! MyRefreshCollectionView).status
+        
         if isrefresh == true{
             lifeData.isEnd = false
         }
         
-        if lifeData.canRequest == false{
-            return
-        }else{
-            lifeData.canRequest = false
-        }
+//        if lifeData.canRequest == false{
+//            return
+//        }else{
+//            lifeData.canRequest = false
+//        }
         
         if lifeData.isEnd == true {
             return
@@ -325,14 +329,15 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
     }
     
     func endRefresh(_ collectionView:UICollectionView?,index:Int){
+        let lifeData = lifeDatas[index]
         print("endRefresh collectionView?.tag:\(collectionView?.tag) index:\(index)")
         if collectionView?.tag == index{
             (collectionView as? MyRefreshCollectionView)?.endMyRefresh()
+            lifeData.status = .idle
         }else{
             print("not end index: \(index)")
         }
-        let lifeData = lifeDatas[index]
-        lifeData.canRequest = true
+//        lifeData.canRequest = true
     }
     
     override func footerRefreshData(){
@@ -416,9 +421,13 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
 //                    self?.getDataFromServer(cv)
 //                })
                 
+                (collectionView as? MyRefreshCollectionView)?.set(sta: lifeData.status)
+                
                 if lifeData.isEnd == true{
                     (collectionView as? MyRefreshCollectionView)?.isNoData = true
                 }
+                
+                
                 
                 cell.relatedCollectionView.contentOffset.y = lifeData.yOffset
                 

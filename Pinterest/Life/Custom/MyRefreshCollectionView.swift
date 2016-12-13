@@ -17,7 +17,24 @@ class MyRefreshCollectionView: UICollectionView {
     enum Status{
         case idle, headRefreshing, footerLoading
     }
+    
     var status:Status = .idle
+    
+    func set(sta:Status){
+        status = sta
+        switch sta {
+        case .idle:
+            self.contentOffset.y = 0
+            self.contentInset.top = 0
+        case .headRefreshing:
+            self.contentOffset.y = -50
+            self.contentInset.top = 50
+            myHeaderRefresh.startAnimating()
+        case .footerLoading:
+            myFooterLoad.startAnimating()
+        }
+    }
+    
     var isNoData = false{
         didSet {
             myFooterLoad.isHidden = isNoData
@@ -68,6 +85,7 @@ class MyRefreshCollectionView: UICollectionView {
     func adjustFooterY(){
         myFooterLoad.frame.origin.y = contentSize.height > frame.height ? contentSize.height : frame.height
         noDataLabel.frame.origin.y = contentSize.height > frame.height ? contentSize.height : frame.height
+        noDataLabel.isHidden = true
     }
     //MARK: -上拉加载更多
     func addMyFooterLoad(obj:AnyObject, action:Selector) {
@@ -116,7 +134,6 @@ class MyRefreshCollectionView: UICollectionView {
         }
         status = .footerLoading
         adjustFooterY()
-        myFooterLoad.isHidden = false
         myFooterLoad.startAnimating()
         _ = self.footerObj?.perform(self.footerAction, with: self.myFooterLoad)
     }
