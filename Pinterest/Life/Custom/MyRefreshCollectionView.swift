@@ -10,20 +10,28 @@ import UIKit
 
 class MyRefreshCollectionView: UICollectionView {
     
-    var myRefreshControl:UIActivityIndicatorView!
+    var myHeaderRefresh:UIActivityIndicatorView!
+    var myFooterLoad:UIActivityIndicatorView!
     
-    enum RefreshStatus{
-        case idle, headRefreshing, footerRefreshing
+    enum Status{
+        case idle, headRefreshing, footerLoading
     }
-    var refreshStatus:RefreshStatus = .idle
+    var status:Status = .idle
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
-        myRefreshControl = UIActivityIndicatorView(frame: CGRect(x: 0, y: -50, width: 50, height: 50))
-        myRefreshControl.center.x = frame.width / 2
-        myRefreshControl.activityIndicatorViewStyle = .gray
-        myRefreshControl.hidesWhenStopped = false
+        myHeaderRefresh = UIActivityIndicatorView(frame: CGRect(x: 0, y: -50, width: 50, height: 50))
+        myHeaderRefresh.center.x = frame.width / 2
+        myHeaderRefresh.activityIndicatorViewStyle = .gray
+        myHeaderRefresh.hidesWhenStopped = false
         
+        myFooterLoad = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        myFooterLoad.center.x = frame.width / 2
+        myFooterLoad.activityIndicatorViewStyle = .gray
+        myFooterLoad.hidesWhenStopped = false
+        
+        addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
+        addObserver(self, forKeyPath: #keyPath(UICollectionView.contentSize), options: NSKeyValueObservingOptions.new, context: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -33,47 +41,90 @@ class MyRefreshCollectionView: UICollectionView {
     weak var headerObj:AnyObject?
     var headerAction:Selector?
     
-    //MARK: -下拉刷新，上拉加载更多
+    //MARK: -下拉刷新
     func addMyHeaderRefresh(obj:AnyObject, action:Selector) {
         headerObj = obj
         headerAction = action
-        addSubview(myRefreshControl)
-        addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
+        addSubview(myHeaderRefresh)
+//        addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
 //         addObserver(self, forKeyPath: #keyPath(UICollectionView.isDecelerating), options: [.new,.old,.initial,.prior], context: nil)
     }
     
+    weak var footerObj:AnyObject?
+    var footerAction:Selector?
+    
+    func adjustFooterY(){
+        myFooterLoad.frame.origin.y = contentSize.height > frame.height ? contentSize.height : frame.height
+    }
+    //MARK: -上拉加载更多
+    func addMyFooterLoad(obj:AnyObject, action:Selector) {
+        footerObj = obj
+        footerAction = action
+        adjustFooterY()
+        addSubview(myFooterLoad)
+//        addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
+    }
+    
     func beginMyRefresh(){
-        if refreshStatus == .headRefreshing {
+        if status == .headRefreshing || status == .footerLoading {
             return
         }
-        refreshStatus = .headRefreshing
-        myRefreshControl.startAnimating()
+        status = .headRefreshing
+        myHeaderRefresh.startAnimating()
         UIView.animate(withDuration: 0.5, animations: {
             self.contentOffset.y = -50
             self.contentInset.top = 50
         }, completion: { (b) in
-            _ = self.headerObj?.perform(self.headerAction, with: self.myRefreshControl)
+            _ = self.headerObj?.perform(self.headerAction, with: self.myHeaderRefresh)
         })
     }
     
     func endMyRefresh(){
-        if refreshStatus == .headRefreshing {
-            self.refreshStatus = .idle
+        if status == .headRefreshing {
+            self.status = .idle
             UIView.animate(withDuration: 0.5, animations: {
                 self.contentOffset.y = 0
                 self.contentInset.top = 0
             }, completion: { (b) in
-                //            self.myRefreshControl.stopAnimating()
+                self.myHeaderRefresh.stopAnimating()
             })
+        }else if status == .footerLoading {
+            self.status = .idle
+//            self.myFooterLoad.stopAnimating()
         }
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        print("keyPath: \(keyPath): \(change?[.newKey])")
-        let contentOffset = change?[.newKey] as! CGPoint
-        if contentOffset.y < -50 && isDragging == false {
-            beginMyRefresh()
+    func beginMyFooterLoad(){
+        if status == .headRefreshing || status == .footerLoading {
+            return
         }
+        status = .footerLoading
+        adjustFooterY()
+        myFooterLoad.startAnimating()
+        _ = self.footerObj?.perform(self.footerAction, with: self.myFooterLoad)
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+//        print("keyPath: \(keyPath): \(change?[.newKey])")
+        if status == .idle {
+            if keyPath == #keyPath(UICollectionView.contentOffset) {
+//                let contentOffset = change?[.newKey] as! CGPoint
+                if isDecelerating == true {
+                    if contentOffset.y < -50{
+                        beginMyRefresh()
+                    }else if contentOffset.y > contentSize.height - frame.height + 50 && contentOffset.y > 50{
+                        print("beginMyFooterLoad at :\(contentOffset.y)")
+                        beginMyFooterLoad()
+                    }
+                }
+            }
+        }
+        
+        if keyPath == #keyPath(UICollectionView.contentSize) {
+            //                let contentOffset = change?[.newKey] as! CGPoint
+            adjustFooterY()
+        }
+        
 //        if change?[.newKey] as! Bool == false {
 //            if contentOffset.y < -50 {
 //                beginMyRefresh()

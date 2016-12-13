@@ -159,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				E44F936E1DE3D76B007E0805 /* lifeViews.xib */,
+				E44F936A1DE3D76B007E0805 /* LifeNativeCollectionViewCell.swift */,
 				E44F93621DE3D76B007E0805 /* InnerTopCell.swift */,
 				E44F93631DE3D76B007E0805 /* LifeCollectionViewCell.swift */,
 				E44F93661DE3D76B007E0805 /* LifeInnerCell.swift */,
@@ -175,7 +176,6 @@
 				E44F93611DE3D76B007E0805 /* InnerTagControlller.swift */,
 				E44F93641DE3D76B007E0805 /* LifeCommonController.swift */,
 				E44F93671DE3D76B007E0805 /* LifeInnerController.swift */,
-				E44F936A1DE3D76B007E0805 /* LifeNativeCollectionViewCell.swift */,
 				E44F936B1DE3D76B007E0805 /* LifeNativeViewController.swift */,
 			);
 			name = controller;

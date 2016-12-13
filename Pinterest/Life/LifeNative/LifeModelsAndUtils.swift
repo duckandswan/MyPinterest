@@ -294,6 +294,7 @@ class LifeUtils{
     
     static func request(url:String,pamams:[String : Any]?, successClosure: ((_ body:AnyObject) -> Void)?, failureClosure: (() -> Void)?, nullClosure: (() -> Void)? = {}){
 
+//        Thread.sleep(forTimeInterval: 5)
         print("pamams:\(pamams)")
         var request = URLRequest(url:URL(string: url)!)
         request.httpMethod = "POST"

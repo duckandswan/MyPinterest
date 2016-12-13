@@ -343,6 +343,11 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         getDataFromServer(collectionView, isrefresh: true)
     }
     
+    func load(sender:UIActivityIndicatorView) {
+        let collectionView = sender.superview as! UICollectionView
+        getDataFromServer(collectionView)
+    }
+    
     //MARK:-  UICollectionViewDataSource
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if collectionView == categoryView || collectionView == mainCollectionView {
@@ -403,21 +408,27 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
 
                 cell.relatedCollectionView.addMyHeaderRefresh(obj: self, action: #selector(LifeNativeViewController.refresh(sender:)))
                 
-                cell.relatedCollectionView.addFooterRefresh(block: {
-                    [weak self,weak cv = cell.relatedCollectionView] in
-                    self?.getDataFromServer(cv)
-                })
+                cell.relatedCollectionView.addMyFooterLoad(obj: self, action: #selector(LifeNativeViewController.load(sender:)))
+                
+//                cell.relatedCollectionView.addFooterRefresh(block: {
+//                    [weak self,weak cv = cell.relatedCollectionView] in
+//                    self?.getDataFromServer(cv)
+//                })
                 
                 if lifeData.isEnd == true{
                 }
+                
+                cell.relatedCollectionView.contentOffset.y = lifeData.yOffset
                 
                 //没数据时刷新
                 if lifeData.lifeModels.count == 0 && lifeData.isEnd == false{
                     print("beginRefreshing tag:\(cell.relatedCollectionView?.tag)")
 //                    getDataFromServer(cell.relatedCollectionView, isrefresh: true)
+                    cell.relatedCollectionView.beginMyRefresh()
                 }
                 
-//                cell.relatedCollectionView.contentOffset.y = lifeData.yOffset
+                
+                
 //                UIView.animate(withDuration: 2.0, animations: {
 //                    cell.relatedCollectionView.contentInset.top = 100
 //                }, completion: { (b) in
@@ -435,7 +446,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
 //                        cell.relatedCollectionView.contentOffset.y = 0
 //                    })
 //                })
-                cell.relatedCollectionView.beginMyRefresh()
+                
                 
                 return cell
             }else{
@@ -443,9 +454,9 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                     
                     let index = collectionView.tag
                     let lifeModel = lifeDatas[index].lifeModels[indexPath.row]
-                    if indexPath.row - 1 == lifeDatas[index].lifeModels.count - LifeCollectionViewCell.requestNumber{
-                        getDataFromServer(collectionView)
-                    }
+//                    if indexPath.row == lifeDatas[index].lifeModels.count - LifeCollectionViewCell.requestNumber{
+//                        getDataFromServer(collectionView)
+//                    }
                     
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
                     cell.setData(lifeModel)
