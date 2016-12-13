@@ -63,6 +63,11 @@ class MyRefreshCollectionView: UICollectionView {
         addObserver(self, forKeyPath: #keyPath(UICollectionView.contentSize), options: NSKeyValueObservingOptions.new, context: nil)
     }
     
+    deinit {
+        removeObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset))
+        removeObserver(self, forKeyPath: #keyPath(UICollectionView.contentSize))
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
