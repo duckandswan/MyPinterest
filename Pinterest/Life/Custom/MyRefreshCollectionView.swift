@@ -12,11 +12,18 @@ class MyRefreshCollectionView: UICollectionView {
     
     var myHeaderRefresh:UIActivityIndicatorView!
     var myFooterLoad:UIActivityIndicatorView!
+    var noDataLabel:UILabel!
     
     enum Status{
         case idle, headRefreshing, footerLoading
     }
     var status:Status = .idle
+    var isNoData = false{
+        didSet {
+            myFooterLoad.isHidden = isNoData
+            noDataLabel.isHidden = !isNoData
+        }
+    }
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
@@ -29,6 +36,11 @@ class MyRefreshCollectionView: UICollectionView {
         myFooterLoad.center.x = frame.width / 2
         myFooterLoad.activityIndicatorViewStyle = .gray
         myFooterLoad.hidesWhenStopped = false
+        
+        noDataLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50))
+        noDataLabel.font = UIFont.systemFont(ofSize: 12)
+        noDataLabel.textAlignment = .center
+        noDataLabel.text = "没有了"
         
         addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
         addObserver(self, forKeyPath: #keyPath(UICollectionView.contentSize), options: NSKeyValueObservingOptions.new, context: nil)
@@ -55,13 +67,16 @@ class MyRefreshCollectionView: UICollectionView {
     
     func adjustFooterY(){
         myFooterLoad.frame.origin.y = contentSize.height > frame.height ? contentSize.height : frame.height
+        noDataLabel.frame.origin.y = contentSize.height > frame.height ? contentSize.height : frame.height
     }
     //MARK: -上拉加载更多
     func addMyFooterLoad(obj:AnyObject, action:Selector) {
         footerObj = obj
         footerAction = action
         adjustFooterY()
+        self.contentInset.bottom = 50
         addSubview(myFooterLoad)
+        addSubview(noDataLabel)
 //        addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
     }
     
@@ -70,6 +85,7 @@ class MyRefreshCollectionView: UICollectionView {
             return
         }
         status = .headRefreshing
+        isNoData = false
         myHeaderRefresh.startAnimating()
         UIView.animate(withDuration: 0.5, animations: {
             self.contentOffset.y = -50
@@ -90,7 +106,7 @@ class MyRefreshCollectionView: UICollectionView {
             })
         }else if status == .footerLoading {
             self.status = .idle
-//            self.myFooterLoad.stopAnimating()
+            self.myFooterLoad.stopAnimating()
         }
     }
     
@@ -100,6 +116,7 @@ class MyRefreshCollectionView: UICollectionView {
         }
         status = .footerLoading
         adjustFooterY()
+        myFooterLoad.isHidden = false
         myFooterLoad.startAnimating()
         _ = self.footerObj?.perform(self.footerAction, with: self.myFooterLoad)
     }
@@ -114,7 +131,9 @@ class MyRefreshCollectionView: UICollectionView {
                         beginMyRefresh()
                     }else if contentOffset.y > contentSize.height - frame.height + 50 && contentOffset.y > 50{
                         print("beginMyFooterLoad at :\(contentOffset.y)")
-                        beginMyFooterLoad()
+                        if isNoData == false {
+                            beginMyFooterLoad()
+                        }
                     }
                 }
             }

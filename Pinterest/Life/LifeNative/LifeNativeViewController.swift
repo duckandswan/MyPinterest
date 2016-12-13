@@ -199,6 +199,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         
         if arr.count < lifeData.pageSize {
             lifeData.isEnd = true
+            (collectionView as? MyRefreshCollectionView)?.isNoData = true
         }else{
             lifeData.pageNo += 1
         }
@@ -416,6 +417,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
 //                })
                 
                 if lifeData.isEnd == true{
+                    (collectionView as? MyRefreshCollectionView)?.isNoData = true
                 }
                 
                 cell.relatedCollectionView.contentOffset.y = lifeData.yOffset
