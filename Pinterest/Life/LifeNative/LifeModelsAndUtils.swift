@@ -327,7 +327,7 @@ class LifeUtils{
             
             if let result = try? JSONSerialization.jsonObject(with: data, options: .allowFragments){
                 let resultDic = result as! NSDictionary
-                print("resultDic: \(resultDic)")
+//                print("resultDic: \(resultDic)")
                 print("访问服务器成功")
                 let codeString = resultDic.string(forKey: "code")
                 if codeString == "100" {

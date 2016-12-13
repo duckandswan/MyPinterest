@@ -9,18 +9,18 @@
 import UIKit
 
 class LifeNativeCollectionViewCell: UICollectionViewCell {
-    var relatedCollectionView:UICollectionView!
+    var relatedCollectionView:MyRefreshCollectionView!
     let waterfallLayout = WaterFlowViewLayout()
     var index:Int = -1
     weak var vc:LifeNativeViewController?
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        relatedCollectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height), collectionViewLayout: waterfallLayout)
+        relatedCollectionView = MyRefreshCollectionView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height), collectionViewLayout: waterfallLayout)
         relatedCollectionView.backgroundColor = LifeConstant.mainBackgroundColor
         relatedCollectionView.alwaysBounceVertical = true
         relatedCollectionView.showsVerticalScrollIndicator  = true
-    
+
         relatedCollectionView.register(LifeCollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
     }
     

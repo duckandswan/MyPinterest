@@ -309,7 +309,9 @@ extension UIScrollView{
     
     //MARK: -下拉刷新，上拉加载更多
     func addHeaderRefresh(obj:AnyObject, action:Selector) {
-
+        refreshControl = UIRefreshControl()
+        refreshControl?.attributedTitle = NSAttributedString(string: "下拉刷新")
+        refreshControl?.addTarget(obj, action: action, for: UIControlEvents.valueChanged)
     }
     
     func addFooterRefresh(obj:AnyObject, action:Selector) {
