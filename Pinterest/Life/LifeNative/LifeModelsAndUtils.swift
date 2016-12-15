@@ -13,7 +13,7 @@ class LifeData{
     let pageSize = 10
     var lifeModels:[LifeModel] = []
     var storyId = 0
-    var canRequest = true
+//    var canRequest = true
     var isEnd = false
     var yOffset:CGFloat = 0
     var status:MyRefreshCollectionView.Status = .idle

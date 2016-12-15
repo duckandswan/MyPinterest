@@ -83,6 +83,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         
         if arr.count < lifeData.pageSize {
             lifeData.isEnd = true
+            (collectionView as? MyRefreshCollectionView)?.isNoData = true
         }else{
             lifeData.pageNo += 1
         }
@@ -111,15 +112,17 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         
         let lifeData = lifeDatas[index]
         
-        if lifeData.canRequest == false{
-            return
-        }else{
-            lifeData.canRequest = false
-        }
+//        if lifeData.canRequest == false{
+//            return
+//        }else{
+//            lifeData.canRequest = false
+//        }
         
-        if lifeData.isEnd == true {
-            return
-        }
+        lifeData.status = (collectionView as! MyRefreshCollectionView).status
+        
+//        if lifeData.isEnd == true {
+//            return
+//        }
         
         var params:[String:Any] = ["pageNo":lifeData.pageNo,"pageSize":lifeData.pageSize,"storyCollectionId":lifeData.storyId]
         let url = "http://api.finding.com/api/storycollection/related"
@@ -140,6 +143,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
         let nullClosure: (() -> Void) = {
             self.endRefresh(collectionView,index: index)
             lifeData.isEnd = true
+            (collectionView as? MyRefreshCollectionView)?.isNoData = true
         }
         
         LifeUtils.request(url: url, pamams: params, successClosure: successClosure, failureClosure: failureClosure, nullClosure: nullClosure)
@@ -169,13 +173,20 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
     
     func endRefresh(_ collectionView:UICollectionView?,index:Int){
         if collectionView?.tag == index{
+            (collectionView as? MyRefreshCollectionView)?.endMyRefresh()
         }
         let lifeData = lifeDatas[index]
-        lifeData.canRequest = true
+//        lifeData.canRequest = true
+        lifeData.status = .idle
+    }
+    
+    func load(sender:UIActivityIndicatorView) {
+        let collectionView = sender.superview as! UICollectionView
+        getDataFromServer(collectionView)
     }
     
     override func footerRefreshData(){
-        getDataFromServer(lifeCollectionView)
+        lifeCollectionView.beginMyFooterLoad()
     }
     
     func arrForJsonString(_ str:NSString)->[NSDictionary]{
@@ -228,16 +239,22 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
             
             let lifeData = lifeDatas[index]
             
-            cell.relatedCollectionView.addFooterRefresh(block: {
-                [weak self,weak cv = cell.relatedCollectionView] in
-                self?.getDataFromServer(cv)
-            })
+//            cell.relatedCollectionView.addFooterRefresh(block: {
+//                [weak self,weak cv = cell.relatedCollectionView] in
+//                self?.getDataFromServer(cv)
+//            })
+            
+            cell.relatedCollectionView.addMyFooterLoad(obj: self, action: #selector(LifeInnerController.load(sender:)))
+            
+            cell.relatedCollectionView.set(sta: lifeData.status)
             
             if lifeData.isEnd == true{
+                cell.relatedCollectionView.isNoData = true
             }
             
             if lifeData.lifeModels.count == 0 && lifeData.isEnd == false{
-                getDataFromServer(cell.relatedCollectionView)
+//                getDataFromServer(cell.relatedCollectionView)
+                cell.relatedCollectionView.beginMyFooterLoad()
             }
             
 //            if model.isTuanGou == true && model.isDaren == false{
@@ -359,7 +376,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
             }
             
             if indexPath.row == delegate.mainLifeData.lifeModels.count - LifeCollectionViewCell.requestNumber{
-                delegate.footerRefreshData()
+//                delegate.footerRefreshData()
             }
             
             return cell
@@ -373,7 +390,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! LifeCollectionViewCell
                 cell.setData(lifeModel)
                 if indexPath.row == lifeDatas[index].lifeModels.count - LifeCollectionViewCell.requestNumber{
-                    getDataFromServer(collectionView)
+//                    getDataFromServer(collectionView)
                 }
                 return cell
 //                if lifedata.isDaren {
@@ -437,7 +454,7 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
 //            let index = collectionView.tag
 //            let lifeData = lifeDatas[index]
             mainLifeData = lifeDatas[collectionView.tag]
-            lifeCollectionView = collectionView
+            lifeCollectionView = collectionView as! MyRefreshCollectionView
             currentIndex = collectionView.tag
             
             let innerCell = mainCollectionView.cellForItem(at: IndexPath(row: collectionView.tag, section: 0)) as! LifeInnerCell
@@ -733,11 +750,11 @@ class LifeInnerController: LifeCommonController, UICollectionViewDataSource, UIC
             delegate.footerRefreshData()
         }
         
-        if scrollView != mainCollectionView {
-            if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
-                getDataFromServer(scrollView as? UICollectionView)
-            }
-        }
+//        if scrollView != mainCollectionView {
+//            if scrollView.contentOffset.y > scrollView.contentSize.height - SCREEN_H + 45{
+//                getDataFromServer(scrollView as? UICollectionView)
+//            }
+//        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

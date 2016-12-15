@@ -10,7 +10,7 @@ import UIKit
 //父Controller
 class LifeCommonController:UIViewController, UIViewControllerAnimatedTransitioning, UINavigationControllerDelegate {
     
-    var lifeCollectionView:UICollectionView!
+    var lifeCollectionView:MyRefreshCollectionView!
 
     var mainLifeData:LifeData = LifeData()
     

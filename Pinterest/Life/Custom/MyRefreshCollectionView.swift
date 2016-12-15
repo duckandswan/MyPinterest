@@ -58,6 +58,7 @@ class MyRefreshCollectionView: UICollectionView {
         noDataLabel.font = UIFont.systemFont(ofSize: 12)
         noDataLabel.textAlignment = .center
         noDataLabel.text = "没有了"
+        noDataLabel.textColor = UIColor.black
         
         addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
         addObserver(self, forKeyPath: #keyPath(UICollectionView.contentSize), options: NSKeyValueObservingOptions.new, context: nil)
@@ -75,11 +76,14 @@ class MyRefreshCollectionView: UICollectionView {
     weak var headerObj:AnyObject?
     var headerAction:Selector?
     
+    var hasHeader:Bool = false
+    var hasFooter:Bool = false
     //MARK: -下拉刷新
     func addMyHeaderRefresh(obj:AnyObject, action:Selector) {
         headerObj = obj
         headerAction = action
         addSubview(myHeaderRefresh)
+        hasHeader = true
 //        addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
 //         addObserver(self, forKeyPath: #keyPath(UICollectionView.isDecelerating), options: [.new,.old,.initial,.prior], context: nil)
     }
@@ -90,7 +94,6 @@ class MyRefreshCollectionView: UICollectionView {
     func adjustFooterY(){
         myFooterLoad.frame.origin.y = contentSize.height > frame.height ? contentSize.height : frame.height
         noDataLabel.frame.origin.y = contentSize.height > frame.height ? contentSize.height : frame.height
-        noDataLabel.isHidden = true
     }
     //MARK: -上拉加载更多
     func addMyFooterLoad(obj:AnyObject, action:Selector) {
@@ -100,6 +103,8 @@ class MyRefreshCollectionView: UICollectionView {
         self.contentInset.bottom = 50
         addSubview(myFooterLoad)
         addSubview(noDataLabel)
+        noDataLabel.isHidden = true
+        hasFooter = true
 //        addObserver(self, forKeyPath: #keyPath(UICollectionView.contentOffset), options: NSKeyValueObservingOptions.new, context: nil)
     }
     
@@ -134,7 +139,7 @@ class MyRefreshCollectionView: UICollectionView {
     }
     
     func beginMyFooterLoad(){
-        if status == .headRefreshing || status == .footerLoading {
+        if !(status == .idle && isNoData == false) {
             return
         }
         status = .footerLoading
@@ -150,10 +155,12 @@ class MyRefreshCollectionView: UICollectionView {
 //                let contentOffset = change?[.newKey] as! CGPoint
                 if isDecelerating == true {
                     if contentOffset.y < -50{
-                        beginMyRefresh()
+                        if hasHeader == true {
+                            beginMyRefresh()
+                        }
                     }else if contentOffset.y > contentSize.height - frame.height + 50 && contentOffset.y > 50{
                         print("beginMyFooterLoad at :\(contentOffset.y)")
-                        if isNoData == false {
+                        if isNoData == false && hasFooter == true{
                             beginMyFooterLoad()
                         }
                     }

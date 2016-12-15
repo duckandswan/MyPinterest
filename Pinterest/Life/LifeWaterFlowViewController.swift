@@ -54,7 +54,7 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
     }
     
     func initCollectionView(){
-        lifeCollectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: SCREEN_W, height: SCREEN_H), collectionViewLayout: waterfallLayout)
+        lifeCollectionView = MyRefreshCollectionView(frame: CGRect(x: 0, y: 0, width: SCREEN_W, height: SCREEN_H), collectionViewLayout: waterfallLayout)
         
         waterfallLayout.delegate = self
         lifeCollectionView.backgroundColor = LifeConstant.mainBackgroundColor
@@ -66,7 +66,19 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
         lifeCollectionView.register(LifeCollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
         view.addSubview(lifeCollectionView)
         
-        lifeCollectionView.addHeaderRefresh(obj: self, action: #selector(LifeWaterFlowViewController.refresh(sender:)))
+        lifeCollectionView.addMyHeaderRefresh(obj: self, action: #selector(LifeWaterFlowViewController.refresh(sender:)))
+        
+        lifeCollectionView.addMyFooterLoad(obj: self, action: #selector(LifeWaterFlowViewController.load(sender:)))
+    }
+    
+    func refresh(sender:UIActivityIndicatorView) {
+        isRefreshing = true
+        getDataFromServer()
+    }
+    
+    func load(sender:UIActivityIndicatorView) {
+        isRefreshing = false
+        getDataFromServer()
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
@@ -93,18 +105,13 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
 //        self.lifeCollectionView.gifHeader?.endRefreshing()
 //        self.lifeCollectionView.gifFooter?.endRefreshing()
 //        canRequest = true
-        mainLifeData.canRequest = true
-        lifeCollectionView.refreshControl?.endRefreshing()
+//        mainLifeData.canRequest = true
+        lifeCollectionView.endMyRefresh()
     }
     
     //    override func footerBeginRefreshing() {
     //        lifeCollectionView.gifFooter?.beginRefreshing()
     //    }
-    func refresh(sender:UIRefreshControl) {
-        isRefreshing = true
-        mainLifeData.pageNo = 1
-        getDataFromServer()
-    }
 
     
     func getDataFromServer(){
@@ -112,11 +119,11 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
             return
         }
         
-        if mainLifeData.canRequest == false{
-            return
-        }
-
-        mainLifeData.canRequest = false
+//        if mainLifeData.canRequest == false{
+//            return
+//        }
+//
+//        mainLifeData.canRequest = false
         
         if isRefreshing == false{
             if let maxId  = mainLifeData.lifeModels.last?.storyCollectionId {
@@ -189,6 +196,7 @@ class LifeWaterFlowViewController: LifeCommonController, UICollectionViewDataSou
     func parseDataFromArr(_ arr:NSArray){
         
         if arr.count < mainLifeData.pageSize {
+            lifeCollectionView.isNoData = true
             mainLifeData.isEnd = true
         }else{
             mainLifeData.pageNo += 1

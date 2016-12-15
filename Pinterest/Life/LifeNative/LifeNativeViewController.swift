@@ -333,10 +333,10 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
         print("endRefresh collectionView?.tag:\(collectionView?.tag) index:\(index)")
         if collectionView?.tag == index{
             (collectionView as? MyRefreshCollectionView)?.endMyRefresh()
-            lifeData.status = .idle
         }else{
             print("not end index: \(index)")
         }
+        lifeData.status = .idle
 //        lifeData.canRequest = true
     }
     
@@ -424,7 +424,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 (collectionView as? MyRefreshCollectionView)?.set(sta: lifeData.status)
                 
                 if lifeData.isEnd == true{
-                    (collectionView as? MyRefreshCollectionView)?.isNoData = true
+                    cell.relatedCollectionView.isNoData = true
                 }
                 
                 
@@ -515,7 +515,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
             }else{
                 if indexPath.section == 1 {
                     mainLifeData = lifeDatas[collectionView.tag]
-                    lifeCollectionView = collectionView
+                    lifeCollectionView = collectionView as! MyRefreshCollectionView
                     let cell = collectionView.cellForItem(at: indexPath) as! CommonCollectionViewCell
                     presentLifeInner(cell, index: indexPath.row)
                 }else{

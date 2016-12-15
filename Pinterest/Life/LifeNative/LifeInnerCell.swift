@@ -10,7 +10,7 @@ import UIKit
 
 //内页主Cell
 class LifeInnerCell:UICollectionViewCell{
-    var relatedCollectionView:UICollectionView!
+    var relatedCollectionView:MyRefreshCollectionView!
 //    var innerWantView:InnerWantView!
     let waterfallLayout = WaterFlowViewLayout()
     var backBtn = UIButton()
@@ -49,7 +49,7 @@ class LifeInnerCell:UICollectionViewCell{
         topView.addSubview(lineView)
         
         
-        relatedCollectionView = UICollectionView(frame: CGRect(x: 0, y: 64, width: frame.width, height: frame.height - 64), collectionViewLayout: waterfallLayout)
+        relatedCollectionView = MyRefreshCollectionView(frame: CGRect(x: 0, y: 64, width: frame.width, height: frame.height - 64), collectionViewLayout: waterfallLayout)
         relatedCollectionView.backgroundColor = LifeConstant.mainBackgroundColor
         relatedCollectionView.alwaysBounceVertical = true
         relatedCollectionView.showsVerticalScrollIndicator  = false
