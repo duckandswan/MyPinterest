@@ -26,6 +26,8 @@ class MyRefreshCollectionView: UICollectionView {
         case .idle:
             self.contentOffset.y = 0
             self.contentInset.top = 0
+            myHeaderRefresh.stopAnimating()
+            myFooterLoad.stopAnimating()
         case .headRefreshing:
             self.contentOffset.y = -50
             self.contentInset.top = 50
@@ -125,11 +127,11 @@ class MyRefreshCollectionView: UICollectionView {
     
     func endMyRefresh(){
         if status == .headRefreshing {
-            self.status = .idle
             UIView.animate(withDuration: 0.5, animations: {
                 self.contentOffset.y = 0
                 self.contentInset.top = 0
             }, completion: { (b) in
+                self.status = .idle
                 self.myHeaderRefresh.stopAnimating()
             })
         }else if status == .footerLoading {
@@ -154,7 +156,7 @@ class MyRefreshCollectionView: UICollectionView {
             if keyPath == #keyPath(UICollectionView.contentOffset) {
 //                let contentOffset = change?[.newKey] as! CGPoint
                 if isDecelerating == true {
-                    if contentOffset.y < -50{
+                    if contentOffset.y < -75{
                         if hasHeader == true {
                             beginMyRefresh()
                         }

@@ -421,7 +421,7 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
 //                    self?.getDataFromServer(cv)
 //                })
                 
-                (collectionView as? MyRefreshCollectionView)?.set(sta: lifeData.status)
+                cell.relatedCollectionView.set(sta: lifeData.status)
                 
                 if lifeData.isEnd == true{
                     cell.relatedCollectionView.isNoData = true
