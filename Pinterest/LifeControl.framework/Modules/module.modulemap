@@ -1,0 +1,10 @@
+framework module LifeControl {
+  umbrella header "LifeControl.h"
+
+  export *
+  module * { export * }
+}
+
+module LifeControl.Swift {
+    header "LifeControl-Swift.h"
+}

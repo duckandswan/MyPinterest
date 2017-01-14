@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import LifeControl
 
 class ViewController: UIViewController {
 
