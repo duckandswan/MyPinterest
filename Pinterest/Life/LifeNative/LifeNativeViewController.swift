@@ -110,8 +110,8 @@ class LifeNativeViewController: LifeCommonController, UICollectionViewDataSource
                 let model = LifeCategoryModel()
                 model.setValueForDic(item)
                 self.lifeCategoryArr.append(model)
-                self.lifeCategoryArr.append(model)
-                self.lifeCategoryArr.append(model)
+//                self.lifeCategoryArr.append(model)
+//                self.lifeCategoryArr.append(model)
             }
             //            self.lifeCategoryArr.popLast()
             //            self.lifeCategoryArr.popLast()
